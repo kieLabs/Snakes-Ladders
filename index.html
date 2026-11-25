@@ -6,13 +6,13 @@
   <title>Snakes & Ladders — Saanp Seedhi</title>
   <style>
     :root {
-      --bg-app: #0c1218;
-      --bg-panel: #131c26;
-      --bg-panel-2: #192533;
-      --text-main: #f3f7fb;
-      --text-muted: #93a6bb;
-      --accent: #00e5ff;
-      --accent-2: #ffb703;
+      --bg-app: #14110f;
+      --bg-panel: #1e1916;
+      --bg-panel-2: #29221e;
+      --text-main: #f5f1eb;
+      --text-muted: #b3a79c;
+      --accent: #f59e0b;
+      --accent-2: #10b981;
       --border: rgba(255, 255, 255, 0.12);
       --radius: 14px;
       --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
@@ -40,7 +40,7 @@
       flex-direction: column;
       width: 100%;
       height: 100%;
-      max-width: 1400px;
+      max-width: 1500px;
       margin: 0 auto;
       padding: 8px;
       gap: 8px;
@@ -70,7 +70,7 @@
 
     .brand-badge {
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #081018;
+      color: #091015;
       font-size: 10px;
       font-weight: 900;
       padding: 2px 6px;
@@ -105,22 +105,208 @@
     .icon-btn:active { transform: scale(0.95); }
     .icon-btn.primary {
       background: var(--accent);
-      color: #071018;
+      color: #091015;
       border-color: transparent;
     }
 
-    .workspace {
-      display: flex;
+    /* 3-Column Arena: Left Player Dice | Center Board | Right Player Dice */
+    .arena {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr) 230px;
       flex: 1;
       min-height: 0;
       gap: 10px;
     }
 
+    .side-deck {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      overflow-y: auto;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .side-deck.active-turn {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), inset 0 0 20px rgba(245, 158, 11, 0.12);
+    }
+
+    .side-deck.dimmed {
+      opacity: 0.72;
+    }
+
+    .deck-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .player-identity {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .token-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      flex-shrink: 0;
+    }
+
+    .player-title {
+      font-size: 14px;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pos-pill {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--accent);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    .status-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      min-height: 20px;
+    }
+
+    .tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
+
+    .tag.good {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+    }
+
+    .deck-powerups {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    .slot-chip {
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .slot-chip.ready {
+      border-style: solid;
+      border-color: var(--accent);
+      background: rgba(245, 158, 11, 0.16);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .side-dice-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-panel-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .dice-box {
+      width: 66px;
+      height: 66px;
+      border-radius: 15px;
+      background: linear-gradient(145deg, #ffffff, #e2e8f0);
+      color: #0f172a;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      padding: 10px;
+      gap: 4px;
+      box-shadow: 0 7px 18px rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+    }
+
+    .dice-box.rolling { animation: diceSpin 0.42s ease-in-out; }
+
+    @keyframes diceSpin {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-16deg) scale(1.12); }
+      50% { transform: rotate(15deg) scale(0.95); }
+      75% { transform: rotate(-10deg) scale(1.08); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    .pip {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #0f172a;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    .pip.on { opacity: 1; transform: scale(1); }
+    .pip.red { background: #e11d48; }
+
+    .side-roll-btn {
+      width: 100%;
+      padding: 11px 10px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #091015;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .side-roll-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .side-hint {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Center Board Stage */
     .board-stage {
-      flex: 1;
       min-width: 0;
       min-height: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
@@ -129,6 +315,40 @@
       border-radius: var(--radius);
       padding: 8px;
       overflow: hidden;
+      gap: 6px;
+    }
+
+    .board-top-strip {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 4px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+      margin-right: 5px;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .board-canvas-wrap {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
 
     .board-wrapper {
@@ -167,15 +387,15 @@
 
     #toastBanner {
       position: absolute;
-      top: 12px;
+      top: 42px;
       left: 50%;
       transform: translateX(-50%) translateY(-16px);
-      background: rgba(11, 17, 25, 0.95);
-      border: 1px solid var(--accent-2);
+      background: rgba(12, 17, 24, 0.95);
+      border: 1px solid var(--accent);
       color: #fff;
-      padding: 8px 16px;
+      padding: 7px 15px;
       border-radius: 999px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       z-index: 30;
       opacity: 0;
@@ -192,326 +412,39 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    .hud-panel {
-      width: 335px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 10px;
-      overflow-y: auto;
-    }
-
-    .room-pill {
-      background: var(--bg-panel-2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 6px 9px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11.5px;
-      font-weight: 700;
-      gap: 6px;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #93a6bb;
-      display: inline-block;
-      margin-right: 5px;
-    }
-
-    .status-dot.live {
-      background: #2ec4b6;
-      box-shadow: 0 0 8px #2ec4b6;
-    }
-
-    .players-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-
-    .player-card {
-      background: var(--bg-panel-2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 7px 9px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .player-card.active {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent), inset 0 0 16px rgba(0, 229, 255, 0.12);
-    }
-
-    .player-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 4px;
-    }
-
-    .player-name-wrap {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    .token-dot {
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      border: 2px solid #fff;
-    }
-
-    .player-name {
-      font-size: 12px;
-      font-weight: 700;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .player-tile {
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--accent-2);
-      background: rgba(0, 0, 0, 0.3);
-      padding: 1px 6px;
-      border-radius: 6px;
-    }
-
-    .player-badges {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      min-height: 18px;
-      flex-wrap: wrap;
-    }
-
-    .mini-badge {
-      font-size: 10px;
-      padding: 1px 5px;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .mini-badge.shield {
-      background: rgba(46, 196, 182, 0.2);
-      color: #6fffe9;
-    }
-
-    .powerup-bar {
-      background: var(--bg-panel-2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .section-label {
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .powerup-slots {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-
-    .pu-slot {
-      background: rgba(0, 0, 0, 0.28);
-      border: 1px dashed var(--border);
-      border-radius: 9px;
-      padding: 7px 8px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      min-height: 36px;
-    }
-
-    .pu-slot.filled {
-      border-style: solid;
-      border-color: var(--accent-2);
-      background: rgba(255, 183, 3, 0.12);
-      color: #fff;
-      cursor: pointer;
-    }
-
-    #precisionPicker {
+    /* Precision Picker Bar */
+    #precisionBar {
       display: none;
-      background: rgba(0, 229, 255, 0.1);
+      width: 100%;
+      background: rgba(245, 158, 11, 0.14);
       border: 1px solid var(--accent);
       border-radius: 10px;
-      padding: 8px;
-      gap: 6px;
-      flex-direction: column;
+      padding: 6px 8px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
-    #precisionPicker.active { display: flex; }
+    #precisionBar.active { display: flex; }
 
-    .dice-choices {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
+    .pick-row {
+      display: flex;
       gap: 5px;
     }
 
-    .dice-choice-btn {
-      background: var(--bg-panel);
+    .pick-btn {
+      background: var(--bg-panel-2);
       color: #fff;
       border: 1px solid var(--accent);
       border-radius: 7px;
-      padding: 6px 0;
+      padding: 4px 10px;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
     }
 
-    .dice-zone {
-      background: var(--bg-panel-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .dice-box {
-      width: 64px;
-      height: 64px;
-      border-radius: 14px;
-      background: linear-gradient(145deg, #ffffff, #dce6f2);
-      color: #0d1620;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      padding: 10px;
-      gap: 4px;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .dice-box.rolling { animation: diceTumble 0.42s ease-in-out; }
-
-    @keyframes diceTumble {
-      0% { transform: rotate(0deg) scale(1); }
-      25% { transform: rotate(-18deg) scale(1.12); }
-      50% { transform: rotate(16deg) scale(0.95); }
-      75% { transform: rotate(-10deg) scale(1.08); }
-      100% { transform: rotate(0deg) scale(1); }
-    }
-
-    .pip {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: #101820;
-      opacity: 0;
-      transform: scale(0.5);
-    }
-
-    .pip.on { opacity: 1; transform: scale(1); }
-    .pip.red { background: #e63946; }
-
-    .roll-controls {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    #rollBtn {
-      width: 100%;
-      padding: 12px 14px;
-      border: none;
-      border-radius: 11px;
-      background: linear-gradient(135deg, var(--accent), #00b4d8);
-      color: #051018;
-      font-size: 14px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0, 229, 255, 0.3);
-    }
-
-    #rollBtn:disabled {
-      opacity: 0.48;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .turn-subtext {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .history-strip {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      overflow-x: auto;
-    }
-
-    .hist-pill {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 7px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .match-log {
-      flex: 1;
-      min-height: 50px;
-      max-height: 105px;
-      overflow-y: auto;
-      background: rgba(0, 0, 0, 0.26);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 7px 9px;
-      font-size: 11.5px;
-      line-height: 1.4;
-      color: var(--text-muted);
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .log-entry strong { color: var(--text-main); }
-
+    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -531,7 +464,7 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       width: 100%;
-      max-width: 560px;
+      max-width: 540px;
       max-height: 90vh;
       display: flex;
       flex-direction: column;
@@ -667,33 +600,47 @@
 
     .tab-btn.active {
       background: var(--accent);
-      color: #061018;
+      color: #091015;
       border-color: transparent;
     }
 
     .invite-card {
-      background: rgba(0, 229, 255, 0.08);
-      border: 1px solid rgba(0, 229, 255, 0.28);
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
       border-radius: 10px;
       padding: 10px 12px;
       font-size: 12px;
       line-height: 1.5;
-      color: var(--text-main);
     }
 
-    @media (max-width: 820px) {
-      .workspace { flex-direction: column; }
-      .board-stage { flex: 1 1 auto; padding: 4px; }
-      .hud-panel {
-        width: 100%;
-        flex: 0 0 auto;
-        max-height: 45%;
-        padding: 8px;
-        gap: 6px;
+    /* Mobile Portrait: Left & Right Dice Decks sit side-by-side below Board */
+    @media (max-width: 900px) {
+      .arena {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: minmax(0, 1fr) auto;
       }
-      .match-log { display: none; }
-      .dice-box { width: 52px; height: 52px; padding: 8px; }
-      #rollBtn { padding: 10px 12px; font-size: 13.5px; }
+      .board-stage {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        padding: 4px;
+      }
+      .side-deck {
+        grid-row: 2;
+        padding: 7px;
+        gap: 5px;
+      }
+      .dice-box {
+        width: 50px;
+        height: 50px;
+        padding: 7px;
+      }
+      .side-roll-btn {
+        padding: 9px 8px;
+        font-size: 12px;
+      }
+      .deck-powerups {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -702,111 +649,132 @@
     <header class="topbar">
       <div class="brand">
         <span>🐍🪜 Saanp Seedhi</span>
-        <span class="brand-badge">Arcade</span>
+        <span class="brand-badge">2P Dual Dice</span>
       </div>
       <div class="topbar-actions">
-        <button class="icon-btn primary" id="openOnlineBtn">🌐 Play With Friend</button>
+        <button class="icon-btn primary" id="openFriendBtn">🌐 Friend Match</button>
         <button class="icon-btn" id="quickRandomThemeBtn">🎨 Surprise Look</button>
         <button class="icon-btn" id="openThemesBtn">🖌️ Themes</button>
-        <button class="icon-btn" id="openSetupBtn">⚙️ Match Setup</button>
+        <button class="icon-btn" id="openSetupBtn">⚙️ Setup</button>
         <button class="icon-btn" id="soundToggleBtn">🔊</button>
         <button class="icon-btn" id="fullscreenBtn">⛶</button>
       </div>
     </header>
 
-    <main class="workspace">
+    <main class="arena">
+      <!-- LEFT PLAYER DECK & DICE -->
+      <aside class="side-deck active-turn" id="leftDeck">
+        <div>
+          <div class="deck-header">
+            <div class="player-identity">
+              <span class="token-dot" id="p0Dot" style="background:#00e5ff"></span>
+              <span class="player-title" id="p0Name">Player 1</span>
+            </div>
+            <span class="pos-pill" id="p0Tile">#1</span>
+          </div>
+          <div class="status-strip" id="p0Badges" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="deck-powerups" id="p0Slots"></div>
+
+        <div class="side-dice-area">
+          <div class="dice-box" id="diceBox0" title="Player 1 Dice">
+            <div class="pip" data-p="0"></div><div class="pip" data-p="1"></div><div class="pip" data-p="2"></div>
+            <div class="pip" data-p="3"></div><div class="pip" data-p="4"></div><div class="pip" data-p="5"></div>
+            <div class="pip" data-p="6"></div><div class="pip" data-p="7"></div><div class="pip" data-p="8"></div>
+          </div>
+          <button class="side-roll-btn" id="rollBtn0">🎲 ROLL P1</button>
+          <div class="side-hint" id="hint0">Left Side Dice</div>
+        </div>
+      </aside>
+
+      <!-- CENTER BOARD -->
       <section class="board-stage" id="boardStage">
+        <div class="board-top-strip">
+          <div><span class="live-dot" id="syncDot"></span><span id="tableStatusText">2-Player Dual Dice Ready</span></div>
+          <div id="themeNameBadge" style="color:var(--accent);">Simple Realistic • Ivory & Oak</div>
+        </div>
+
         <div id="toastBanner"></div>
         <div id="boardTooltip"></div>
-        <div class="board-wrapper" id="boardWrapper">
-          <canvas id="boardCanvas"></canvas>
+
+        <div id="precisionBar">
+          <span style="font-size:11.5px;font-weight:800;color:var(--accent);">🎯 Choose Roll:</span>
+          <div class="pick-row">
+            <button class="pick-btn" data-val="1">1</button>
+            <button class="pick-btn" data-val="2">2</button>
+            <button class="pick-btn" data-val="3">3</button>
+            <button class="pick-btn" data-val="4">4</button>
+            <button class="pick-btn" data-val="5">5</button>
+            <button class="pick-btn" data-val="6">6</button>
+          </div>
+        </div>
+
+        <div class="board-canvas-wrap">
+          <div class="board-wrapper" id="boardWrapper">
+            <canvas id="boardCanvas"></canvas>
+          </div>
         </div>
       </section>
 
-      <aside class="hud-panel">
-        <div class="room-pill">
-          <div>
-            <span class="status-dot" id="roomDot"></span>
-            <span id="roomStatusText">Ready to Play</span>
+      <!-- RIGHT PLAYER DECK & DICE -->
+      <aside class="side-deck dimmed" id="rightDeck">
+        <div>
+          <div class="deck-header">
+            <div class="player-identity">
+              <span class="token-dot" id="p1Dot" style="background:#ff4d6d"></span>
+              <span class="player-title" id="p1Name">Player 2</span>
+            </div>
+            <span class="pos-pill" id="p1Tile">#1</span>
           </div>
-          <button class="icon-btn" id="quickRoomBtn" style="padding:3px 8px;font-size:11px;">Invite</button>
+          <div class="status-strip" id="p1Badges" style="margin-top:6px;"></div>
         </div>
 
-        <div class="players-grid" id="playersGrid"></div>
+        <div class="deck-powerups" id="p1Slots"></div>
 
-        <div class="powerup-bar">
-          <div class="section-label">
-            <span>⚡ Power-Ups</span>
-            <span id="themeNameBadge" style="color:var(--accent);font-size:10px;">Simple Realistic</span>
+        <div class="side-dice-area">
+          <div class="dice-box" id="diceBox1" title="Player 2 Dice">
+            <div class="pip" data-p="0"></div><div class="pip" data-p="1"></div><div class="pip" data-p="2"></div>
+            <div class="pip" data-p="3"></div><div class="pip" data-p="4"></div><div class="pip" data-p="5"></div>
+            <div class="pip" data-p="6"></div><div class="pip" data-p="7"></div><div class="pip" data-p="8"></div>
           </div>
-          <div class="powerup-slots" id="powerupSlots"></div>
+          <button class="side-roll-btn" id="rollBtn1" disabled>🎲 ROLL P2</button>
+          <div class="side-hint" id="hint1">Right Side Dice</div>
         </div>
-
-        <div id="precisionPicker">
-          <div class="section-label" style="color:var(--accent);">🎯 Pick Your Next Roll</div>
-          <div class="dice-choices">
-            <button class="dice-choice-btn" data-val="1">1</button>
-            <button class="dice-choice-btn" data-val="2">2</button>
-            <button class="dice-choice-btn" data-val="3">3</button>
-            <button class="dice-choice-btn" data-val="4">4</button>
-            <button class="dice-choice-btn" data-val="5">5</button>
-            <button class="dice-choice-btn" data-val="6">6</button>
-          </div>
-        </div>
-
-        <div class="dice-zone">
-          <div class="dice-box" id="diceBox">
-            <div class="pip" data-p="0"></div>
-            <div class="pip" data-p="1"></div>
-            <div class="pip" data-p="2"></div>
-            <div class="pip" data-p="3"></div>
-            <div class="pip" data-p="4"></div>
-            <div class="pip" data-p="5"></div>
-            <div class="pip" data-p="6"></div>
-            <div class="pip" data-p="7"></div>
-            <div class="pip" data-p="8"></div>
-          </div>
-          <div class="roll-controls">
-            <button id="rollBtn">🎲 ROLL DICE</button>
-            <div class="turn-subtext" id="turnSubtext">Climb from 1 to 100!</div>
-          </div>
-        </div>
-
-        <div class="history-strip" id="historyStrip"></div>
-        <div class="match-log" id="matchLog"></div>
       </aside>
     </main>
   </div>
 
   <!-- Friend Match Modal -->
-  <div class="modal-backdrop" id="onlineModal">
+  <div class="modal-backdrop" id="friendModal">
     <div class="modal-card">
       <div class="modal-header">
         <span>🌐 Play With a Friend</span>
-        <button class="icon-btn" data-close="onlineModal">✕</button>
+        <button class="icon-btn" data-close="friendModal">✕</button>
       </div>
       <div class="modal-body">
         <div class="invite-card">
-          <strong>How to start a friendly match:</strong><br/>
-          1. Host taps <strong>Create Invite</strong> and sends the passkey to a friend.<br/>
-          2. Friend pastes the passkey, taps <strong>Create Reply</strong>, and sends the reply back.<br/>
-          3. Host pastes the reply and taps <strong>Start Match</strong> to play turn-by-turn!
+          <strong>Same device or another tab:</strong> Changes sync automatically.<br/>
+          <strong>Another device:</strong><br/>
+          1. Host taps <strong>Create Invite</strong> and sends the passkey.<br/>
+          2. Friend pastes it, taps <strong>Create Reply</strong>, and sends back.<br/>
+          3. Host pastes the reply & taps <strong>Start Match</strong>.
         </div>
 
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="icon-btn primary" id="createOfferBtn">🎟️ 1. Create Invite</button>
-          <button class="icon-btn" id="generateAnswerBtn">💌 2. Create Reply</button>
-          <button class="icon-btn primary" id="acceptAnswerBtn">🤝 3. Start Match</button>
-          <button class="icon-btn" id="disconnectP2pBtn">Leave Table</button>
+          <button class="icon-btn primary" id="createInviteBtn">🎟️ 1. Create Invite</button>
+          <button class="icon-btn" id="createReplyBtn">💌 2. Create Reply</button>
+          <button class="icon-btn primary" id="startLinkedBtn">🤝 3. Start Match</button>
+          <button class="icon-btn" id="leaveFriendBtn">Leave</button>
         </div>
 
         <label class="field">
           Match Passkey
-          <textarea id="p2pPayloadBox" rows="4" placeholder="Tap Create Invite or paste your friend's passkey here..."></textarea>
+          <textarea id="friendCodeBox" rows="4" placeholder="Tap Create Invite or paste your friend's passkey..."></textarea>
         </label>
 
-        <div style="display:flex;gap:8px;">
-          <button class="icon-btn" id="copyP2pCodeBtn">📋 Copy Passkey</button>
+        <div>
+          <button class="icon-btn" id="copyFriendCodeBtn">📋 Copy Passkey</button>
         </div>
       </div>
     </div>
@@ -822,20 +790,10 @@
       <div class="modal-body">
         <div class="form-grid">
           <label class="field">
-            Players Mode
-            <select id="cfgMode">
-              <option value="ai">Solo vs. Bot</option>
-              <option value="pvp2">2 Players</option>
-              <option value="pvp3">3 Players</option>
-              <option value="pvp4">4 Players</option>
-            </select>
-          </label>
-          <label class="field">
-            Bot Style
-            <select id="cfgAi">
-              <option value="casual">Easygoing</option>
-              <option value="tactician" selected>Smart</option>
-              <option value="chaos">Wild</option>
+            Player 2 Mode
+            <select id="cfgOpponent">
+              <option value="local2" selected>2 Local Players (Left & Right Dice)</option>
+              <option value="bot">Solo vs. Buddy Bot</option>
             </select>
           </label>
           <label class="field">
@@ -847,10 +805,18 @@
             </select>
           </label>
           <label class="field">
-            Winning Roll on 100
+            Finish at 100 Rule
             <select id="cfgExact">
               <option value="exact">Exact Number Needed</option>
               <option value="bounce">Bounce Back on Extra</option>
+            </select>
+          </label>
+          <label class="field">
+            Bot Style
+            <select id="cfgAi">
+              <option value="casual">Easygoing</option>
+              <option value="tactician" selected>Smart</option>
+              <option value="chaos">Wild</option>
             </select>
           </label>
         </div>
@@ -865,14 +831,32 @@
         </div>
 
         <div class="section-label">Players & Tokens</div>
-        <div id="playerConfigList" style="display:flex;flex-direction:column;gap:8px;"></div>
-
-        <div class="section-label">Your Trophy Record</div>
-        <div id="careerStatsBox" style="font-size:12px;color:var(--text-muted);background:var(--bg-panel-2);padding:8px 10px;border-radius:10px;border:1px solid var(--border);"></div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:grid;grid-template-columns:1fr 70px 90px;gap:6px;">
+            <input type="text" id="p0NameInput" value="Player 1" />
+            <input type="color" id="p0ColorInput" value="#00e5ff" />
+            <select id="p0ShapeInput">
+              <option value="crown" selected>CROWN</option>
+              <option value="circle">CIRCLE</option>
+              <option value="star">STAR</option>
+              <option value="diamond">DIAMOND</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 70px 90px;gap:6px;">
+            <input type="text" id="p1NameInput" value="Player 2" />
+            <input type="color" id="p1ColorInput" value="#ff4d6d" />
+            <select id="p1ShapeInput">
+              <option value="star" selected>STAR</option>
+              <option value="crown">CROWN</option>
+              <option value="circle">CIRCLE</option>
+              <option value="diamond">DIAMOND</option>
+            </select>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button class="icon-btn" id="resumeMatchBtn" style="display:none;">▶️ Continue Game</button>
-        <button class="icon-btn primary" id="startNewMatchBtn">🚀 New Game</button>
+        <button class="icon-btn" id="resumeBtn">▶️ Continue</button>
+        <button class="icon-btn primary" id="newMatchBtn">🚀 New Match</button>
       </div>
     </div>
   </div>
@@ -886,26 +870,26 @@
       </div>
       <div class="modal-body">
         <div class="tabs">
-          <button class="tab-btn active" data-tab="presetsTab">Themes & Collection</button>
+          <button class="tab-btn active" data-tab="presetsTab">Featured & Saved</button>
           <button class="tab-btn" data-tab="studioTab">Color Mixer</button>
           <button class="tab-btn" data-tab="shareTab">Gift a Theme</button>
         </div>
 
         <div id="presetsTab" class="tab-pane" style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="icon-btn primary" id="modalRandomThemeBtn">✨ Surprise Theme</button>
-            <button class="icon-btn" id="saveCurrentThemeBtn">💾 Save to My Collection</button>
+            <button class="icon-btn primary" id="modalSurpriseBtn">✨ Surprise Theme</button>
+            <button class="icon-btn" id="saveThemeBtn">💾 Save to Collection</button>
           </div>
-          <div class="section-label">Featured Themes (Simple Realistic • Neon • Realistic 3D)</div>
-          <div class="theme-preset-grid" id="builtInThemesGrid"></div>
-          <div class="section-label">My Saved Themes (<span id="savedCount">0</span>)</div>
-          <div class="theme-preset-grid" id="savedThemesGrid"></div>
+          <div class="section-label">Simple Realistic • Realistic 3D • Neon</div>
+          <div class="theme-preset-grid" id="builtInGrid"></div>
+          <div class="section-label">Saved Themes (<span id="savedCount">0</span>)</div>
+          <div class="theme-preset-grid" id="savedGrid"></div>
         </div>
 
         <div id="studioTab" class="tab-pane" style="display:none;flex-direction:column;gap:10px;">
           <div class="form-grid">
-            <label class="field">Theme Title<input type="text" id="stName" value="My Theme" /></label>
-            <label class="field">Look & Finish
+            <label class="field">Theme Name<input type="text" id="stName" value="My Theme" /></label>
+            <label class="field">Style Mode
               <select id="stLookMode">
                 <option value="simple_realistic">Simple Realistic</option>
                 <option value="realistic_3d">Realistic 3D</option>
@@ -913,29 +897,25 @@
               </select>
             </label>
             <label class="field">Board Frame<input type="color" id="stBoardBg" /></label>
-            <label class="field">Highlight Color<input type="color" id="stAccent" /></label>
-            <label class="field">Light Squares<input type="color" id="stTileA" /></label>
-            <label class="field">Dark Squares<input type="color" id="stTileB" /></label>
-            <label class="field">Ladder Wood / Rail<input type="color" id="stLadderA" /></label>
+            <label class="field">Highlight<input type="color" id="stAccent" /></label>
+            <label class="field">Light Tile<input type="color" id="stTileA" /></label>
+            <label class="field">Dark Tile<input type="color" id="stTileB" /></label>
+            <label class="field">Ladder Rail<input type="color" id="stLadderA" /></label>
             <label class="field">Ladder Rungs<input type="color" id="stLadderB" /></label>
             <label class="field">Snake Body<input type="color" id="stSnakeA" /></label>
-            <label class="field">Snake Markings<input type="color" id="stSnakeB" /></label>
+            <label class="field">Snake Pattern<input type="color" id="stSnakeB" /></label>
           </div>
-          <div class="form-grid">
-            <div class="toggle-row"><span>Soft Corners</span><input type="checkbox" id="stRounded" checked /></div>
-            <div class="toggle-row"><span>Depth & Lighting</span><input type="checkbox" id="stDepth" checked /></div>
-          </div>
-          <button class="icon-btn primary" id="applyAndSaveStudioBtn">✅ Apply & Save Theme</button>
+          <button class="icon-btn primary" id="applyStudioBtn">✅ Apply & Save Theme</button>
         </div>
 
         <div id="shareTab" class="tab-pane" style="display:none;flex-direction:column;gap:10px;">
           <label class="field">
-            Theme Passcode (Share with a friend or paste one here)
-            <textarea id="themeGiftBox" rows="4" placeholder="Paste a friend's theme passcode to apply it..."></textarea>
+            Theme Passcode
+            <textarea id="giftBox" rows="4" placeholder="Copy a theme passcode or paste one from a friend..."></textarea>
           </label>
           <div style="display:flex;gap:8px;">
-            <button class="icon-btn" id="copyThemeGiftBtn">📋 Copy Passcode</button>
-            <button class="icon-btn primary" id="importThemeGiftBtn">📥 Apply Passcode</button>
+            <button class="icon-btn" id="copyGiftBtn">📋 Copy Passcode</button>
+            <button class="icon-btn primary" id="applyGiftBtn">📥 Apply Passcode</button>
           </div>
         </div>
       </div>
@@ -944,15 +924,15 @@
 
   <!-- Victory Modal -->
   <div class="modal-backdrop" id="victoryModal">
-    <div class="modal-card" style="max-width:400px;text-align:center;">
+    <div class="modal-card" style="max-width:390px;text-align:center;">
       <div class="modal-header">
-        <span>🏆 Champion!</span>
+        <span>🏆 Winner!</span>
         <button class="icon-btn" data-close="victoryModal">✕</button>
       </div>
       <div class="modal-body" style="align-items:center;">
         <div style="font-size:48px;">👑</div>
         <h2 id="winnerTitle" style="margin:0;font-size:22px;">Player 1 Wins!</h2>
-        <p id="winnerSubtitle" style="margin:0;color:var(--text-muted);font-size:13px;"></p>
+        <p id="winnerSub" style="margin:0;color:var(--text-muted);font-size:13px;">Reached Square 100!</p>
         <button class="icon-btn primary" id="playAgainBtn" style="margin-top:8px;padding:10px 20px;">🎲 Play Again</button>
       </div>
     </div>
@@ -962,69 +942,51 @@
     (() => {
       "use strict";
 
-      const STORAGE_KEY = "saanp_seedhi_clean_v1";
-      const CHANNEL_NAME = "saanp_seedhi_table_sync_v1";
+      const STORAGE_KEY = "saanp_seedhi_dual_v1";
+      const CHANNEL_NAME = "saanp_seedhi_autosync_v1";
 
       const BUILT_IN_THEMES = [
         {
-          id: "simple_realistic_ivory",
-          name: "Simple Realistic • Ivory & Oak",
-          builtIn: true,
-          lookMode: "simple_realistic",
+          id: "sr_ivory", name: "Simple Realistic • Ivory & Oak", builtIn: true, lookMode: "simple_realistic",
           appBg: "#171412", panelBg: "#211c19", panelBg2: "#2c2520", boardBg: "#3a2e25",
           tileA: "#f6efe2", tileB: "#e3d3b8", textA: "#2b2118", textB: "#241b13",
           ladderA: "#b45309", ladderB: "#fde68a", snakeA: "#b91c1c", snakeB: "#fca5a5",
-          accent: "#d97706", accent2: "#dc2626", snakePattern: "stripes", rounded: true, glow: false, depth: false
+          accent: "#d97706", accent2: "#10b981", snakePattern: "stripes", rounded: true, glow: false, depth: false
         },
         {
-          id: "simple_realistic_sage",
-          name: "Simple Realistic • Garden Slate",
-          builtIn: true,
-          lookMode: "simple_realistic",
+          id: "sr_sage", name: "Simple Realistic • Garden Slate", builtIn: true, lookMode: "simple_realistic",
           appBg: "#111715", panelBg: "#18221f", panelBg2: "#202e2a", boardBg: "#273833",
           tileA: "#eef4f0", tileB: "#d2e0da", textA: "#162420", textB: "#101b18",
           ladderA: "#0f766e", ladderB: "#99f6e4", snakeA: "#c2410c", snakeB: "#fed7aa",
-          accent: "#14b8a6", accent2: "#ea580c", snakePattern: "stripes", rounded: true, glow: false, depth: false
+          accent: "#14b8a6", accent2: "#f59e0b", snakePattern: "stripes", rounded: true, glow: false, depth: false
         },
         {
-          id: "neon_cyber_grid",
-          name: "Neon • Cyber Pulse",
-          builtIn: true,
-          lookMode: "neon",
+          id: "3d_brass", name: "Realistic 3D • Carved Brass", builtIn: true, lookMode: "realistic_3d",
+          appBg: "#140d08", panelBg: "#21160e", panelBg2: "#2e1f14", boardBg: "#3b2618",
+          tileA: "#f5e3c3", tileB: "#d4ae72", textA: "#331d0d", textB: "#241307",
+          ladderA: "#ca8a04", ladderB: "#fef08a", snakeA: "#991b1b", snakeB: "#fbbf24",
+          accent: "#eab308", accent2: "#22c55e", snakePattern: "scales", rounded: true, glow: false, depth: true
+        },
+        {
+          id: "3d_jade", name: "Realistic 3D • Jade Temple", builtIn: true, lookMode: "realistic_3d",
+          appBg: "#071411", panelBg: "#0d211c", panelBg2: "#143029", boardBg: "#0c241e",
+          tileA: "#e6f5ef", tileB: "#b7ddd0", textA: "#0d261f", textB: "#081a15",
+          ladderA: "#059669", ladderB: "#a7f3d0", snakeA: "#be123c", snakeB: "#fda4af",
+          accent: "#10b981", accent2: "#f59e0b", snakePattern: "scales", rounded: true, glow: false, depth: true
+        },
+        {
+          id: "neon_cyber", name: "Neon • Cyber Pulse", builtIn: true, lookMode: "neon",
           appBg: "#070b12", panelBg: "#0e1522", panelBg2: "#151f32", boardBg: "#090d16",
           tileA: "#11192a", tileB: "#18243c", textA: "#67e8f9", textB: "#a5b4fc",
           ladderA: "#00f5d4", ladderB: "#38bdf8", snakeA: "#ff006e", snakeB: "#ffbe0b",
           accent: "#00f5d4", accent2: "#ff006e", snakePattern: "neon", rounded: true, glow: true, depth: true
         },
         {
-          id: "neon_synth_sunset",
-          name: "Neon • Electric Violet",
-          builtIn: true,
-          lookMode: "neon",
+          id: "neon_violet", name: "Neon • Electric Violet", builtIn: true, lookMode: "neon",
           appBg: "#0d0716", panelBg: "#170e26", panelBg2: "#221438", boardBg: "#11091f",
           tileA: "#1c1030", tileB: "#281644", textA: "#f0abfc", textB: "#93c5fd",
           ladderA: "#38bdf8", ladderB: "#a5f3fc", snakeA: "#f43f5e", snakeB: "#fde047",
           accent: "#e879f9", accent2: "#38bdf8", snakePattern: "neon", rounded: true, glow: true, depth: true
-        },
-        {
-          id: "realistic_3d_royal",
-          name: "Realistic 3D • Carved Brass",
-          builtIn: true,
-          lookMode: "realistic_3d",
-          appBg: "#140d08", panelBg: "#21160e", panelBg2: "#2e1f14", boardBg: "#3b2618",
-          tileA: "#f5e3c3", tileB: "#d4ae72", textA: "#331d0d", textB: "#241307",
-          ladderA: "#ca8a04", ladderB: "#fef08a", snakeA: "#991b1b", snakeB: "#fbbf24",
-          accent: "#eab308", accent2: "#ef4444", snakePattern: "scales", rounded: true, glow: false, depth: true
-        },
-        {
-          id: "realistic_3d_emerald",
-          name: "Realistic 3D • Jade Temple",
-          builtIn: true,
-          lookMode: "realistic_3d",
-          appBg: "#071411", panelBg: "#0d211c", panelBg2: "#143029", boardBg: "#0c241e",
-          tileA: "#e6f5ef", tileB: "#b7ddd0", textA: "#0d261f", textB: "#081a15",
-          ladderA: "#059669", ladderB: "#a7f3d0", snakeA: "#be123c", snakeB: "#fda4af",
-          accent: "#10b981", accent2: "#f43f5e", snakePattern: "scales", rounded: true, glow: false, depth: true
         }
       ];
 
@@ -1044,19 +1006,16 @@
       };
 
       const POWERUP_TYPES = {
-        shield: { id: "shield", icon: "🛡️", name: "Snake Shield", desc: "Protects from one snake bite" },
-        precision: { id: "precision", icon: "🎯", name: "Aimed Roll", desc: "Pick your next dice number" },
-        ladderBoost: { id: "ladderBoost", icon: "🪜", name: "Quick Climb", desc: "Leap +7 squares ahead" },
-        swap: { id: "swap", icon: "🧲", name: "Spot Swap", desc: "Trade spots with the leader" },
-        antidote: { id: "antidote", icon: "🧪", name: "Soft Slide", desc: "Cut a snake drop in half" },
-        mystery: { id: "mystery", icon: "❓", name: "Lucky Tile", desc: "Instant board surprise" }
+        shield: { id: "shield", icon: "🛡️", name: "Shield", desc: "Blocks one snake bite" },
+        precision: { id: "precision", icon: "🎯", name: "Aimed Roll", desc: "Pick next dice 1–6" },
+        ladderBoost: { id: "ladderBoost", icon: "🪜", name: "Boost +7", desc: "Jump 7 squares forward" },
+        swap: { id: "swap", icon: "🧲", name: "Swap", desc: "Swap spot with opponent" },
+        antidote: { id: "antidote", icon: "🧪", name: "Soft Slide", desc: "Halves snake penalty" },
+        mystery: { id: "mystery", icon: "❓", name: "Lucky Tile", desc: "Instant surprise" }
       };
 
-      const TOKEN_COLORS = ["#00e5ff", "#ff4d6d", "#ffb703", "#80ed99"];
-      const TOKEN_SHAPES = ["circle", "crown", "star", "diamond"];
-
       /* =========================================================================
-         SOUND EFFECTS
+         AUDIO
          ========================================================================= */
       class SoundFX {
         constructor() { this.ctx = null; this.muted = false; }
@@ -1093,21 +1052,23 @@
       const sfx = new SoundFX();
 
       /* =========================================================================
-         FRIEND LINK MANAGER
+         AUTO-SYNC & FRIEND TABLE LINK
          ========================================================================= */
-      class FriendLinkManager {
+      class TableLink {
         constructor() {
           this.pc = null;
           this.dc = null;
           this.role = null;
-          this.connected = false;
+          this.remoteConnected = false;
           this.bc = ("BroadcastChannel" in window) ? new BroadcastChannel(CHANNEL_NAME) : null;
           if (this.bc) {
             this.bc.onmessage = (ev) => {
               if (ev.data && ev.data.fromTab !== TAB_ID) {
-                this.onMessage(ev.data.payload);
+                this.onMsg(ev.data.payload);
               }
             };
+            // Announce presence so another open tab auto-syncs immediately
+            this.bc.postMessage({ fromTab: TAB_ID, payload: { type: "HELLO" } });
           }
         }
 
@@ -1125,8 +1086,8 @@
           });
           this.pc.onconnectionstatechange = () => {
             if (this.pc.connectionState === "disconnected" || this.pc.connectionState === "failed") {
-              this.connected = false;
-              updateRoomBadge();
+              this.remoteConnected = false;
+              updateStatusText();
             }
           };
         }
@@ -1134,36 +1095,32 @@
         bindChannel(ch) {
           this.dc = ch;
           this.dc.onopen = () => {
-            this.connected = true;
-            updateRoomBadge();
-            showToast("🎉 Friend connected! Enjoy your match.");
+            this.remoteConnected = true;
+            updateStatusText();
+            showToast("🎉 Friend joined the table!");
             if (this.role === "host" && appState.match) {
-              this.send({ type: "SYNC_STATE", match: appState.match, settings: appState.settings });
+              this.send({ type: "SYNC", match: appState.match, settings: appState.settings });
             }
           };
           this.dc.onclose = () => {
-            this.connected = false;
-            updateRoomBadge();
+            this.remoteConnected = false;
+            updateStatusText();
           };
           this.dc.onmessage = (ev) => {
-            try { this.onMessage(JSON.parse(ev.data)); } catch {}
+            try { this.onMsg(JSON.parse(ev.data)); } catch {}
           };
         }
 
         async createInvite() {
           this.role = "host";
           this.initPeer();
-          const ch = this.pc.createDataChannel("table");
+          const ch = this.pc.createDataChannel("game");
           this.bindChannel(ch);
           const offer = await this.pc.createOffer();
           await this.pc.setLocalDescription(offer);
-          await this.waitCandidates();
-
-          appState.settings.mode = "pvp2";
-          appState.settings.playerConfigs[0].name = "Host";
-          appState.settings.playerConfigs[1].name = "Friend";
+          await this.waitIce();
+          appState.settings.opponent = "local2";
           createNewMatch(false);
-
           return btoa(JSON.stringify({ r: "h", s: this.pc.localDescription }));
         }
 
@@ -1173,18 +1130,18 @@
           this.initPeer();
           this.pc.ondatachannel = (ev) => this.bindChannel(ev.channel);
           await this.pc.setRemoteDescription(data.s);
-          const answer = await this.pc.createAnswer();
-          await this.pc.setLocalDescription(answer);
-          await this.waitCandidates();
+          const ans = await this.pc.createAnswer();
+          await this.pc.setLocalDescription(ans);
+          await this.waitIce();
           return btoa(JSON.stringify({ r: "g", s: this.pc.localDescription }));
         }
 
-        async completeMatch(replyStr) {
+        async startMatchFromReply(replyStr) {
           const data = JSON.parse(atob(replyStr.trim()));
           await this.pc.setRemoteDescription(data.s);
         }
 
-        waitCandidates() {
+        waitIce() {
           return new Promise(resolve => {
             if (!this.pc || this.pc.iceGatheringState === "complete") return resolve();
             const fn = () => {
@@ -1201,86 +1158,80 @@
         leave() {
           if (this.dc) this.dc.close();
           if (this.pc) this.pc.close();
-          this.dc = null; this.pc = null; this.role = null; this.connected = false;
-          updateRoomBadge();
-          showToast("Left friend table.");
+          this.dc = null; this.pc = null; this.role = null; this.remoteConnected = false;
+          updateStatusText();
+          showToast("Left friend match.");
         }
 
-        onMessage(msg) {
+        onMsg(msg) {
           if (!msg || !msg.type) return;
-          if (msg.type === "SYNC_STATE") {
+          if (msg.type === "HELLO" && appState.match) {
+            this.send({ type: "SYNC", match: appState.match, settings: appState.settings });
+          } else if (msg.type === "SYNC") {
             appState.settings = msg.settings;
             appState.match = msg.match;
             appState.match.busy = false;
             persistState(); syncAllUI(); renderBoard();
-          } else if (msg.type === "ROLL_REQUEST") {
-            executeTurn(msg.forcedRoll || null, true);
-          } else if (msg.type === "POWERUP_USE") {
-            executePowerUp(msg.slotIndex, true);
+          } else if (msg.type === "ROLL") {
+            executeRoll(msg.playerIndex, msg.forcedRoll || null, true);
+          } else if (msg.type === "USE_PU") {
+            executePowerUp(msg.playerIndex, msg.slotIndex, true);
           }
         }
       }
 
-      const TAB_ID = "t_" + Math.random().toString(36).slice(2, 9);
-      const friendLink = new FriendLinkManager();
+      const TAB_ID = "tab_" + Math.random().toString(36).slice(2, 9);
+      const tableLink = new TableLink();
 
-      function getMyPlayerIndex() {
-        if (!friendLink.connected || !friendLink.role) return null;
-        return friendLink.role === "host" ? 0 : 1;
+      function getRemoteSeat() {
+        if (!tableLink.remoteConnected || !tableLink.role) return null;
+        return tableLink.role === "host" ? 0 : 1;
       }
 
-      function updateRoomBadge() {
-        const dot = document.getElementById("roomDot");
-        const txt = document.getElementById("roomStatusText");
-        if (friendLink.connected) {
-          dot.classList.add("live");
-          txt.textContent = friendLink.role === "host" ? "Playing with Friend (You: P1)" : "Playing with Friend (You: P2)";
-        } else if (friendLink.role === "host") {
-          dot.classList.remove("live");
-          txt.textContent = "Waiting for Friend's Reply...";
+      function updateStatusText() {
+        const el = document.getElementById("tableStatusText");
+        if (tableLink.remoteConnected) {
+          el.textContent = tableLink.role === "host" ? "Friend Match Active (Left = You)" : "Friend Match Active (Right = You)";
+        } else if (appState.settings.opponent === "bot") {
+          el.textContent = "Dual Dice • Left You vs. Right Bot";
         } else {
-          dot.classList.remove("live");
-          txt.textContent = "Ready to Play";
+          el.textContent = "2 Local Players • Left & Right Dice";
         }
-        syncControlsState();
+        syncAllUI();
       }
 
       /* =========================================================================
-         STATE & PERSISTENCE
+         STATE & THEMES
          ========================================================================= */
       const defaultState = {
         activeTheme: BUILT_IN_THEMES[0],
         savedThemes: [],
         settings: {
-          mode: "ai",
+          opponent: "local2",
           aiLevel: "tactician",
           boardPreset: "classic",
           exactRule: "exact",
           bonusSix: true,
           powerUpsEnabled: true,
-          playerConfigs: [
-            { name: "You", color: TOKEN_COLORS[0], shape: "crown", isAI: false },
-            { name: "Buddy Bot", color: TOKEN_COLORS[1], shape: "star", isAI: true },
-            { name: "Player 3", color: TOKEN_COLORS[2], shape: "diamond", isAI: false },
-            { name: "Player 4", color: TOKEN_COLORS[3], shape: "circle", isAI: false }
+          players: [
+            { name: "Player 1", color: "#00e5ff", shape: "crown" },
+            { name: "Player 2", color: "#ff4d6d", shape: "star" }
           ]
         },
-        stats: { wins: 0, rolls: 0, laddersClimbed: 0, snakesBitten: 0, powerUpsUsed: 0 },
         match: null
       };
 
-      let appState = loadAppState();
+      let appState = loadState();
 
-      function loadAppState() {
+      function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return structuredClone(defaultState);
-          const parsed = JSON.parse(raw);
+          const p = JSON.parse(raw);
           return {
             ...structuredClone(defaultState),
-            ...parsed,
-            settings: { ...structuredClone(defaultState.settings), ...(parsed.settings || {}) },
-            stats: { ...structuredClone(defaultState.stats), ...(parsed.stats || {}) }
+            ...p,
+            settings: { ...structuredClone(defaultState.settings), ...(p.settings || {}) }
           };
         } catch {
           return structuredClone(defaultState);
@@ -1291,11 +1242,8 @@
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); } catch {}
       }
 
-      /* =========================================================================
-         SURPRISE THEME GENERATOR (SIMPLE REALISTIC • NEON • REALISTIC 3D)
-         ========================================================================= */
-      const ADJ = ["Sunny", "Royal", "Velvet", "Emerald", "Golden", "Crystal", "Twilight", "Coral", "Sapphire", "Amber", "Jade", "Starlight"];
-      const NOUN = ["Meadow", "Palace", "Lagoon", "Summit", "Harbor", "Garden", "Pavilion", "Horizon", "Valley", "Citadel", "Breeze", "Sanctuary"];
+      const ADJ = ["Sunny", "Royal", "Velvet", "Emerald", "Golden", "Crystal", "Twilight", "Coral", "Sapphire", "Amber", "Jade"];
+      const NOUN = ["Meadow", "Palace", "Lagoon", "Summit", "Harbor", "Garden", "Pavilion", "Horizon", "Valley", "Citadel", "Breeze"];
 
       function hslToHex(h, s, l) {
         s /= 100; l /= 100;
@@ -1307,21 +1255,17 @@
       }
 
       function generateSurpriseTheme() {
-        const styles = ["simple_realistic", "realistic_3d", "neon"];
-        const lookMode = styles[Math.floor(Math.random() * styles.length)];
+        const modes = ["simple_realistic", "realistic_3d", "neon"];
+        const lookMode = modes[Math.floor(Math.random() * modes.length)];
         const baseHue = Math.floor(Math.random() * 360);
         const isDark = lookMode === "neon" ? true : Math.random() > 0.35;
         const ladderHue = (baseHue + 130 + Math.floor(Math.random() * 45)) % 360;
         const snakeHue = (baseHue + 285 + Math.floor(Math.random() * 55)) % 360;
         const prefix = lookMode === "simple_realistic" ? "Simple Realistic" : (lookMode === "realistic_3d" ? "Realistic 3D" : "Neon");
         const name = `${prefix} • ${ADJ[Math.floor(Math.random() * ADJ.length)]} ${NOUN[Math.floor(Math.random() * NOUN.length)]}`;
-        const pattern = lookMode === "neon" ? "neon" : (lookMode === "realistic_3d" ? "scales" : "stripes");
-
         return {
           id: "th_" + Date.now() + "_" + Math.floor(Math.random() * 999),
-          name,
-          builtIn: false,
-          lookMode,
+          name, builtIn: false, lookMode,
           appBg: isDark ? hslToHex(baseHue, 32, 7) : hslToHex(baseHue, 22, 92),
           panelBg: isDark ? hslToHex(baseHue, 28, 12) : hslToHex(baseHue, 20, 96),
           panelBg2: isDark ? hslToHex(baseHue, 26, 17) : hslToHex(baseHue, 18, 88),
@@ -1336,10 +1280,8 @@
           snakeB: hslToHex((snakeHue + 40) % 360, 90, isDark ? 68 : 56),
           accent: hslToHex(ladderHue, 85, isDark ? 56 : 42),
           accent2: hslToHex(snakeHue, 85, isDark ? 60 : 48),
-          snakePattern: pattern,
-          rounded: true,
-          glow: lookMode === "neon",
-          depth: lookMode !== "simple_realistic"
+          snakePattern: lookMode === "neon" ? "neon" : (lookMode === "realistic_3d" ? "scales" : "stripes"),
+          rounded: true, glow: lookMode === "neon", depth: lookMode !== "simple_realistic"
         };
       }
 
@@ -1353,41 +1295,54 @@
         root.setProperty("--accent-2", theme.accent2);
 
         const isLight = parseInt(theme.appBg.slice(1, 3), 16) > 150;
-        root.setProperty("--text-main", isLight ? "#101820" : "#f3f7fb");
-        root.setProperty("--text-muted", isLight ? "#4b5563" : "#93a6bb");
+        root.setProperty("--text-main", isLight ? "#101820" : "#f5f1eb");
+        root.setProperty("--text-muted", isLight ? "#4b5563" : "#b3a79c");
         root.setProperty("--border", isLight ? "rgba(0,0,0,0.14)" : "rgba(255,255,255,0.12)");
 
         document.getElementById("themeNameBadge").textContent = theme.name;
-        persistState();
-        renderBoard();
+        persistState(); renderBoard();
       }
 
       /* =========================================================================
-         MATCH ENGINE & BOARD GEOMETRY
+         MATCH ENGINE
          ========================================================================= */
       function createNewMatch(broadcast = true) {
         const cfg = appState.settings;
         const preset = BOARD_PRESETS[cfg.boardPreset] || BOARD_PRESETS.classic;
-        const count = cfg.mode === "ai" ? 2 : parseInt(cfg.mode.replace("pvp", ""), 10) || 2;
+        const pCfg = cfg.players;
 
-        const players = [];
-        for (let i = 0; i < count; i++) {
-          const pc = cfg.playerConfigs[i] || defaultState.settings.playerConfigs[i];
-          players.push({
-            id: i,
-            name: pc.name.trim() || `Player ${i + 1}`,
-            color: pc.color,
-            shape: pc.shape,
-            isAI: !friendLink.connected && cfg.mode === "ai" && i === 1,
+        const players = [
+          {
+            id: 0,
+            name: (pCfg[0].name || "Player 1").trim(),
+            color: pCfg[0].color,
+            shape: pCfg[0].shape,
+            isAI: false,
             tile: 1,
             visualTile: 1,
+            diceValue: 6,
             powerUps: [],
             shield: false,
             antidote: false,
             precisionRoll: null,
-            consecutiveSixes: 0
-          });
-        }
+            sixStreak: 0
+          },
+          {
+            id: 1,
+            name: (pCfg[1].name || (cfg.opponent === "bot" ? "Buddy Bot" : "Player 2")).trim(),
+            color: pCfg[1].color,
+            shape: pCfg[1].shape,
+            isAI: !tableLink.remoteConnected && cfg.opponent === "bot",
+            tile: 1,
+            visualTile: 1,
+            diceValue: 6,
+            powerUps: [],
+            shield: false,
+            antidote: false,
+            precisionRoll: null,
+            sixStreak: 0
+          }
+        ];
 
         const occupied = new Set([1, 100]);
         preset.ladders.forEach(([s, e]) => { occupied.add(s); occupied.add(e); });
@@ -1396,9 +1351,9 @@
         const boardPowerUps = {};
         if (cfg.powerUpsEnabled) {
           const pool = ["shield", "precision", "ladderBoost", "swap", "antidote", "mystery", "shield", "precision", "ladderBoost", "mystery", "swap", "antidote"];
-          let attempts = 0, idx = 0;
-          while (idx < pool.length && attempts < 400) {
-            attempts++;
+          let tries = 0, idx = 0;
+          while (idx < pool.length && tries < 400) {
+            tries++;
             const t = 4 + Math.floor(Math.random() * 93);
             if (!occupied.has(t)) { occupied.add(t); boardPowerUps[t] = pool[idx++]; }
           }
@@ -1410,26 +1365,26 @@
           ladders: preset.ladders.map(([from, to]) => ({ from, to })),
           snakes: preset.snakes.map(([from, to]) => ({ from, to })),
           boardPowerUps,
-          diceValue: 6,
-          diceHistory: [],
-          logs: ["Game on! First to square 100 wins."],
           busy: false,
           winnerId: null
         };
 
-        persistState(); syncAllUI(); renderBoard();
-        if (broadcast && friendLink.connected) {
-          friendLink.send({ type: "SYNC_STATE", match: appState.match, settings: appState.settings });
+        persistState();
+        updateStatusText();
+        syncAllUI();
+        renderBoard();
+        if (broadcast) {
+          tableLink.send({ type: "SYNC", match: appState.match, settings: appState.settings });
         }
       }
 
       function tileToGrid(tile) {
-        const clamped = Math.max(1, Math.min(100, Math.round(tile)));
-        const zeroIdx = clamped - 1;
-        const rowFromBottom = Math.floor(zeroIdx / 10);
-        const colInRow = zeroIdx % 10;
-        const col = rowFromBottom % 2 === 0 ? colInRow : 9 - colInRow;
-        const row = 9 - rowFromBottom;
+        const c = Math.max(1, Math.min(100, Math.round(tile)));
+        const idx = c - 1;
+        const rowBot = Math.floor(idx / 10);
+        const colInRow = idx % 10;
+        const col = rowBot % 2 === 0 ? colInRow : 9 - colInRow;
+        const row = 9 - rowBot;
         return { col, row };
       }
 
@@ -1440,72 +1395,64 @@
 
       function gridToTile(col, row) {
         if (col < 0 || col > 9 || row < 0 || row > 9) return null;
-        const rowFromBottom = 9 - row;
-        const colInRow = rowFromBottom % 2 === 0 ? col : 9 - col;
-        return rowFromBottom * 10 + colInRow + 1;
+        const rowBot = 9 - row;
+        const colInRow = rowBot % 2 === 0 ? col : 9 - col;
+        return rowBot * 10 + colInRow + 1;
       }
 
       /* =========================================================================
-         CANVAS RENDERER (SIMPLE REALISTIC • REALISTIC 3D • NEON)
+         CANVAS RENDERER
          ========================================================================= */
       const canvas = document.getElementById("boardCanvas");
       const ctx = canvas.getContext("2d");
-      let boardPixelSize = 600;
+      let boardPx = 600;
 
       function resizeCanvas() {
-        const stage = document.getElementById("boardStage");
-        const wrapper = document.getElementById("boardWrapper");
-        const size = Math.max(240, Math.floor(Math.min(stage.clientWidth - 16, stage.clientHeight - 16)));
-        wrapper.style.width = size + "px";
-        wrapper.style.height = size + "px";
+        const wrap = document.querySelector(".board-canvas-wrap");
+        const box = document.getElementById("boardWrapper");
+        const size = Math.max(230, Math.floor(Math.min(wrap.clientWidth - 8, wrap.clientHeight - 8)));
+        box.style.width = size + "px";
+        box.style.height = size + "px";
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = size * dpr;
         canvas.height = size * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        boardPixelSize = size;
+        boardPx = size;
         renderBoard();
       }
 
       function renderBoard() {
         const m = appState.match;
         if (!m) return;
-        const theme = appState.activeTheme;
-        const S = boardPixelSize;
-        const T = S / 10;
-        const is3D = theme.lookMode === "realistic_3d" || !!theme.depth;
-        const isNeon = theme.lookMode === "neon" || !!theme.glow;
+        const th = appState.activeTheme;
+        const S = boardPx, T = S / 10;
+        const is3D = th.lookMode === "realistic_3d" || !!th.depth;
+        const isNeon = th.lookMode === "neon" || !!th.glow;
 
         ctx.clearRect(0, 0, S, S);
-        ctx.fillStyle = theme.boardBg;
+        ctx.fillStyle = th.boardBg;
         ctx.fillRect(0, 0, S, S);
 
-        const pad = theme.rounded ? Math.max(1.2, T * 0.04) : 0;
-        const rad = theme.rounded ? Math.max(3, T * 0.14) : 0;
+        const pad = th.rounded ? Math.max(1.2, T * 0.04) : 0;
+        const rad = th.rounded ? Math.max(3, T * 0.14) : 0;
 
         for (let tile = 1; tile <= 100; tile++) {
           const { col, row } = tileToGrid(tile);
           const x = col * T + pad, y = row * T + pad, w = T - pad * 2, h = T - pad * 2;
           const isEven = (row + col) % 2 === 0;
-          ctx.fillStyle = isEven ? theme.tileA : theme.tileB;
-
+          ctx.fillStyle = isEven ? th.tileA : th.tileB;
           if (rad > 0) { roundRect(ctx, x, y, w, h, rad); ctx.fill(); }
           else ctx.fillRect(x, y, w, h);
 
           if (is3D) {
             ctx.save();
-            ctx.strokeStyle = "rgba(255,255,255,0.25)";
+            ctx.strokeStyle = "rgba(255,255,255,0.24)";
             ctx.lineWidth = 1;
             if (rad > 0) { roundRect(ctx, x + 0.5, y + 0.5, w - 1, h - 1, rad); ctx.stroke(); }
-            ctx.strokeStyle = "rgba(0,0,0,0.22)";
-            ctx.beginPath();
-            ctx.moveTo(x + 1, y + h - 1);
-            ctx.lineTo(x + w - 1, y + h - 1);
-            ctx.lineTo(x + w - 1, y + 1);
-            ctx.stroke();
             ctx.restore();
           }
 
-          ctx.fillStyle = isEven ? theme.textA : theme.textB;
+          ctx.fillStyle = isEven ? th.textA : th.textB;
           ctx.font = `700 ${Math.max(9, Math.floor(T * 0.23))}px -apple-system, sans-serif`;
           ctx.textAlign = "left"; ctx.textBaseline = "top";
           ctx.fillText(tile === 100 ? "👑100" : String(tile), x + T * 0.1, y + T * 0.08);
@@ -1518,8 +1465,8 @@
           }
         }
 
-        m.ladders.forEach(l => drawLadder(l.from, l.to, T, theme, isNeon, is3D));
-        m.snakes.forEach(s => drawSnake(s.from, s.to, T, theme, isNeon, is3D));
+        m.ladders.forEach(l => drawLadder(l.from, l.to, T, th, isNeon, is3D));
+        m.snakes.forEach(s => drawSnake(s.from, s.to, T, th, isNeon, is3D));
 
         const groups = {};
         m.players.forEach(p => {
@@ -1531,66 +1478,60 @@
         Object.values(groups).forEach(group => {
           group.forEach((p, idx) => {
             const pos = getInterpolatedTilePos(p.visualTile, T);
-            const angle = (idx / group.length) * Math.PI * 2;
+            const ang = (idx / group.length) * Math.PI * 2;
             const off = group.length > 1 ? T * 0.16 : 0;
-            drawPlayerToken(p, pos.x + Math.cos(angle) * off, pos.y + Math.sin(angle) * off, T * 0.29, p.id === m.currentTurn, is3D);
+            drawToken(p, pos.x + Math.cos(ang) * off, pos.y + Math.sin(ang) * off, T * 0.29, p.id === m.currentTurn, is3D);
           });
         });
       }
 
       function getInterpolatedTilePos(vTile, T) {
-        const floorT = Math.floor(vTile);
-        const frac = vTile - floorT;
-        const p1 = tileCenter(floorT, T);
-        if (frac <= 0.001 || floorT >= 100) return p1;
-        const p2 = tileCenter(floorT + 1, T);
-        return {
-          x: p1.x + (p2.x - p1.x) * frac,
-          y: p1.y + (p2.y - p1.y) * frac - Math.sin(frac * Math.PI) * (T * 0.22)
-        };
+        const fl = Math.floor(vTile), fr = vTile - fl;
+        const p1 = tileCenter(fl, T);
+        if (fr <= 0.001 || fl >= 100) return p1;
+        const p2 = tileCenter(fl + 1, T);
+        return { x: p1.x + (p2.x - p1.x) * fr, y: p1.y + (p2.y - p1.y) * fr - Math.sin(fr * Math.PI) * (T * 0.22) };
       }
 
-      function drawLadder(fromTile, toTile, T, theme, isNeon, is3D) {
+      function drawLadder(fromTile, toTile, T, th, isNeon, is3D) {
         const p1 = tileCenter(fromTile, T), p2 = tileCenter(toTile, T);
         const dx = p2.x - p1.x, dy = p2.y - p1.y, len = Math.hypot(dx, dy);
         if (len < 1) return;
-        const nx = -dy / len, ny = dx / len, halfW = T * 0.18;
-
+        const nx = -dy / len, ny = dx / len, hw = T * 0.18;
         ctx.save();
-        if (isNeon) { ctx.shadowColor = theme.ladderA; ctx.shadowBlur = 10; }
+        if (isNeon) { ctx.shadowColor = th.ladderA; ctx.shadowBlur = 10; }
         else if (is3D) { ctx.shadowColor = "rgba(0,0,0,0.35)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3; }
 
         const steps = Math.max(3, Math.floor(len / (T * 0.32)));
-        ctx.strokeStyle = theme.ladderB; ctx.lineWidth = Math.max(2.5, T * 0.065); ctx.lineCap = "round";
+        ctx.strokeStyle = th.ladderB; ctx.lineWidth = Math.max(2.5, T * 0.065); ctx.lineCap = "round";
         for (let i = 1; i < steps; i++) {
           const t = i / steps;
           ctx.beginPath();
-          ctx.moveTo(p1.x + dx * t - nx * halfW, p1.y + dy * t - ny * halfW);
-          ctx.lineTo(p1.x + dx * t + nx * halfW, p1.y + dy * t + ny * halfW);
+          ctx.moveTo(p1.x + dx * t - nx * hw, p1.y + dy * t - ny * hw);
+          ctx.lineTo(p1.x + dx * t + nx * hw, p1.y + dy * t + ny * hw);
           ctx.stroke();
         }
-        ctx.strokeStyle = theme.ladderA; ctx.lineWidth = Math.max(3, T * 0.085);
+        ctx.strokeStyle = th.ladderA; ctx.lineWidth = Math.max(3, T * 0.085);
         [-1, 1].forEach(s => {
           ctx.beginPath();
-          ctx.moveTo(p1.x + nx * halfW * s, p1.y + ny * halfW * s);
-          ctx.lineTo(p2.x + nx * halfW * s, p2.y + ny * halfW * s);
+          ctx.moveTo(p1.x + nx * hw * s, p1.y + ny * hw * s);
+          ctx.lineTo(p2.x + nx * hw * s, p2.y + ny * hw * s);
           ctx.stroke();
         });
         ctx.restore();
       }
 
-      function drawSnake(headTile, tailTile, T, theme, isNeon, is3D) {
+      function drawSnake(headTile, tailTile, T, th, isNeon, is3D) {
         const head = tileCenter(headTile, T), tail = tileCenter(tailTile, T);
         const dx = tail.x - head.x, dy = tail.y - head.y, len = Math.hypot(dx, dy);
         if (len < 1) return;
-        const nx = -dy / len, ny = dx / len;
-        const amp = Math.min(T * 0.75, len * 0.22);
+        const nx = -dy / len, ny = dx / len, amp = Math.min(T * 0.75, len * 0.22);
         const dir = headTile % 2 === 0 ? 1 : -1;
         const cp1 = { x: head.x + dx * 0.33 + nx * amp * dir, y: head.y + dy * 0.33 + ny * amp * dir };
         const cp2 = { x: head.x + dx * 0.68 - nx * amp * dir, y: head.y + dy * 0.68 - ny * amp * dir };
 
         ctx.save();
-        if (isNeon) { ctx.shadowColor = theme.snakeA; ctx.shadowBlur = 12; }
+        if (isNeon) { ctx.shadowColor = th.snakeA; ctx.shadowBlur = 12; }
         else if (is3D) { ctx.shadowColor = "rgba(0,0,0,0.38)"; ctx.shadowBlur = 7; ctx.shadowOffsetY = 4; }
 
         const segs = 28, pts = [];
@@ -1604,17 +1545,17 @@
         }
         for (let i = 0; i < segs; i++) {
           const w = Math.max(2.2, T * 0.21 * (1 - pts[i].t * 0.78));
-          ctx.strokeStyle = theme.snakeA; ctx.lineWidth = w; ctx.lineCap = "round";
+          ctx.strokeStyle = th.snakeA; ctx.lineWidth = w; ctx.lineCap = "round";
           ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[i + 1].x, pts[i + 1].y); ctx.stroke();
-          if (theme.snakePattern !== "solid" && i % 2 === 0 && i > 1) {
-            ctx.strokeStyle = theme.snakeB;
-            ctx.lineWidth = theme.snakePattern === "neon" ? w * 0.32 : w * 0.55;
+          if (th.snakePattern !== "solid" && i % 2 === 0 && i > 1) {
+            ctx.strokeStyle = th.snakeB;
+            ctx.lineWidth = th.snakePattern === "neon" ? w * 0.32 : w * 0.55;
             ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[i + 1].x, pts[i + 1].y); ctx.stroke();
           }
         }
-        const angle = Math.atan2(cp1.y - head.y, cp1.x - head.x);
-        ctx.translate(head.x, head.y); ctx.rotate(angle);
-        ctx.fillStyle = theme.snakeA;
+        const ang = Math.atan2(cp1.y - head.y, cp1.x - head.x);
+        ctx.translate(head.x, head.y); ctx.rotate(ang);
+        ctx.fillStyle = th.snakeA;
         ctx.beginPath(); ctx.ellipse(0, 0, T * 0.19, T * 0.14, 0, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = "#fff";
         ctx.beginPath();
@@ -1624,11 +1565,10 @@
         ctx.restore();
       }
 
-      function drawPlayerToken(player, x, y, r, isActive, is3D) {
+      function drawToken(player, x, y, r, isActive, is3D) {
         ctx.save();
         if (isActive) { ctx.shadowColor = player.color; ctx.shadowBlur = 14; }
         else if (is3D) { ctx.shadowColor = "rgba(0,0,0,0.45)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3; }
-
         ctx.fillStyle = player.color; ctx.strokeStyle = "#fff"; ctx.lineWidth = Math.max(2, r * 0.18);
         ctx.beginPath();
         if (player.shape === "diamond") {
@@ -1644,7 +1584,7 @@
         } else ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill(); ctx.stroke();
 
-        ctx.fillStyle = "#081018";
+        ctx.fillStyle = "#091015";
         ctx.font = `900 ${Math.max(9, Math.floor(r * 0.95))}px sans-serif`;
         ctx.textAlign = "center"; ctx.textBaseline = "middle";
         ctx.fillText(player.shape === "crown" ? "♛" : player.name[0].toUpperCase(), x, y + 0.5);
@@ -1659,493 +1599,438 @@
       }
 
       /* =========================================================================
-         GAMEPLAY EXECUTION
+         DUAL-DICE TURN FLOW
          ========================================================================= */
       function showToast(msg) {
         const el = document.getElementById("toastBanner");
         el.textContent = msg; el.classList.add("show");
         clearTimeout(el._t);
-        el._t = setTimeout(() => el.classList.remove("show"), 2600);
+        el._t = setTimeout(() => el.classList.remove("show"), 2500);
       }
 
-      function addLog(html) {
-        const m = appState.match;
-        if (!m) return;
-        m.logs.unshift(html);
-        if (m.logs.length > 30) m.logs.length = 30;
-        renderLog();
-      }
-
-      function requestRoll() {
+      function tryPlayerRoll(playerIndex) {
         const m = appState.match;
         if (!m || m.busy || m.winnerId !== null) return;
-        const mySeat = getMyPlayerIndex();
-        if (mySeat !== null && m.currentTurn !== mySeat) {
-          showToast("⏳ Your friend's turn right now!");
+        if (m.currentTurn !== playerIndex) {
+          showToast(`⏳ ${m.players[m.currentTurn].name}'s turn!`);
           return;
         }
-        const player = m.players[m.currentTurn];
-        const forcedRoll = player.precisionRoll;
-        if (friendLink.connected) {
-          friendLink.send({ type: "ROLL_REQUEST", forcedRoll });
+        const remoteSeat = getRemoteSeat();
+        if (remoteSeat !== null && m.currentTurn !== remoteSeat) {
+          showToast("⏳ Waiting for your friend's roll...");
+          return;
         }
-        executeTurn(forcedRoll, false);
+        const forced = m.players[playerIndex].precisionRoll;
+        tableLink.send({ type: "ROLL", playerIndex, forcedRoll: forced });
+        executeRoll(playerIndex, forced, false);
       }
 
-      async function executeTurn(forcedRoll, isRemote) {
+      async function executeRoll(playerIndex, forcedRoll, isRemote) {
         const m = appState.match;
         if (!m || m.busy || m.winnerId !== null) return;
-        const player = m.players[m.currentTurn];
+        const player = m.players[playerIndex];
         m.busy = true;
-        syncControlsState();
+        syncAllUI();
 
         let rolled;
         if (forcedRoll !== null && forcedRoll !== undefined) {
           rolled = forcedRoll;
           player.precisionRoll = null;
-          document.getElementById("precisionPicker").classList.remove("active");
+          document.getElementById("precisionBar").classList.remove("active");
         } else {
           rolled = Math.floor(Math.random() * 6) + 1;
         }
 
         sfx.dice();
-        const diceBox = document.getElementById("diceBox");
-        diceBox.classList.add("rolling");
+        const diceEl = document.getElementById("diceBox" + playerIndex);
+        diceEl.classList.add("rolling");
         await sleep(380);
-        diceBox.classList.remove("rolling");
+        diceEl.classList.remove("rolling");
 
-        m.diceValue = rolled;
-        renderDiceFace(rolled);
-        if (!isRemote && !player.isAI) appState.stats.rolls++;
-
-        m.diceHistory.unshift({ player: player.name, color: player.color, val: rolled });
-        if (m.diceHistory.length > 10) m.diceHistory.length = 10;
-        renderHistoryStrip();
+        player.diceValue = rolled;
+        renderDice(playerIndex, rolled);
 
         if (appState.settings.bonusSix && rolled === 6) {
-          player.consecutiveSixes++;
-          if (player.consecutiveSixes >= 3) {
-            player.consecutiveSixes = 0;
+          player.sixStreak++;
+          if (player.sixStreak >= 3) {
+            player.sixStreak = 0;
             showToast(`⚠️ Three 6s in a row! ${player.name}'s turn ends.`);
-            addLog(`<strong>${player.name}</strong> rolled three 6s.`);
-            await sleep(450);
-            advanceTurn(false);
+            await sleep(420);
+            finishTurn(false);
             return;
           }
         } else {
-          player.consecutiveSixes = 0;
+          player.sixStreak = 0;
         }
 
         const startTile = player.tile;
-        let targetTile = startTile + rolled;
-        if (targetTile > 100) {
+        let target = startTile + rolled;
+        if (target > 100) {
           if (appState.settings.exactRule === "exact") {
             showToast(`🎯 Needs ${100 - startTile} to finish!`);
-            addLog(`<strong>${player.name}</strong> rolled ${rolled} at ${startTile}.`);
-            await sleep(420);
-            advanceTurn(appState.settings.bonusSix && rolled === 6);
+            await sleep(400);
+            finishTurn(appState.settings.bonusSix && rolled === 6);
             return;
           } else {
-            targetTile = 100 - (targetTile - 100);
+            target = 100 - (target - 100);
           }
         }
 
-        if (startTile + rolled <= 100) await animateHopPath(player, startTile, targetTile);
+        if (startTile + rolled <= 100) await animateHop(player, startTile, target);
         else {
-          await animateHopPath(player, startTile, 100);
-          await animateHopPath(player, 100, targetTile);
+          await animateHop(player, startTile, 100);
+          await animateHop(player, 100, target);
         }
-
-        addLog(`<strong>${player.name}</strong> rolled <strong>${rolled}</strong> → Square <strong>${player.tile}</strong>`);
 
         const landedPu = m.boardPowerUps[player.tile];
         if (landedPu) {
           delete m.boardPowerUps[player.tile];
-          await handlePowerUpPickup(player, landedPu);
+          await onPowerUpPicked(player, landedPu);
         }
 
-        const ladder = m.ladders.find(l => l.from === player.tile);
-        if (ladder) {
+        const lad = m.ladders.find(l => l.from === player.tile);
+        if (lad) {
           sfx.ladder();
-          if (!isRemote && !player.isAI) appState.stats.laddersClimbed++;
-          showToast(`🪜 ${player.name} climbed ${ladder.from} → ${ladder.to}!`);
-          await animateSlide(player, ladder.from, ladder.to);
+          showToast(`🪜 ${player.name} climbed ${lad.from} → ${lad.to}!`);
+          await animateGlide(player, lad.from, lad.to);
         }
 
-        const snake = m.snakes.find(s => s.from === player.tile);
-        if (snake) {
+        const snk = m.snakes.find(s => s.from === player.tile);
+        if (snk) {
           if (player.shield) {
             player.shield = false;
             sfx.shieldBlock();
-            showToast(`🛡️ ${player.name}'s Shield saved them!`);
+            showToast(`🛡️ ${player.name}'s Shield blocked the snake!`);
           } else {
-            let dest = snake.to;
+            let dest = snk.to;
             if (player.antidote) {
               player.antidote = false;
-              dest = Math.round((snake.from + snake.to) / 2);
+              dest = Math.round((snk.from + snk.to) / 2);
               showToast(`🧪 Soft Slide eased drop to ${dest}!`);
             } else {
-              showToast(`🐍 ${player.name} slid ${snake.from} → ${dest}!`);
+              showToast(`🐍 ${player.name} slid ${snk.from} → ${dest}!`);
             }
             sfx.snake();
-            if (!isRemote && !player.isAI) appState.stats.snakesBitten++;
-            await animateSlide(player, snake.from, dest);
+            await animateGlide(player, snk.from, dest);
           }
         }
 
         if (player.tile >= 100) {
           player.tile = 100; player.visualTile = 100;
           m.winnerId = player.id; m.busy = false;
-          if (!isRemote && !player.isAI) appState.stats.wins++;
           persistState(); renderBoard(); syncAllUI(); sfx.win();
           document.getElementById("winnerTitle").textContent = `${player.name} Wins!`;
-          document.getElementById("winnerSubtitle").textContent = `Reached Square 100!`;
+          document.getElementById("winnerSub").textContent = `${player.name} reached Square 100 first!`;
           document.getElementById("victoryModal").classList.add("open");
           return;
         }
 
-        advanceTurn(appState.settings.bonusSix && rolled === 6);
+        finishTurn(appState.settings.bonusSix && rolled === 6);
       }
 
-      async function handlePowerUpPickup(player, puKey) {
+      async function onPowerUpPicked(player, puKey) {
         const pu = POWERUP_TYPES[puKey];
         if (!pu) return;
         sfx.powerup();
-        if (puKey === "shield") { player.shield = true; showToast(`🛡️ ${player.name} got a Snake Shield!`); }
+        if (puKey === "shield") { player.shield = true; showToast(`🛡️ ${player.name} got Shield!`); }
         else if (puKey === "antidote") { player.antidote = true; showToast(`🧪 ${player.name} got Soft Slide!`); }
         else if (puKey === "mystery") {
           const dest = Math.min(99, player.tile + 5);
           showToast(`❓ Lucky Tile +5 to ${dest}!`);
-          await animateSlide(player, player.tile, dest);
+          await animateGlide(player, player.tile, dest);
         } else {
           if (player.powerUps.length < 2) player.powerUps.push(puKey);
           else player.powerUps[1] = puKey;
-          showToast(`${pu.icon} Picked up ${pu.name}!`);
+          showToast(`${pu.icon} ${player.name} got ${pu.name}!`);
         }
         syncAllUI();
       }
 
-      function onSlotClick(slotIndex) {
+      function onSlotUse(playerIndex, slotIndex) {
         const m = appState.match;
-        if (!m || m.busy || m.winnerId !== null) return;
-        const mySeat = getMyPlayerIndex();
-        if (mySeat !== null && m.currentTurn !== mySeat) return;
-        if (friendLink.connected) friendLink.send({ type: "POWERUP_USE", slotIndex });
-        executePowerUp(slotIndex, false);
+        if (!m || m.busy || m.winnerId !== null || m.currentTurn !== playerIndex) return;
+        const remoteSeat = getRemoteSeat();
+        if (remoteSeat !== null && m.currentTurn !== remoteSeat) return;
+        tableLink.send({ type: "USE_PU", playerIndex, slotIndex });
+        executePowerUp(playerIndex, slotIndex, false);
       }
 
-      async function executePowerUp(slotIndex, isRemote) {
+      async function executePowerUp(playerIndex, slotIndex, isRemote) {
         const m = appState.match;
-        const player = m.players[m.currentTurn];
+        const player = m.players[playerIndex];
         const puKey = player.powerUps[slotIndex];
         if (!puKey) return;
         player.powerUps.splice(slotIndex, 1);
-        if (!isRemote && !player.isAI) appState.stats.powerUpsUsed++;
         sfx.powerup();
 
         if (puKey === "precision") {
-          document.getElementById("precisionPicker").classList.add("active");
-          showToast("🎯 Pick your next number (1–6)!");
+          document.getElementById("precisionBar").classList.add("active");
+          showToast("🎯 Pick your roll number (1–6)!");
         } else if (puKey === "ladderBoost") {
-          m.busy = true; syncControlsState();
+          m.busy = true; syncAllUI();
           const dest = Math.min(99, player.tile + 7);
-          showToast(`🪜 Quick Climb → Square ${dest}!`);
-          await animateSlide(player, player.tile, dest);
+          showToast(`🪜 Boost +7 to Square ${dest}!`);
+          await animateGlide(player, player.tile, dest);
           m.busy = false;
         } else if (puKey === "swap") {
-          m.busy = true; syncControlsState();
-          const leader = m.players.filter(p => p.id !== player.id && p.tile > player.tile).sort((a, b) => b.tile - a.tile)[0];
-          if (leader) {
-            const aOld = player.tile, bOld = leader.tile;
-            showToast(`🧲 Swapped spots with ${leader.name}!`);
-            await Promise.all([animateSlide(player, aOld, bOld), animateSlide(leader, bOld, aOld)]);
-          } else {
-            await animateSlide(player, player.tile, Math.min(99, player.tile + 5));
-          }
+          m.busy = true; syncAllUI();
+          const other = m.players[playerIndex === 0 ? 1 : 0];
+          const aOld = player.tile, bOld = other.tile;
+          showToast(`🧲 Swapped spots with ${other.name}!`);
+          await Promise.all([animateGlide(player, aOld, bOld), animateGlide(other, bOld, aOld)]);
           m.busy = false;
         }
         persistState(); syncAllUI(); renderBoard();
       }
 
-      function advanceTurn(keepSameTurn) {
+      function finishTurn(keepTurn) {
         const m = appState.match;
-        if (!keepSameTurn) m.currentTurn = (m.currentTurn + 1) % m.players.length;
+        if (!keepTurn) m.currentTurn = m.currentTurn === 0 ? 1 : 0;
         m.busy = false;
-        persistState(); syncAllUI(); renderBoard();
+        persistState();
+        syncAllUI();
+        renderBoard();
 
-        const nextPlayer = m.players[m.currentTurn];
-        if (nextPlayer && nextPlayer.isAI && m.winnerId === null) {
-          setTimeout(() => executeTurn(null, false), 650);
+        const next = m.players[m.currentTurn];
+        if (next && next.isAI && m.winnerId === null) {
+          setTimeout(() => executeRoll(next.id, null, false), 650);
         }
       }
 
-      async function animateHopPath(player, fromTile, toTile) {
-        const step = toTile >= fromTile ? 1 : -1;
-        let cur = fromTile;
-        while (cur !== toTile) {
+      async function animateHop(player, fromT, toT) {
+        const step = toT >= fromT ? 1 : -1;
+        let cur = fromT;
+        while (cur !== toT) {
           const next = cur + step;
-          sfx.hop(Math.abs(next - fromTile));
-          const start = performance.now();
-          await new Promise(resolve => {
-            function frame(now) {
-              const t = Math.min(1, (now - start) / 120);
+          sfx.hop(Math.abs(next - fromT));
+          const st = performance.now();
+          await new Promise(res => {
+            function f(now) {
+              const t = Math.min(1, (now - st) / 120);
               player.visualTile = cur + (next - cur) * t;
               renderBoard();
-              if (t < 1) requestAnimationFrame(frame); else resolve();
+              if (t < 1) requestAnimationFrame(f); else res();
             }
-            requestAnimationFrame(frame);
+            requestAnimationFrame(f);
           });
           cur = next; player.tile = cur; player.visualTile = cur;
         }
-        syncPlayersGrid();
+        syncDecksOnly();
       }
 
-      async function animateSlide(player, fromTile, toTile) {
-        const start = performance.now();
-        await new Promise(resolve => {
-          function frame(now) {
-            const t = Math.min(1, (now - start) / 450);
-            player.visualTile = fromTile + (toTile - fromTile) * (1 - Math.pow(1 - t, 3));
+      async function animateGlide(player, fromT, toT) {
+        const st = performance.now();
+        await new Promise(res => {
+          function f(now) {
+            const t = Math.min(1, (now - st) / 450);
+            player.visualTile = fromT + (toT - fromT) * (1 - Math.pow(1 - t, 3));
             renderBoard();
-            if (t < 1) requestAnimationFrame(frame); else resolve();
+            if (t < 1) requestAnimationFrame(f); else res();
           }
-          requestAnimationFrame(frame);
+          requestAnimationFrame(f);
         });
-        player.tile = toTile; player.visualTile = toTile;
-        syncPlayersGrid();
+        player.tile = toT; player.visualTile = toT;
+        syncDecksOnly();
       }
 
       function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
       /* =========================================================================
-         UI RENDERERS
+         DUAL SIDE DECK SYNC
          ========================================================================= */
       const DICE_PIPS = { 1: [4], 2: [2, 6], 3: [2, 4, 6], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
-      function renderDiceFace(val) {
+
+      function renderDice(pIdx, val) {
         const active = DICE_PIPS[val] || [4];
-        document.querySelectorAll("#diceBox .pip").forEach((el, idx) => {
+        document.querySelectorAll(`#diceBox${pIdx} .pip`).forEach((el, idx) => {
           el.classList.toggle("on", active.includes(idx));
           el.classList.toggle("red", val === 1 || val === 6);
         });
       }
 
-      function syncPlayersGrid() {
-        const m = appState.match; if (!m) return;
-        document.getElementById("playersGrid").innerHTML = m.players.map((p, idx) => `
-          <div class="player-card ${idx === m.currentTurn && m.winnerId === null ? "active" : ""}">
-            <div class="player-top">
-              <div class="player-name-wrap">
-                <span class="token-dot" style="background:${p.color}"></span>
-                <span class="player-name">${esc(p.name)}</span>
-              </div>
-              <span class="player-tile">#${p.tile}</span>
-            </div>
-            <div class="player-badges">
-              ${p.isAI ? `<span class="mini-badge">BOT</span>` : ""}
-              ${p.shield ? `<span class="mini-badge shield">🛡️ Shield</span>` : ""}
-              ${p.antidote ? `<span class="mini-badge shield">🧪 Soft</span>` : ""}
-            </div>
-          </div>
-        `).join("");
-      }
+      function syncDecksOnly() {
+        const m = appState.match;
+        if (!m) return;
+        [0, 1].forEach(i => {
+          const p = m.players[i];
+          document.getElementById(`p${i}Dot`).style.background = p.color;
+          document.getElementById(`p${i}Name`).textContent = p.name;
+          document.getElementById(`p${i}Tile`).textContent = `#${p.tile}`;
 
-      function syncPowerUpSlots() {
-        const m = appState.match; if (!m) return;
-        const player = m.players[m.currentTurn];
-        const el = document.getElementById("powerupSlots");
-        el.innerHTML = [0, 1].map(idx => {
-          const k = player.powerUps[idx];
-          if (!k) return `<div class="pu-slot">Slot ${idx + 1}</div>`;
-          const pu = POWERUP_TYPES[k];
-          return `<div class="pu-slot filled" data-slot="${idx}" title="${pu.desc}">${pu.icon} ${pu.name}</div>`;
-        }).join("");
-        el.querySelectorAll(".pu-slot.filled").forEach(b => b.addEventListener("click", () => onSlotClick(parseInt(b.dataset.slot, 10))));
-      }
+          const badges = [];
+          if (p.isAI) badges.push(`<span class="tag">BOT</span>`);
+          if (p.shield) badges.push(`<span class="tag good">🛡️ Shield</span>`);
+          if (p.antidote) badges.push(`<span class="tag good">🧪 Soft</span>`);
+          document.getElementById(`p${i}Badges`).innerHTML = badges.join("");
 
-      function syncControlsState() {
-        const m = appState.match; if (!m) return;
-        const player = m.players[m.currentTurn];
-        const rollBtn = document.getElementById("rollBtn");
-        const sub = document.getElementById("turnSubtext");
-        const mySeat = getMyPlayerIndex();
-
-        if (m.winnerId !== null) {
-          rollBtn.disabled = true; rollBtn.textContent = "🏆 GAME OVER";
-        } else if (mySeat !== null && m.currentTurn !== mySeat) {
-          rollBtn.disabled = true; rollBtn.textContent = `⏳ ${player.name}'s TURN`;
-          sub.textContent = "Waiting for friend's roll...";
-        } else if (player.isAI) {
-          rollBtn.disabled = true; rollBtn.textContent = `🤖 ${player.name}...`;
-          sub.textContent = "Taking turn...";
-        } else if (m.busy) {
-          rollBtn.disabled = true; rollBtn.textContent = "⏳ MOVING...";
-        } else {
-          rollBtn.disabled = false; rollBtn.textContent = `🎲 ROLL (${player.name.toUpperCase()})`;
-          sub.textContent = "Tap Dice or Press Space";
-        }
-      }
-
-      function renderHistoryStrip() {
-        const m = appState.match; if (!m) return;
-        document.getElementById("historyStrip").innerHTML = m.diceHistory.map(h =>
-          `<span class="hist-pill" style="border-color:${h.color}55;color:${h.color}">${esc(h.player.slice(0, 7))}: ${h.val}</span>`
-        ).join("");
-      }
-
-      function renderLog() {
-        const m = appState.match; if (!m) return;
-        document.getElementById("matchLog").innerHTML = m.logs.map(l => `<div class="log-entry">${l}</div>`).join("");
+          const slotsEl = document.getElementById(`p${i}Slots`);
+          slotsEl.innerHTML = [0, 1].map(s => {
+            const k = p.powerUps[s];
+            if (!k) return `<div class="slot-chip">Slot ${s + 1}</div>`;
+            const pu = POWERUP_TYPES[k];
+            return `<div class="slot-chip ready" data-p="${i}" data-s="${s}" title="${pu.desc}">${pu.icon} ${pu.name}</div>`;
+          }).join("");
+          slotsEl.querySelectorAll(".slot-chip.ready").forEach(el => {
+            el.addEventListener("click", () => onSlotUse(parseInt(el.dataset.p, 10), parseInt(el.dataset.s, 10)));
+          });
+        });
       }
 
       function syncAllUI() {
-        syncPlayersGrid(); syncPowerUpSlots(); syncControlsState();
-        renderHistoryStrip(); renderLog();
-        if (appState.match) renderDiceFace(appState.match.diceValue);
+        const m = appState.match;
+        if (!m) return;
+        syncDecksOnly();
+
+        const remoteSeat = getRemoteSeat();
+        [0, 1].forEach(i => {
+          const p = m.players[i];
+          const isTurn = m.currentTurn === i && m.winnerId === null;
+          const deck = document.getElementById(i === 0 ? "leftDeck" : "rightDeck");
+          const btn = document.getElementById(`rollBtn${i}`);
+          const hint = document.getElementById(`hint${i}`);
+
+          deck.classList.toggle("active-turn", isTurn);
+          deck.classList.toggle("dimmed", !isTurn);
+
+          const canAct = isTurn && !m.busy && !p.isAI && (remoteSeat === null || remoteSeat === i);
+          btn.disabled = !canAct;
+          btn.textContent = isTurn ? `🎲 ROLL ${p.name.toUpperCase()}` : `🎲 ${p.name}`;
+          hint.textContent = isTurn ? (p.precisionRoll ? `Aimed: ${p.precisionRoll}` : "Your Turn!") : (i === 0 ? "Left Dice" : "Right Dice");
+          renderDice(i, p.diceValue);
+        });
       }
 
       /* =========================================================================
-         EVENT BINDINGS
+         BINDINGS & MODALS
          ========================================================================= */
-      document.getElementById("rollBtn").addEventListener("click", requestRoll);
-      document.getElementById("diceBox").addEventListener("click", requestRoll);
+      document.getElementById("rollBtn0").addEventListener("click", () => tryPlayerRoll(0));
+      document.getElementById("rollBtn1").addEventListener("click", () => tryPlayerRoll(1));
+      document.getElementById("diceBox0").addEventListener("click", () => tryPlayerRoll(0));
+      document.getElementById("diceBox1").addEventListener("click", () => tryPlayerRoll(1));
+
       window.addEventListener("keydown", e => {
-        if (e.code === "Space" && !document.querySelector(".modal-backdrop.open")) {
-          e.preventDefault(); requestRoll();
+        if (e.code === "Space" && !document.querySelector(".modal-backdrop.open") && appState.match) {
+          e.preventDefault();
+          tryPlayerRoll(appState.match.currentTurn);
         }
       });
 
-      document.querySelectorAll("#precisionPicker .dice-choice-btn").forEach(btn => {
+      document.querySelectorAll("#precisionBar .pick-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           const m = appState.match; if (!m) return;
           m.players[m.currentTurn].precisionRoll = parseInt(btn.dataset.val, 10);
-          document.getElementById("precisionPicker").classList.remove("active");
-          showToast(`🎯 Next roll set to ${btn.dataset.val}!`);
+          document.getElementById("precisionBar").classList.remove("active");
+          syncAllUI();
+          showToast(`🎯 Roll set to ${btn.dataset.val}!`);
         });
       });
 
-      const openFriendModal = () => document.getElementById("onlineModal").classList.add("open");
-      document.getElementById("openOnlineBtn").addEventListener("click", openFriendModal);
-      document.getElementById("quickRoomBtn").addEventListener("click", openFriendModal);
+      // Friend Match Modal
+      document.getElementById("openFriendBtn").addEventListener("click", () => document.getElementById("friendModal").classList.add("open"));
 
-      document.getElementById("createOfferBtn").addEventListener("click", async () => {
-        showToast("🎟️ Creating invite passkey...");
-        const code = await friendLink.createInvite();
-        document.getElementById("p2pPayloadBox").value = code;
-        updateRoomBadge();
-        showToast("✅ Invite ready! Send it to your friend.");
+      document.getElementById("createInviteBtn").addEventListener("click", async () => {
+        showToast("🎟️ Creating invite...");
+        const code = await tableLink.createInvite();
+        document.getElementById("friendCodeBox").value = code;
+        updateStatusText();
+        showToast("✅ Invite ready! Send to your friend.");
       });
 
-      document.getElementById("generateAnswerBtn").addEventListener("click", async () => {
-        const raw = document.getElementById("p2pPayloadBox").value;
-        if (!raw.trim()) return showToast("⚠️ Paste the invite passkey first!");
+      document.getElementById("createReplyBtn").addEventListener("click", async () => {
+        const raw = document.getElementById("friendCodeBox").value;
+        if (!raw.trim()) return showToast("⚠️ Paste invite passkey first!");
         showToast("💌 Creating reply...");
-        const reply = await friendLink.createReply(raw);
-        document.getElementById("p2pPayloadBox").value = reply;
-        updateRoomBadge();
-        showToast("✅ Reply ready! Send it back to Host.");
+        const reply = await tableLink.createReply(raw);
+        document.getElementById("friendCodeBox").value = reply;
+        updateStatusText();
+        showToast("✅ Reply ready! Send back to Host.");
       });
 
-      document.getElementById("acceptAnswerBtn").addEventListener("click", async () => {
-        const raw = document.getElementById("p2pPayloadBox").value;
-        if (!raw.trim()) return showToast("⚠️ Paste your friend's reply first!");
-        await friendLink.completeMatch(raw);
-        showToast("🤝 Connecting to your friend...");
+      document.getElementById("startLinkedBtn").addEventListener("click", async () => {
+        const raw = document.getElementById("friendCodeBox").value;
+        if (!raw.trim()) return showToast("⚠️ Paste friend's reply first!");
+        await tableLink.startMatchFromReply(raw);
+        showToast("🤝 Connecting...");
       });
 
-      document.getElementById("copyP2pCodeBtn").addEventListener("click", () => {
-        const box = document.getElementById("p2pPayloadBox");
+      document.getElementById("copyFriendCodeBtn").addEventListener("click", () => {
+        const box = document.getElementById("friendCodeBox");
         box.select(); navigator.clipboard?.writeText(box.value).catch(() => {});
         showToast("📋 Passkey copied!");
       });
 
-      document.getElementById("disconnectP2pBtn").addEventListener("click", () => friendLink.leave());
+      document.getElementById("leaveFriendBtn").addEventListener("click", () => tableLink.leave());
 
+      // Themes Modal
       document.getElementById("quickRandomThemeBtn").addEventListener("click", () => {
         const t = generateSurpriseTheme();
-        applyThemeToUI(t);
-        showToast(`✨ ${t.name}`);
+        applyThemeToUI(t); showToast(`✨ ${t.name}`);
       });
 
       document.getElementById("openThemesBtn").addEventListener("click", () => {
-        populateThemesModal();
-        document.getElementById("themesModal").classList.add("open");
+        populateThemes(); document.getElementById("themesModal").classList.add("open");
       });
 
-      document.getElementById("modalRandomThemeBtn").addEventListener("click", () => {
+      document.getElementById("modalSurpriseBtn").addEventListener("click", () => {
         const t = generateSurpriseTheme();
-        applyThemeToUI(t); populateThemesModal();
-        showToast(`✨ ${t.name}`);
+        applyThemeToUI(t); populateThemes(); showToast(`✨ ${t.name}`);
       });
 
-      document.getElementById("saveCurrentThemeBtn").addEventListener("click", () => {
+      document.getElementById("saveThemeBtn").addEventListener("click", () => {
         const cur = structuredClone(appState.activeTheme);
         if (cur.builtIn) cur.id = "saved_" + Date.now();
         cur.builtIn = false;
         if (!appState.savedThemes.some(x => x.id === cur.id)) {
           appState.savedThemes.unshift(cur);
-          persistState(); populateThemesModal();
-          showToast(`💾 Saved "${cur.name}"!`);
+          persistState(); populateThemes(); showToast(`💾 Saved "${cur.name}"!`);
         }
       });
 
-      document.getElementById("applyAndSaveStudioBtn").addEventListener("click", () => {
+      document.getElementById("applyStudioBtn").addEventListener("click", () => {
         const base = appState.activeTheme;
         const lookMode = document.getElementById("stLookMode").value;
         const tileA = document.getElementById("stTileA").value;
         const tileB = document.getElementById("stTileB").value;
-        const customTheme = {
-          ...base,
-          id: "mix_" + Date.now(),
-          builtIn: false,
-          lookMode,
+        const th = {
+          ...base, id: "mix_" + Date.now(), builtIn: false, lookMode,
           name: document.getElementById("stName").value.trim() || "Custom Theme",
           boardBg: document.getElementById("stBoardBg").value,
           accent: document.getElementById("stAccent").value,
           tileA, tileB,
-          textA: parseInt(tileA.slice(1, 3), 16) > 140 ? "#141414" : "#f3f7fb",
-          textB: parseInt(tileB.slice(1, 3), 16) > 140 ? "#141414" : "#f3f7fb",
+          textA: parseInt(tileA.slice(1, 3), 16) > 140 ? "#141414" : "#f5f1eb",
+          textB: parseInt(tileB.slice(1, 3), 16) > 140 ? "#141414" : "#f5f1eb",
           ladderA: document.getElementById("stLadderA").value,
           ladderB: document.getElementById("stLadderB").value,
           snakeA: document.getElementById("stSnakeA").value,
           snakeB: document.getElementById("stSnakeB").value,
           snakePattern: lookMode === "neon" ? "neon" : (lookMode === "realistic_3d" ? "scales" : "stripes"),
-          rounded: document.getElementById("stRounded").checked,
-          glow: lookMode === "neon",
-          depth: document.getElementById("stDepth").checked || lookMode !== "simple_realistic"
+          rounded: true, glow: lookMode === "neon", depth: lookMode !== "simple_realistic"
         };
-        appState.savedThemes.unshift(customTheme);
-        applyThemeToUI(customTheme); populateThemesModal();
-        showToast(`✅ Applied "${customTheme.name}"!`);
+        appState.savedThemes.unshift(th);
+        applyThemeToUI(th); populateThemes(); showToast(`✅ Applied "${th.name}"!`);
       });
 
-      document.getElementById("copyThemeGiftBtn").addEventListener("click", () => {
-        const pack = btoa(unescape(encodeURIComponent(JSON.stringify(appState.activeTheme))));
-        const box = document.getElementById("themeGiftBox");
-        box.value = pack;
-        box.select();
-        navigator.clipboard?.writeText(pack).catch(() => {});
+      document.getElementById("copyGiftBtn").addEventListener("click", () => {
+        const code = btoa(unescape(encodeURIComponent(JSON.stringify(appState.activeTheme))));
+        const box = document.getElementById("giftBox");
+        box.value = code; box.select();
+        navigator.clipboard?.writeText(code).catch(() => {});
         showToast("📋 Theme passcode copied!");
       });
 
-      document.getElementById("importThemeGiftBtn").addEventListener("click", () => {
+      document.getElementById("applyGiftBtn").addEventListener("click", () => {
         try {
-          const raw = document.getElementById("themeGiftBox").value.trim();
-          const parsed = JSON.parse(decodeURIComponent(escape(atob(raw))));
+          const parsed = JSON.parse(decodeURIComponent(escape(atob(document.getElementById("giftBox").value.trim()))));
           if (!parsed.tileA || !parsed.snakeA || !parsed.ladderA) throw new Error();
-          parsed.id = "gift_" + Date.now();
-          parsed.builtIn = false;
-          parsed.name = parsed.name || "Gift Theme";
+          parsed.id = "gift_" + Date.now(); parsed.builtIn = false; parsed.name = parsed.name || "Gift Theme";
           appState.savedThemes.unshift(parsed);
-          applyThemeToUI(parsed); populateThemesModal();
-          showToast(`🎁 Applied "${parsed.name}"!`);
-        } catch {
-          showToast("⚠️ Please enter a valid theme passcode.");
-        }
+          applyThemeToUI(parsed); populateThemes(); showToast(`🎁 Applied "${parsed.name}"!`);
+        } catch { showToast("⚠️ Please enter a valid theme passcode."); }
       });
 
-      function populateThemesModal() {
+      function populateThemes() {
         const cur = appState.activeTheme;
-        const chipHtml = (t, del) => `
+        const chip = (t, del) => `
           <div class="theme-chip ${cur.id === t.id ? "active" : ""}" data-tid="${t.id}">
             <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(t.name)}</span>
             <div style="display:flex;align-items:center;gap:4px;">
@@ -2154,23 +2039,23 @@
                 <span class="swatch" style="background:${t.ladderA}"></span>
                 <span class="swatch" style="background:${t.snakeA}"></span>
               </div>
-              ${del ? `<span class="del-theme" data-del="${t.id}" style="color:#ff4d6d;padding-left:4px;">✕</span>` : ""}
+              ${del ? `<span class="del-t" data-del="${t.id}" style="color:#ff4d6d;padding-left:4px;">✕</span>` : ""}
             </div>
           </div>`;
-        document.getElementById("builtInThemesGrid").innerHTML = BUILT_IN_THEMES.map(t => chipHtml(t, false)).join("");
-        document.getElementById("savedThemesGrid").innerHTML = appState.savedThemes.length
-          ? appState.savedThemes.map(t => chipHtml(t, true)).join("")
-          : `<div style="font-size:12px;color:var(--text-muted);grid-column:1/-1;">Tap "Save to My Collection" to keep your favorites.</div>`;
+        document.getElementById("builtInGrid").innerHTML = BUILT_IN_THEMES.map(t => chip(t, false)).join("");
+        document.getElementById("savedGrid").innerHTML = appState.savedThemes.length
+          ? appState.savedThemes.map(t => chip(t, true)).join("")
+          : `<div style="font-size:12px;color:var(--text-muted);grid-column:1/-1;">Tap "Save to Collection" to save your favorites.</div>`;
         document.getElementById("savedCount").textContent = appState.savedThemes.length;
 
         document.querySelectorAll(".theme-chip").forEach(c => {
           c.addEventListener("click", e => {
-            if (e.target.classList.contains("del-theme")) {
+            if (e.target.classList.contains("del-t")) {
               appState.savedThemes = appState.savedThemes.filter(x => x.id !== e.target.dataset.del);
-              persistState(); populateThemesModal(); return;
+              persistState(); populateThemes(); return;
             }
             const found = [...BUILT_IN_THEMES, ...appState.savedThemes].find(x => x.id === c.dataset.tid);
-            if (found) { applyThemeToUI(found); populateThemesModal(); }
+            if (found) { applyThemeToUI(found); populateThemes(); }
           });
         });
 
@@ -2184,54 +2069,51 @@
         document.getElementById("stLadderB").value = cur.ladderB;
         document.getElementById("stSnakeA").value = cur.snakeA;
         document.getElementById("stSnakeB").value = cur.snakeB;
-        document.getElementById("stRounded").checked = !!cur.rounded;
-        document.getElementById("stDepth").checked = cur.depth !== false;
-        document.getElementById("themeGiftBox").value = "";
+        document.getElementById("giftBox").value = "";
       }
 
+      // Setup Modal
       document.getElementById("openSetupBtn").addEventListener("click", () => {
         const cfg = appState.settings;
-        document.getElementById("cfgMode").value = cfg.mode;
-        document.getElementById("cfgAi").value = cfg.aiLevel;
+        document.getElementById("cfgOpponent").value = cfg.opponent;
         document.getElementById("cfgBoardPreset").value = cfg.boardPreset;
         document.getElementById("cfgExact").value = cfg.exactRule;
+        document.getElementById("cfgAi").value = cfg.aiLevel;
         document.getElementById("cfgBonusSix").checked = cfg.bonusSix;
         document.getElementById("cfgPowerUps").checked = cfg.powerUpsEnabled;
-        document.getElementById("playerConfigList").innerHTML = cfg.playerConfigs.map((pc, i) => `
-          <div style="display:grid;grid-template-columns:1fr 75px 95px;gap:6px;">
-            <input type="text" class="pc-name" data-i="${i}" value="${esc(pc.name)}" />
-            <input type="color" class="pc-color" data-i="${i}" value="${pc.color}" />
-            <select class="pc-shape" data-i="${i}">
-              ${TOKEN_SHAPES.map(s => `<option value="${s}" ${pc.shape === s ? "selected" : ""}>${s.toUpperCase()}</option>`).join("")}
-            </select>
-          </div>`).join("");
-        const st = appState.stats;
-        document.getElementById("careerStatsBox").textContent =
-          `Wins: ${st.wins} • Rolls: ${st.rolls} • Ladders: ${st.laddersClimbed} • Snakes: ${st.snakesBitten} • Power-Ups: ${st.powerUpsUsed}`;
-        document.getElementById("resumeMatchBtn").style.display = appState.match ? "inline-flex" : "none";
+        document.getElementById("p0NameInput").value = cfg.players[0].name;
+        document.getElementById("p0ColorInput").value = cfg.players[0].color;
+        document.getElementById("p0ShapeInput").value = cfg.players[0].shape;
+        document.getElementById("p1NameInput").value = cfg.players[1].name;
+        document.getElementById("p1ColorInput").value = cfg.players[1].color;
+        document.getElementById("p1ShapeInput").value = cfg.players[1].shape;
         document.getElementById("setupModal").classList.add("open");
       });
 
-      document.getElementById("startNewMatchBtn").addEventListener("click", () => {
+      document.getElementById("newMatchBtn").addEventListener("click", () => {
         const cfg = appState.settings;
-        cfg.mode = document.getElementById("cfgMode").value;
-        cfg.aiLevel = document.getElementById("cfgAi").value;
+        cfg.opponent = document.getElementById("cfgOpponent").value;
         cfg.boardPreset = document.getElementById("cfgBoardPreset").value;
         cfg.exactRule = document.getElementById("cfgExact").value;
+        cfg.aiLevel = document.getElementById("cfgAi").value;
         cfg.bonusSix = document.getElementById("cfgBonusSix").checked;
         cfg.powerUpsEnabled = document.getElementById("cfgPowerUps").checked;
-        document.querySelectorAll(".pc-name").forEach(i => (cfg.playerConfigs[i.dataset.i].name = i.value));
-        document.querySelectorAll(".pc-color").forEach(i => (cfg.playerConfigs[i.dataset.i].color = i.value));
-        document.querySelectorAll(".pc-shape").forEach(s => (cfg.playerConfigs[s.dataset.i].shape = s.value));
+        cfg.players[0] = {
+          name: document.getElementById("p0NameInput").value || "Player 1",
+          color: document.getElementById("p0ColorInput").value,
+          shape: document.getElementById("p0ShapeInput").value
+        };
+        cfg.players[1] = {
+          name: document.getElementById("p1NameInput").value || "Player 2",
+          color: document.getElementById("p1ColorInput").value,
+          shape: document.getElementById("p1ShapeInput").value
+        };
         document.getElementById("setupModal").classList.remove("open");
         createNewMatch(true);
-        showToast("🚀 New Game Started!");
+        showToast("🚀 New Match Started!");
       });
 
-      document.getElementById("resumeMatchBtn").addEventListener("click", () => {
-        document.getElementById("setupModal").classList.remove("open");
-      });
-
+      document.getElementById("resumeBtn").addEventListener("click", () => document.getElementById("setupModal").classList.remove("open"));
       document.getElementById("playAgainBtn").addEventListener("click", () => {
         document.getElementById("victoryModal").classList.remove("open");
         createNewMatch(true);
@@ -2257,11 +2139,11 @@
         else document.exitFullscreen?.().catch(() => {});
       });
 
-      canvas.addEventListener("mousemove", e => inspectPoint(e.clientX, e.clientY));
+      canvas.addEventListener("mousemove", e => inspectTile(e.clientX, e.clientY));
       canvas.addEventListener("mouseleave", () => { document.getElementById("boardTooltip").style.opacity = "0"; });
-      canvas.addEventListener("click", e => inspectPoint(e.clientX, e.clientY));
+      canvas.addEventListener("click", e => inspectTile(e.clientX, e.clientY));
 
-      function inspectPoint(cx, cy) {
+      function inspectTile(cx, cy) {
         const m = appState.match; if (!m) return;
         const rect = canvas.getBoundingClientRect();
         const T = rect.width / 10;
@@ -2279,7 +2161,7 @@
           const stRect = document.getElementById("boardStage").getBoundingClientRect();
           tip.textContent = info;
           tip.style.left = Math.max(80, Math.min(stRect.width - 80, cx - stRect.left)) + "px";
-          tip.style.top = Math.max(36, cy - stRect.top) + "px";
+          tip.style.top = Math.max(44, cy - stRect.top) + "px";
           tip.style.opacity = "1";
         } else tip.style.opacity = "0";
       }
@@ -2289,7 +2171,7 @@
       window.addEventListener("resize", resizeCanvas);
       applyThemeToUI(appState.activeTheme);
       if (!appState.match) createNewMatch(false);
-      else { appState.match.busy = false; syncAllUI(); }
+      else { appState.match.busy = false; updateStatusText(); }
       resizeCanvas();
     })();
   </script>
