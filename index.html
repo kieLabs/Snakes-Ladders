@@ -6,16 +6,16 @@
   <title>Snakes & Ladders — Saanp Seedhi | Gamerkie Present</title>
   <style>
     :root {
-      --bg-app: #0d141c;
-      --bg-panel: #141f2b;
-      --bg-panel-2: #1b2938;
-      --text-main: #f4f7fb;
-      --text-muted: #98abc0;
-      --accent: #f59e0b;
-      --accent-2: #00e5ff;
-      --border: rgba(255, 255, 255, 0.12);
+      --bg-app: #14110f;
+      --bg-panel: #1d1815;
+      --bg-panel-2: #26201c;
+      --text-main: #f5f0e8;
+      --text-muted: #b5a99c;
+      --accent: #c88a32;
+      --accent-2: #3b82f6;
+      --border: rgba(255, 255, 255, 0.11);
       --radius: 16px;
-      --shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
+      --shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
     }
 
     * {
@@ -29,7 +29,8 @@
       padding: 0;
       width: 100%;
       height: 100%;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: hidden;
       background: var(--bg-app);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
@@ -37,30 +38,36 @@
 
     #app {
       width: 100%;
+      max-width: 100%;
       height: 100%;
-      max-width: 1280px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       padding: 8px;
       gap: 8px;
       position: relative;
+      overflow-x: hidden;
     }
 
     /* =====================================================================
-       HOME PAGE VIEW
+       HOME PAGE VIEW — STRICT VERTICAL (UP-DOWN) SCROLL ONLY
        ===================================================================== */
     #homeScreen {
       flex: 1;
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
       min-height: 0;
+      overflow-x: hidden;
       overflow-y: auto;
-      background: radial-gradient(circle at top, #17283a 0%, #0b1219 80%);
+      -webkit-overflow-scrolling: touch;
+      background: var(--bg-panel);
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       box-shadow: var(--shadow);
     }
 
@@ -68,91 +75,105 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.04);
+      gap: 10px;
+      background: var(--bg-panel-2);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px 14px;
       flex-wrap: wrap;
+      width: 100%;
     }
 
     .hero-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
+      min-width: 0;
+      flex: 1 1 220px;
     }
 
     .hero-emblem {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #00e5ff, #ffb703);
-      color: #071018;
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      background: var(--accent);
+      color: #14100c;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 900;
-      box-shadow: 0 6px 18px rgba(0, 229, 255, 0.3);
       flex-shrink: 0;
+    }
+
+    .hero-titles {
+      min-width: 0;
     }
 
     .hero-titles h1 {
       margin: 0;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 900;
-      letter-spacing: 0.3px;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
     }
 
     .hero-titles p {
-      margin: 2px 0 0;
-      font-size: 12px;
-      color: var(--accent-2);
+      margin: 3px 0 0;
+      font-size: 11.5px;
+      color: var(--text-muted);
       font-weight: 700;
+      overflow-wrap: anywhere;
     }
 
     .hero-actions {
       display: flex;
       gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
-    .home-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 14px;
+    /* Single-column vertical stack so right/left scroll is never needed */
+    .home-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
     }
 
     .card-box {
-      background: var(--bg-panel);
+      background: var(--bg-panel-2);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 11px;
+      width: 100%;
     }
 
     .card-title {
       font-size: 12px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.7px;
+      letter-spacing: 0.6px;
       color: var(--accent);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
-    /* Mode Selector Pills */
     .mode-cards {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
+      width: 100%;
     }
 
     .mode-btn {
-      background: var(--bg-panel-2);
+      background: var(--bg-panel);
       border: 1.5px solid var(--border);
       border-radius: 12px;
       padding: 10px 8px;
@@ -161,30 +182,30 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       text-align: center;
-      transition: all 0.15s ease;
+      min-width: 0;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
 
-    .mode-btn .m-ico { font-size: 20px; }
+    .mode-btn .m-ico { font-size: 19px; }
     .mode-btn .m-lbl { font-size: 12px; font-weight: 800; }
     .mode-btn .m-sub { font-size: 10px; color: var(--text-muted); }
 
     .mode-btn.selected {
-      border-color: var(--accent-2);
-      background: rgba(0, 229, 255, 0.12);
-      box-shadow: 0 0 0 1px var(--accent-2);
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.06);
     }
 
-    /* Token Count (1, 2, 3, 4 Goti) Selector */
     .token-count-row {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
+      width: 100%;
     }
 
     .goti-btn {
-      background: var(--bg-panel-2);
+      background: var(--bg-panel);
       border: 1.5px solid var(--border);
       border-radius: 11px;
       padding: 9px 6px;
@@ -193,19 +214,20 @@
       font-weight: 800;
       cursor: pointer;
       text-align: center;
-      transition: all 0.15s ease;
+      min-width: 0;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
 
     .goti-btn.selected {
       border-color: var(--accent);
-      background: rgba(245, 158, 11, 0.16);
-      color: #ffd166;
+      background: rgba(255, 255, 255, 0.06);
     }
 
     .form-two {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
+      width: 100%;
     }
 
     .field {
@@ -215,12 +237,15 @@
       font-size: 11.5px;
       font-weight: 700;
       color: var(--text-muted);
+      min-width: 0;
     }
 
     .field input[type="text"],
     .field select,
     .field textarea {
-      background: var(--bg-panel-2);
+      width: 100%;
+      max-width: 100%;
+      background: var(--bg-panel);
       border: 1px solid var(--border);
       color: var(--text-main);
       border-radius: 9px;
@@ -231,9 +256,22 @@
 
     .player-row-setup {
       display: grid;
-      grid-template-columns: 1fr 48px 92px;
+      grid-template-columns: minmax(0, 1fr) 46px 96px;
       gap: 6px;
       align-items: center;
+      width: 100%;
+    }
+
+    .player-row-setup input[type="text"],
+    .player-row-setup select {
+      width: 100%;
+      min-width: 0;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 9px;
+      padding: 7px 8px;
+      font-size: 12px;
     }
 
     .player-row-setup input[type="color"] {
@@ -241,53 +279,53 @@
       height: 34px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      background: var(--bg-panel-2);
+      background: var(--bg-panel);
       cursor: pointer;
+      padding: 2px;
     }
 
     .start-cta {
       width: 100%;
-      padding: 14px;
+      padding: 13px 16px;
       border: none;
       border-radius: 13px;
-      background: linear-gradient(135deg, #00e5ff, #ffb703);
-      color: #061018;
-      font-size: 16px;
+      background: var(--accent);
+      color: #120e0a;
+      font-size: 15px;
       font-weight: 900;
       letter-spacing: 0.4px;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(0, 229, 255, 0.3);
-      transition: transform 0.12s ease;
+      transition: transform 0.12s ease, opacity 0.15s ease;
     }
 
-    .start-cta:active { transform: scale(0.98); }
+    .start-cta:active { transform: scale(0.99); }
 
-    /* Online Friend Drawer on Home Page */
     #onlineBox {
       display: none;
-      background: rgba(0, 229, 255, 0.08);
-      border: 1px solid rgba(0, 229, 255, 0.3);
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 10px;
       flex-direction: column;
       gap: 8px;
+      width: 100%;
     }
 
     #onlineBox.open { display: flex; }
 
-    /* Themes Gallery on Home Page */
     .theme-filter-tabs {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
+      width: 100%;
     }
 
     .filter-pill {
-      background: var(--bg-panel-2);
+      background: var(--bg-panel);
       border: 1px solid var(--border);
       color: var(--text-muted);
       border-radius: 999px;
-      padding: 4px 10px;
+      padding: 5px 11px;
       font-size: 11px;
       font-weight: 800;
       cursor: pointer;
@@ -295,40 +333,37 @@
 
     .filter-pill.active {
       background: var(--accent);
-      color: #071018;
+      color: #120e0a;
       border-color: transparent;
     }
 
-    .themes-scroll-grid {
+    /* Themes list flows vertically inside the home scroll view without horizontal overflow */
+    .themes-vertical-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
-      max-height: 330px;
-      overflow-y: auto;
-      padding-right: 4px;
+      width: 100%;
     }
 
     .theme-tile {
-      background: var(--bg-panel-2);
+      background: var(--bg-panel);
       border: 1.5px solid var(--border);
       border-radius: 11px;
-      padding: 8px 9px;
+      padding: 9px 10px;
       display: flex;
       flex-direction: column;
       gap: 6px;
       cursor: pointer;
-      position: relative;
-      transition: all 0.15s ease;
+      min-width: 0;
+      transition: border-color 0.15s ease;
     }
 
     .theme-tile.active {
-      border-color: var(--accent-2);
-      box-shadow: 0 0 0 1px var(--accent-2);
+      border-color: var(--accent);
     }
 
     .theme-tile.locked {
       border-style: dashed;
-      border-color: rgba(255, 183, 3, 0.55);
     }
 
     .theme-top-row {
@@ -336,6 +371,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 4px;
+      min-width: 0;
     }
 
     .theme-title {
@@ -359,10 +395,10 @@
     }
 
     .dot {
-      width: 13px;
-      height: 13px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      border: 1px solid rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.35);
     }
 
     .unlock-tag {
@@ -370,8 +406,8 @@
       font-weight: 800;
       padding: 2px 7px;
       border-radius: 6px;
-      background: linear-gradient(135deg, #ffb703, #fb8500);
-      color: #081018;
+      background: var(--accent);
+      color: #120e0a;
       white-space: nowrap;
     }
 
@@ -380,12 +416,13 @@
       font-weight: 800;
       padding: 2px 7px;
       border-radius: 6px;
-      background: rgba(16, 185, 129, 0.22);
-      color: #6ee7b7;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      white-space: nowrap;
     }
 
     /* =====================================================================
-       ACTIVE GAMEPLAY VIEW (SINGLE SMOOTHLY SPINNING DICE)
+       ACTIVE GAMEPLAY VIEW
        ===================================================================== */
     #gameScreen {
       display: none;
@@ -393,6 +430,7 @@
       min-height: 0;
       flex-direction: column;
       gap: 8px;
+      overflow-x: hidden;
     }
 
     .topbar {
@@ -425,7 +463,7 @@
 
     .icon-btn.primary {
       background: var(--accent);
-      color: #071018;
+      color: #120e0a;
       border-color: transparent;
     }
 
@@ -499,8 +537,7 @@
     }
 
     .p-card.active {
-      border-color: var(--accent-2);
-      box-shadow: 0 0 0 1px var(--accent-2), inset 0 0 16px rgba(0, 229, 255, 0.12);
+      border-color: var(--accent);
     }
 
     .p-head {
@@ -536,30 +573,17 @@
       font-weight: 800;
       padding: 3px 7px;
       border-radius: 7px;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.32);
       border: 1px solid var(--border);
       color: var(--text-main);
     }
 
     .goti-chip.selectable {
       border-color: var(--accent);
-      background: rgba(245, 158, 11, 0.24);
-      color: #fde047;
+      background: rgba(255, 255, 255, 0.14);
       cursor: pointer;
-      animation: pulseChip 0.9s infinite alternate;
     }
 
-    .goti-chip.done {
-      border-color: #10b981;
-      color: #6ee7b7;
-    }
-
-    @keyframes pulseChip {
-      from { transform: scale(1); }
-      to { transform: scale(1.06); }
-    }
-
-    /* Single Smoothly Spinning 3D Dice Box */
     .single-dice-panel {
       background: var(--bg-panel-2);
       border: 1px solid var(--border);
@@ -619,25 +643,23 @@
     }
 
     .pip.on { opacity: 1; transform: scale(1); }
-    .pip.red { background: #e11d48; }
+    .pip.red { background: #dc2626; }
 
     #rollMainBtn {
       width: 100%;
       padding: 12px 14px;
       border: none;
       border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent-2), var(--accent));
-      color: #061018;
+      background: var(--accent);
+      color: #120e0a;
       font-size: 14px;
       font-weight: 900;
       cursor: pointer;
-      box-shadow: 0 5px 16px rgba(0, 229, 255, 0.28);
     }
 
     #rollMainBtn:disabled {
       opacity: 0.45;
       cursor: not-allowed;
-      box-shadow: none;
     }
 
     .turn-note {
@@ -647,15 +669,14 @@
       font-weight: 700;
     }
 
-    /* Toast & Ad Modal */
     #toastBanner {
       position: fixed;
       top: 14px;
       left: 50%;
       transform: translateX(-50%) translateY(-18px);
-      background: rgba(10, 16, 24, 0.96);
+      background: var(--bg-panel-2);
       border: 1px solid var(--accent);
-      color: #fff;
+      color: var(--text-main);
       padding: 8px 16px;
       border-radius: 999px;
       font-size: 12.5px;
@@ -716,12 +737,17 @@
     .ad-progress-fill {
       width: 0%;
       height: 100%;
-      background: linear-gradient(90deg, #00e5ff, #ffb703);
+      background: var(--accent);
       transition: width 0.2s linear;
     }
 
+    @media (max-width: 720px) {
+      .themes-vertical-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mode-cards { grid-template-columns: 1fr; }
+      .form-two { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 840px) {
-      .home-grid { grid-template-columns: 1fr; }
       .play-workspace { flex-direction: column; }
       .side-hud {
         width: 100%;
@@ -739,7 +765,7 @@
 
   <div id="app">
     <!-- ===================================================================
-         1. FULL-FEATURED HOME PAGE
+         1. HOME PAGE (UP-DOWN SCROLL ONLY, COHESIVE FIRST THEMES)
          =================================================================== -->
     <section id="homeScreen">
       <div class="home-hero">
@@ -756,12 +782,11 @@
         </div>
       </div>
 
-      <div class="home-grid">
-        <!-- Left Column: Match Mode, Goti Count, Players & Start -->
+      <div class="home-stack">
         <div class="card-box">
           <div class="card-title">
             <span>1. Select Game Mode</span>
-            <span id="modeStatusBadge" style="color:var(--accent-2);font-size:11px;">2 Local Players</span>
+            <span id="modeStatusBadge" style="color:var(--text-muted);font-size:11px;">2 Local Players</span>
           </div>
 
           <div class="mode-cards">
@@ -782,10 +807,9 @@
             </button>
           </div>
 
-          <!-- Online Friend Connect Box -->
           <div id="onlineBox">
             <div style="font-size:11.5px;color:var(--text-main);line-height:1.45;">
-              <strong>Direct Friend Match:</strong> Host creates an Invite Passkey and shares it with a friend. Friend pastes it, generates a Reply Passkey, and sends it back to start!
+              <strong>Direct Friend Match:</strong> Host creates an Invite Passkey and sends it to a friend. Friend pastes it, generates a Reply Passkey, and sends it back to connect.
             </div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button type="button" class="icon-btn primary" id="createInviteBtn">🎟️ 1. Create Invite</button>
@@ -793,12 +817,12 @@
               <button type="button" class="icon-btn primary" id="connectFriendBtn">🤝 3. Connect</button>
               <button type="button" class="icon-btn" id="copyCodeBtn">📋 Copy</button>
             </div>
-            <textarea id="p2pCodeInput" rows="2" placeholder="Invite or Reply passkey appears here..." style="background:var(--bg-panel-2);border:1px solid var(--border);color:var(--text-main);border-radius:8px;padding:6px 8px;font-size:11.5px;"></textarea>
+            <textarea id="p2pCodeInput" rows="2" placeholder="Invite or Reply passkey appears here..."></textarea>
           </div>
 
           <div class="card-title">
             <span>2. Choose Goti (Tokens) Per Player</span>
-            <span id="gotiBadge" style="color:var(--accent-2);font-size:11px;">1 Goti Match</span>
+            <span id="gotiBadge" style="color:var(--text-muted);font-size:11px;">1 Goti Match</span>
           </div>
 
           <div class="token-count-row">
@@ -830,7 +854,7 @@
           <div class="card-title"><span>3. Players &amp; Token Style</span></div>
           <div class="player-row-setup">
             <input type="text" id="p0Name" value="Player 1" placeholder="Player 1 Name" />
-            <input type="color" id="p0Color" value="#00e5ff" />
+            <input type="color" id="p0Color" value="#c88a32" />
             <select id="p0Shape">
               <option value="crown" selected>CROWN</option>
               <option value="circle">CIRCLE</option>
@@ -840,7 +864,7 @@
           </div>
           <div class="player-row-setup">
             <input type="text" id="p1Name" value="Player 2" placeholder="Player 2 / Bot Name" />
-            <input type="color" id="p1Color" value="#ff4d6d" />
+            <input type="color" id="p1Color" value="#3b82f6" />
             <select id="p1Shape">
               <option value="star" selected>STAR</option>
               <option value="crown">CROWN</option>
@@ -852,11 +876,10 @@
           <button type="button" class="start-cta" id="startMatchBtn">🚀 START MATCH</button>
         </div>
 
-        <!-- Right Column: Unlimited Themes (2 Open + 40 Ad-Unlock + Infinite Auto-Generated Locked Card) -->
         <div class="card-box">
           <div class="card-title">
             <span>4. Board Themes (Unlimited)</span>
-            <span id="unlockedStats" style="color:#6ee7b7;font-size:11px;">2 Unlocked</span>
+            <span id="unlockedStats" style="color:var(--text-muted);font-size:11px;">2 Unlocked</span>
           </div>
 
           <div class="theme-filter-tabs">
@@ -866,10 +889,10 @@
           </div>
 
           <div style="font-size:11.5px;color:var(--text-muted);">
-            <strong>1 Simple Realistic</strong> &amp; <strong>1 Realistic 3D</strong> theme are free to play immediately. Unlock any other theme with <strong>1 Ad</strong>—and a brand-new locked theme automatically generates at the bottom!
+            <strong>1 Simple Realistic</strong> &amp; <strong>1 Realistic 3D</strong> theme are open right away. Unlock any other theme with <strong>1 Ad</strong>—and a new locked theme automatically generates below!
           </div>
 
-          <div class="themes-scroll-grid" id="homeThemesGrid"></div>
+          <div class="themes-vertical-grid" id="homeThemesGrid"></div>
         </div>
       </div>
     </section>
@@ -900,7 +923,6 @@
         <aside class="side-hud">
           <div class="player-cards" id="playerCardsBox"></div>
 
-          <!-- Single Shared Dice for Both Players -->
           <div class="single-dice-panel">
             <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:var(--accent);" id="activeTurnBanner">
               Player 1's Turn
@@ -928,12 +950,12 @@
     </section>
   </div>
 
-  <!-- Rewarded Ad Unlock Modal -->
+  <!-- Rewarded Ad Modal -->
   <div class="modal-backdrop" id="adModal">
     <div class="modal-card">
-      <div style="font-size:40px;">🎬</div>
+      <div style="font-size:38px;">🎬</div>
       <h3 style="margin:0;font-size:18px;font-weight:900;" id="adModalTitle">Unlock Theme</h3>
-      <p style="margin:0;font-size:13px;color:var(--text-muted);" id="adModalDesc">Watch 1 short reward ad to unlock this theme permanently and generate a brand-new theme below!</p>
+      <p style="margin:0;font-size:13px;color:var(--text-muted);" id="adModalDesc">Watch 1 short ad to unlock this theme and generate a new locked theme below.</p>
       <div class="ad-progress-bar" id="adBarWrap" style="display:none;">
         <div class="ad-progress-fill" id="adBarFill"></div>
       </div>
@@ -961,16 +983,60 @@
     (() => {
       "use strict";
 
-      const STORAGE_KEY = "gamerkie_saanp_seedhi_home_v1";
-      const CHANNEL_NAME = "gamerkie_saanp_seedhi_sync_v1";
+      const STORAGE_KEY = "gamerkie_saanp_seedhi_v2";
+      const CHANNEL_NAME = "gamerkie_saanp_seedhi_sync_v2";
 
       /* =====================================================================
-         1. THEME CATALOG GENERATOR:
-            - 2 Open by default (1 Simple Realistic + 1 Realistic 3D)
-            - 10 Additional Simple Realistic (Locked, 1 Ad each)
-            - 30 Additional Realistic 3D (Locked, 1 Ad each)
-            - Plus Unlimited Auto-Generated Locked Themes on every unlock!
+         1. HARMONIOUS THEMES:
+            - First Simple Realistic: Cohesive warm walnut & parchment tones
+            - First Realistic 3D: Cohesive deep slate & brushed steel tones
+            - Plus 10 Simple Realistic + 30 Realistic 3D (1 Ad each)
+            - Plus Unlimited Auto-Generated Locked Themes on every unlock
          ===================================================================== */
+      const FIRST_SIMPLE_REALISTIC = {
+        id: "sr_first_walnut",
+        name: "Simple Realistic • Warm Walnut",
+        lookMode: "simple_realistic",
+        defaultOpen: true,
+        appBg: "#171310",
+        panelBg: "#211b17",
+        panelBg2: "#2b231e",
+        boardBg: "#382d26",
+        tileA: "#f4ede2",
+        tileB: "#e3d6c3",
+        textA: "#2a2018",
+        textB: "#221912",
+        ladderA: "#8c5828",
+        ladderB: "#d6b17a",
+        snakeA: "#8f2d2c",
+        snakeB: "#c97a78",
+        accent: "#c88a32",
+        accent2: "#8c5828",
+        snakePattern: "stripes"
+      };
+
+      const FIRST_REALISTIC_3D = {
+        id: "r3d_first_slate",
+        name: "Realistic 3D • Brushed Slate",
+        lookMode: "realistic_3d",
+        defaultOpen: true,
+        appBg: "#0d1218",
+        panelBg: "#141c24",
+        panelBg2: "#1c2732",
+        boardBg: "#23303d",
+        tileA: "#e8eef4",
+        tileB: "#c8d4e0",
+        textA: "#131c26",
+        textB: "#0f1720",
+        ladderA: "#2b6cb0",
+        ladderB: "#90cdf4",
+        snakeA: "#9b2c2c",
+        snakeB: "#feb2b2",
+        accent: "#4a90d9",
+        accent2: "#2b6cb0",
+        snakePattern: "scales"
+      };
+
       function hslToHex(h, s, l) {
         s /= 100; l /= 100;
         const k = n => (n + h / 30) % 12;
@@ -980,21 +1046,21 @@
         return `#${hx(f(0))}${hx(f(8))}${hx(f(4))}`;
       }
 
-      const SR_NAMES = [
+      const EXTRA_SR_NAMES = [
         "Ivory & Oak", "Garden Slate", "Sandstone Courtyard", "Bamboo Grove",
         "Terracotta Clay", "Morning Mist", "Mint Porcelain", "Cedar Cabin",
-        "Parchment Classic", "Olive Orchard", "Warm Linen"
+        "Parchment Classic", "Olive Orchard"
       ];
 
-      const R3D_NAMES = [
-        "Royal Brass", "Jade Temple", "Obsidian Gold", "Sapphire Palace",
-        "Crimson Velvet", "Emerald Crown", "Amber Citadel", "Cobalt Marble",
-        "Ruby Pavilion", "Silver Frost", "Bronze Relics", "Teal Lagoon",
-        "Amethyst Shrine", "Copper Forge", "Turquoise Oasis", "Garnet Throne",
-        "Onyx & Pearl", "Golden Lotus", "Indigo Vault", "Coral Reef 3D",
-        "Malachite Hall", "Sunstone Arena", "Midnight Quartz", "Ivory Pillar",
-        "Scarlet Dragon", "Azure Horizon", "Cinnamon Wood", "Emerald Mist",
-        "Topaz Chamber", "Obsidian Flame", "Imperial Jade"
+      const EXTRA_R3D_NAMES = [
+        "Jade Temple", "Obsidian Gold", "Sapphire Palace", "Crimson Velvet",
+        "Emerald Crown", "Amber Citadel", "Cobalt Marble", "Ruby Pavilion",
+        "Silver Frost", "Bronze Relics", "Teal Lagoon", "Amethyst Shrine",
+        "Copper Forge", "Turquoise Oasis", "Garnet Throne", "Onyx & Pearl",
+        "Golden Lotus", "Indigo Vault", "Coral Reef 3D", "Malachite Hall",
+        "Sunstone Arena", "Midnight Quartz", "Ivory Pillar", "Scarlet Dragon",
+        "Azure Horizon", "Cinnamon Wood", "Emerald Mist", "Topaz Chamber",
+        "Obsidian Flame", "Imperial Jade"
       ];
 
       function buildThemeObj(id, name, lookMode, seedIdx, defaultOpen = false) {
@@ -1027,21 +1093,6 @@
         };
       }
 
-      function createInitialThemeCatalog() {
-        const list = [];
-        // 1 Open Simple Realistic + 10 Locked Simple Realistic = 11 total
-        SR_NAMES.forEach((n, idx) => {
-          list.push(buildThemeObj(`sr_${idx}`, n, "simple_realistic", idx + 1, idx === 0));
-        });
-        // 1 Open Realistic 3D + 30 Locked Realistic 3D = 31 total
-        R3D_NAMES.forEach((n, idx) => {
-          list.push(buildThemeObj(`r3d_${idx}`, n, "realistic_3d", idx + 15, idx === 0));
-        });
-        // Plus 1 initial auto-generated locked theme at the bottom
-        list.push(generateInfiniteLockedTheme(1));
-        return list;
-      }
-
       const INF_ADJ = ["Celestial", "Sovereign", "Mystic", "Grand", "Eternal", "Radiant", "Velvet", "Crimson", "Emerald", "Golden"];
       const INF_NOUN = ["Sanctum", "Dynasty", "Oasis", "Citadel", "Crown", "Horizon", "Mirage", "Temple", "Fortress", "Pavilion"];
 
@@ -1059,6 +1110,18 @@
         );
       }
 
+      function createInitialThemeCatalog() {
+        const list = [FIRST_SIMPLE_REALISTIC, FIRST_REALISTIC_3D];
+        EXTRA_SR_NAMES.forEach((n, idx) => {
+          list.push(buildThemeObj(`sr_extra_${idx}`, n, "simple_realistic", idx + 4, false));
+        });
+        EXTRA_R3D_NAMES.forEach((n, idx) => {
+          list.push(buildThemeObj(`r3d_extra_${idx}`, n, "realistic_3d", idx + 18, false));
+        });
+        list.push(generateInfiniteLockedTheme(1));
+        return list;
+      }
+
       const BOARD_PRESETS = {
         classic: {
           ladders: [[4, 25], [9, 31], [18, 45], [21, 42], [28, 76], [36, 57], [51, 67], [71, 91], [80, 98]],
@@ -1074,12 +1137,7 @@
         }
       };
 
-      const POWERUP_ICONS = {
-        shield: "🛡️",
-        boost: "🪜",
-        swap: "🧲",
-        lucky: "❓"
-      };
+      const POWERUP_ICONS = { shield: "🛡️", boost: "🪜", swap: "🧲", lucky: "❓" };
 
       /* =====================================================================
          2. AUDIO ENGINE
@@ -1118,7 +1176,7 @@
       const sfx = new SoundFX();
 
       /* =====================================================================
-         3. DIRECT ONLINE P2P LINK (ZERO EXTERNAL KEYS)
+         3. DIRECT ONLINE P2P LINK
          ===================================================================== */
       class DirectFriendLink {
         constructor() {
@@ -1236,7 +1294,7 @@
          4. STATE & STORAGE
          ===================================================================== */
       const initialThemes = createInitialThemeCatalog();
-      const defaultUnlockedIds = initialThemes.filter(t => t.defaultOpen).map(t => t.id);
+      const defaultUnlockedIds = [FIRST_SIMPLE_REALISTIC.id, FIRST_REALISTIC_3D.id];
 
       let appState = loadAppState();
 
@@ -1254,8 +1312,8 @@
                 gotiCount: 1,
                 boardPreset: "classic",
                 aiRule: "smart_exact",
-                p0: { name: "Player 1", color: "#00e5ff", shape: "crown" },
-                p1: { name: "Player 2", color: "#ff4d6d", shape: "star" }
+                p0: { name: "Player 1", color: "#c88a32", shape: "crown" },
+                p1: { name: "Player 2", color: "#3b82f6", shape: "star" }
               },
               match: null
             };
@@ -1271,8 +1329,8 @@
               gotiCount: 1,
               boardPreset: "classic",
               aiRule: "smart_exact",
-              p0: { name: "Player 1", color: "#00e5ff", shape: "crown" },
-              p1: { name: "Player 2", color: "#ff4d6d", shape: "star" },
+              p0: { name: "Player 1", color: "#c88a32", shape: "crown" },
+              p1: { name: "Player 2", color: "#3b82f6", shape: "star" },
               ...(parsed.config || {})
             },
             match: null
@@ -1288,8 +1346,8 @@
               gotiCount: 1,
               boardPreset: "classic",
               aiRule: "smart_exact",
-              p0: { name: "Player 1", color: "#00e5ff", shape: "crown" },
-              p1: { name: "Player 2", color: "#ff4d6d", shape: "star" }
+              p0: { name: "Player 1", color: "#c88a32", shape: "crown" },
+              p1: { name: "Player 2", color: "#3b82f6", shape: "star" }
             },
             match: null
           };
@@ -1317,9 +1375,9 @@
         r.setProperty("--accent-2", theme.accent2);
 
         const isLight = parseInt(theme.appBg.slice(1, 3), 16) > 150;
-        r.setProperty("--text-main", isLight ? "#101820" : "#f4f7fb");
-        r.setProperty("--text-muted", isLight ? "#4b5563" : "#98abc0");
-        r.setProperty("--border", isLight ? "rgba(0,0,0,0.14)" : "rgba(255,255,255,0.12)");
+        r.setProperty("--text-main", isLight ? "#101820" : "#f5f0e8");
+        r.setProperty("--text-muted", isLight ? "#4b5563" : "#b5a99c");
+        r.setProperty("--border", isLight ? "rgba(0,0,0,0.13)" : "rgba(255,255,255,0.11)");
 
         saveAppState();
         renderBoard();
@@ -1353,8 +1411,8 @@
                   <span class="dot" style="background:${t.snakeA}"></span>
                 </div>
                 ${isUnlocked
-                  ? `<span class="open-tag">${isSelected ? "✓ Active" : "Open"}</span>`
-                  : `<span class="unlock-tag">🔒 1 Ad</span>`
+                  ? `<span class="open-tag">${isSelected ? "Active" : "Open"}</span>`
+                  : `<span class="unlock-tag">1 Ad Unlock</span>`
                 }
               </div>
             </div>
@@ -1369,7 +1427,7 @@
               if (found) {
                 applyThemeCSS(found);
                 renderHomeThemesGrid();
-                showToast(`🎨 Applied: ${found.name}`);
+                showToast(`Theme applied: ${found.name}`);
               }
             } else {
               openAdUnlockModal(tid);
@@ -1383,7 +1441,7 @@
         if (!th) return;
         pendingUnlockThemeId = themeId;
         document.getElementById("adModalTitle").textContent = `Unlock "${th.name}"`;
-        document.getElementById("adModalDesc").textContent = "Watch 1 short ad to unlock this theme forever—and automatically generate a brand-new theme below!";
+        document.getElementById("adModalDesc").textContent = "Watch 1 ad to unlock this theme and automatically generate a new locked theme below.";
         document.getElementById("adBarWrap").style.display = "none";
         document.getElementById("adBarFill").style.width = "0%";
         document.getElementById("watchAdConfirmBtn").disabled = false;
@@ -1414,7 +1472,6 @@
         if (!appState.unlockedIds.includes(themeId)) {
           appState.unlockedIds.push(themeId);
         }
-        // Automatically generate a new locked theme at the bottom every time an ad unlocks one
         appState.generatedCounter++;
         const nextNewTheme = generateInfiniteLockedTheme(appState.generatedCounter);
         appState.themes.push(nextNewTheme);
@@ -1425,7 +1482,7 @@
         saveAppState();
         renderHomeThemesGrid();
         sfx.powerup();
-        showToast(`🎉 Unlocked "${unlockedTheme.name}" + New Theme Added Below!`);
+        showToast(`Unlocked "${unlockedTheme.name}" + New Theme Added Below`);
         pendingUnlockThemeId = null;
       }
 
@@ -1434,7 +1491,6 @@
         pendingUnlockThemeId = null;
       });
 
-      // Home Mode Buttons
       document.querySelectorAll(".mode-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("selected"));
@@ -1452,7 +1508,6 @@
         });
       });
 
-      // Home Goti (1, 2, 3, 4) Buttons
       document.querySelectorAll(".goti-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           document.querySelectorAll(".goti-btn").forEach(b => b.classList.remove("selected"));
@@ -1464,7 +1519,6 @@
         });
       });
 
-      // Theme Filter Pills
       document.querySelectorAll(".filter-pill").forEach(pill => {
         pill.addEventListener("click", () => {
           document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
@@ -1474,37 +1528,36 @@
         });
       });
 
-      // Online Friend Link Buttons
       document.getElementById("createInviteBtn").addEventListener("click", async () => {
-        showToast("🎟️ Creating Invite Passkey...");
+        showToast("Creating Invite Passkey...");
         const code = await p2pLink.createInvite();
         document.getElementById("p2pCodeInput").value = code;
         updateOnlineBadge();
-        showToast("✅ Invite ready! Copy & send to your friend.");
+        showToast("Invite ready. Send it to your friend.");
       });
 
       document.getElementById("createReplyBtn").addEventListener("click", async () => {
         const raw = document.getElementById("p2pCodeInput").value;
-        if (!raw.trim()) return showToast("⚠️ Paste your friend's Invite Passkey first!");
-        showToast("💌 Creating Reply Passkey...");
+        if (!raw.trim()) return showToast("Paste your friend's Invite Passkey first.");
+        showToast("Creating Reply Passkey...");
         const rep = await p2pLink.createReply(raw);
         document.getElementById("p2pCodeInput").value = rep;
         updateOnlineBadge();
-        showToast("✅ Reply ready! Send it back to Host.");
+        showToast("Reply ready. Send it back to Host.");
       });
 
       document.getElementById("connectFriendBtn").addEventListener("click", async () => {
         const raw = document.getElementById("p2pCodeInput").value;
-        if (!raw.trim()) return showToast("⚠️ Paste your friend's Reply Passkey first!");
+        if (!raw.trim()) return showToast("Paste your friend's Reply Passkey first.");
         await p2pLink.connectReply(raw);
-        showToast("🤝 Connecting to friend...");
+        showToast("Connecting to friend...");
       });
 
       document.getElementById("copyCodeBtn").addEventListener("click", () => {
         const box = document.getElementById("p2pCodeInput");
         box.select();
         navigator.clipboard?.writeText(box.value).catch(() => {});
-        showToast("📋 Passkey copied!");
+        showToast("Passkey copied.");
       });
 
       /* =====================================================================
@@ -1583,7 +1636,6 @@
           snakes: preset.snakes.map(([from, to]) => ({ from, to })),
           powerUps,
           exactRule: cfg.aiRule.includes("bounce") ? "bounce" : "exact",
-          aiWild: cfg.aiRule.includes("wild"),
           busy: false,
           winnerId: null
         };
@@ -1634,7 +1686,7 @@
         if (!m || m.busy || m.winnerId !== null || m.awaitingGotiPick) return;
         const seat = getOnlineSeat();
         if (seat !== null && m.currentTurn !== seat) {
-          showToast("⏳ Wait for your friend's turn!");
+          showToast("Wait for your friend's turn.");
           return;
         }
         const player = m.players[m.currentTurn];
@@ -1670,7 +1722,7 @@
         });
 
         if (movable.length === 0) {
-          showToast(`🎯 ${player.name} rolled ${rolled} — no valid move!`);
+          showToast(`${player.name} rolled ${rolled} — no valid move.`);
           await sleep(450);
           finishTurn(rolled === 6);
           return;
@@ -1678,27 +1730,23 @@
 
         m.pendingRoll = rolled;
 
-        // If only 1 token exists or only 1 token can move, move it automatically
         if (movable.length === 1 || player.isAI) {
-          const chosen = player.isAI ? pickBestAiToken(m, player, movable, rolled) : movable[0];
+          const chosen = player.isAI ? pickBestAiToken(m, movable, rolled) : movable[0];
           await executeGotiMove(player, chosen, rolled);
         } else {
-          // Let player tap which Goti (1..4) they want to advance
           m.busy = false;
           m.awaitingGotiPick = true;
           syncGameplayUI();
-          showToast(`👆 ${player.name}: Tap which Goti to move +${rolled}!`);
+          showToast(`${player.name}: Tap which Goti to move +${rolled}`);
         }
       }
 
-      function pickBestAiToken(m, player, movable, rolled) {
-        // Prioritize finishing at 100 or hitting a ladder
+      function pickBestAiToken(m, movable, rolled) {
         for (const tk of movable) {
           const dest = tk.tile + rolled;
           if (dest === 100) return tk;
           if (m.ladders.some(l => l.from === dest)) return tk;
         }
-        // Otherwise avoid snakes
         const safe = movable.filter(tk => !m.snakes.some(s => s.from === tk.tile + rolled));
         const pool = safe.length ? safe : movable;
         return pool.sort((a, b) => b.tile - a.tile)[0];
@@ -1714,7 +1762,7 @@
         const tk = player.tokens[gotiIndex];
         if (!tk || tk.finished) return;
         if (m.exactRule === "exact" && tk.tile + m.pendingRoll > 100) {
-          showToast("⚠️ That Goti needs an exact roll!");
+          showToast("That Goti needs an exact roll.");
           return;
         }
 
@@ -1741,59 +1789,54 @@
           await animateTokenHop(tk, start, target);
         }
 
-        // Check Power-Up Tile
         const pu = m.powerUps[tk.tile];
         if (pu) {
           delete m.powerUps[tk.tile];
           sfx.powerup();
           if (pu === "shield") {
             player.shield = true;
-            showToast(`🛡️ ${player.name} got a Snake Shield!`);
+            showToast(`${player.name} got a Snake Shield.`);
           } else if (pu === "boost" || pu === "lucky") {
             const boostDest = Math.min(100, tk.tile + 6);
-            showToast(`🪜 ${player.name} leaped +6 to ${boostDest}!`);
+            showToast(`${player.name} leaped +6 to ${boostDest}.`);
             await animateTokenGlide(tk, tk.tile, boostDest);
           } else if (pu === "swap") {
             const opp = m.players[player.id === 0 ? 1 : 0];
             const oppLead = opp.tokens.filter(t => !t.finished).sort((a, b) => b.tile - a.tile)[0];
             if (oppLead && oppLead.tile > tk.tile) {
               const aOld = tk.tile, bOld = oppLead.tile;
-              showToast(`🧲 ${player.name} swapped spots with ${opp.name}!`);
+              showToast(`${player.name} swapped spots with ${opp.name}.`);
               await Promise.all([animateTokenGlide(tk, aOld, bOld), animateTokenGlide(oppLead, bOld, aOld)]);
             }
           }
         }
 
-        // Check Ladder
         const lad = m.ladders.find(l => l.from === tk.tile);
         if (lad) {
           sfx.ladder();
-          showToast(`🪜 ${player.name} climbed ${lad.from} → ${lad.to}!`);
+          showToast(`${player.name} climbed ${lad.from} → ${lad.to}.`);
           await animateTokenGlide(tk, lad.from, lad.to);
         }
 
-        // Check Snake
         const snk = m.snakes.find(s => s.from === tk.tile);
         if (snk) {
           if (player.shield) {
             player.shield = false;
-            showToast(`🛡️ ${player.name}'s Shield blocked the snake!`);
+            showToast(`${player.name}'s Shield blocked the snake.`);
           } else {
             sfx.snake();
-            showToast(`🐍 ${player.name} slid ${snk.from} → ${snk.to}!`);
+            showToast(`${player.name} slid ${snk.from} → ${snk.to}.`);
             await animateTokenGlide(tk, snk.from, snk.to);
           }
         }
 
-        // Check Goti Completion
         if (tk.tile >= 100) {
           tk.tile = 100;
           tk.visualTile = 100;
           tk.finished = true;
-          showToast(`👑 ${player.name}'s Goti #${tk.idx + 1} reached 100!`);
+          showToast(`${player.name}'s Goti #${tk.idx + 1} reached 100.`);
         }
 
-        // Check Full Match Victory (All Gotis of player finished)
         if (player.tokens.every(t => t.finished)) {
           m.winnerId = player.id;
           m.busy = false;
@@ -1801,7 +1844,7 @@
           syncGameplayUI();
           sfx.win();
           document.getElementById("winnerHeading").textContent = `${player.name} Wins!`;
-          document.getElementById("winnerDesc").textContent = `All ${player.tokens.length} Goti reached Square 100!`;
+          document.getElementById("winnerDesc").textContent = `All ${player.tokens.length} Goti reached Square 100.`;
           document.getElementById("victoryModal").classList.add("open");
           return;
         }
@@ -1816,7 +1859,7 @@
         if (!bonusRoll) {
           m.currentTurn = m.currentTurn === 0 ? 1 : 0;
         } else {
-          showToast(`🎲 Rolled a 6! Bonus roll for ${m.players[m.currentTurn].name}!`);
+          showToast(`Rolled a 6 — bonus roll for ${m.players[m.currentTurn].name}.`);
         }
         m.busy = false;
         syncGameplayUI();
@@ -1901,7 +1944,7 @@
           ctx.font = `700 ${Math.max(9, Math.floor(T * 0.23))}px -apple-system, sans-serif`;
           ctx.textAlign = "left";
           ctx.textBaseline = "top";
-          ctx.fillText(tile === 100 ? "👑100" : String(tile), x + T * 0.1, y + T * 0.08);
+          ctx.fillText(tile === 100 ? "100" : String(tile), x + T * 0.1, y + T * 0.08);
 
           const pu = m.powerUps[tile];
           if (pu && POWERUP_ICONS[pu]) {
@@ -1915,7 +1958,6 @@
         m.ladders.forEach(l => drawLadder(l.from, l.to, T, th, is3D));
         m.snakes.forEach(s => drawSnake(s.from, s.to, T, th, is3D));
 
-        // Gather all active tokens across both players for neat clustering on shared tiles
         const allTokens = [];
         m.players.forEach(p => {
           p.tokens.forEach(tk => allTokens.push({ player: p, tk }));
@@ -2036,7 +2078,7 @@
         ctx.fill();
         ctx.stroke();
 
-        ctx.fillStyle = "#071018";
+        ctx.fillStyle = "#120e0a";
         ctx.font = `900 ${Math.max(8, Math.floor(r * 0.95))}px sans-serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -2089,7 +2131,7 @@
       }
 
       /* =====================================================================
-         9. GAMEPLAY HUD SYNC & CANVAS GOTI TAP SELECTION
+         9. GAMEPLAY HUD SYNC & BINDINGS
          ===================================================================== */
       function syncGameplayUI() {
         const m = appState.match;
@@ -2100,8 +2142,8 @@
           const isTurn = m.currentTurn === pIdx && m.winnerId === null;
           const gotisHtml = p.tokens.map(tk => {
             const canPick = isTurn && m.awaitingGotiPick && !tk.finished && !(m.exactRule === "exact" && tk.tile + m.pendingRoll > 100);
-            return `<span class="goti-chip ${canPick ? "selectable" : ""} ${tk.finished ? "done" : ""}" data-goti="${tk.idx}">
-              G${tk.idx + 1}: ${tk.finished ? "👑100" : "#" + tk.tile}
+            return `<span class="goti-chip ${canPick ? "selectable" : ""}" data-goti="${tk.idx}">
+              G${tk.idx + 1}: ${tk.finished ? "100" : "#" + tk.tile}
             </span>`;
           }).join("");
 
@@ -2113,7 +2155,7 @@
                   <span>${esc(p.name)}</span>
                 </div>
                 <span style="font-size:11px;color:var(--accent);font-weight:800;">
-                  ${p.shield ? "🛡️ Shield" : (isTurn ? "ACTIVE" : "")}
+                  ${p.shield ? "Shield" : (isTurn ? "TURN" : "")}
                 </span>
               </div>
               <div class="goti-pills">${gotisHtml}</div>
@@ -2136,32 +2178,31 @@
 
         if (m.winnerId !== null) {
           rollBtn.disabled = true;
-          rollBtn.textContent = "🏆 MATCH OVER";
+          rollBtn.textContent = "MATCH OVER";
         } else if (m.awaitingGotiPick) {
           rollBtn.disabled = true;
-          rollBtn.textContent = `👆 PICK GOTI (+${m.pendingRoll})`;
-          note.textContent = "Tap a glowing Goti chip above or on the board";
+          rollBtn.textContent = `PICK GOTI (+${m.pendingRoll})`;
+          note.textContent = "Tap a highlighted Goti chip or token on board";
         } else if (seat !== null && m.currentTurn !== seat) {
           rollBtn.disabled = true;
-          rollBtn.textContent = `⏳ ${curP.name}'s TURN`;
+          rollBtn.textContent = `${curP.name}'s TURN`;
           note.textContent = "Waiting for friend's roll...";
         } else if (curP.isAI) {
           rollBtn.disabled = true;
-          rollBtn.textContent = `🤖 ${curP.name}...`;
+          rollBtn.textContent = `${curP.name}...`;
           note.textContent = "Bot is rolling...";
         } else if (m.busy) {
           rollBtn.disabled = true;
-          rollBtn.textContent = "⏳ MOVING...";
+          rollBtn.textContent = "MOVING...";
         } else {
           rollBtn.disabled = false;
-          rollBtn.textContent = `🎲 ROLL (${curP.name.toUpperCase()})`;
+          rollBtn.textContent = `ROLL (${curP.name.toUpperCase()})`;
           note.textContent = "Single Shared Dice • Tap Dice or Press Space";
         }
 
         renderSharedDice(m.diceValue);
       }
 
-      // Allow tapping directly on a Goti on the Canvas when awaitingGotiPick is true
       canvas.addEventListener("click", (e) => {
         const m = appState.match;
         if (!m || !m.awaitingGotiPick) return;
@@ -2177,10 +2218,7 @@
           if (tk.finished) return;
           const pos = tileCenter(tk.tile, T);
           const d = Math.hypot(cx - pos.x, cy - pos.y);
-          if (d < bestDist) {
-            bestDist = d;
-            bestIdx = tk.idx;
-          }
+          if (d < bestDist) { bestDist = d; bestIdx = tk.idx; }
         });
         if (bestIdx !== -1) moveSelectedGoti(bestIdx, false);
       });
@@ -2233,9 +2271,6 @@
       function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
       function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m])); }
 
-      /* =====================================================================
-         10. INITIALIZE HOME PAGE
-         ===================================================================== */
       window.addEventListener("resize", resizeCanvas);
       applyThemeCSS(getActiveTheme());
       renderHomeThemesGrid();
