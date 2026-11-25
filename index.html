@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Snakes & Ladders — Saanp Seedhi Online P2P</title>
+  <style>
+    :root {
+      --bg-app: #0c1218;
+      --bg-panel: #131c26;
+      --bg-panel-2: #192533;
+      --text-main: #f3f7fb;
+      --text-muted: #93a6bb;
+      --accent: #00e5ff;
+      --accent-2: #ffb703;
+      --border: rgba(255, 255, 255, 0.12);
+      --radius: 14px;
+      --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-app);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 8px;
+      gap: 8px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px 12px;
+      min-height: 46px;
+      flex-shrink: 0;
+      gap: 8px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #081018;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+    }
+
+    .icon-btn {
+      background: var(--bg-panel-2);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: transform 0.12s ease, border-color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .icon-btn:hover { border-color: var(--accent); }
+    .icon-btn:active { transform: scale(0.95); }
+    .icon-btn.primary {
+      background: var(--accent);
+      color: #071018;
+      border-color: transparent;
+    }
+
+    .workspace {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      gap: 10px;
+    }
+
+    .board-stage {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px;
+      overflow: hidden;
+    }
+
+    .board-wrapper {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    canvas#boardCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    #boardTooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(10, 15, 22, 0.94);
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      z-index: 20;
+      opacity: 0;
+      transform: translate(-50%, -115%);
+      transition: opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    #toastBanner {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-16px);
+      background: rgba(11, 17, 25, 0.95);
+      border: 1px solid var(--accent-2);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+      max-width: 92%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #toastBanner.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hud-panel {
+      width: 335px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .online-pill {
+      background: var(--bg-panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 9px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 700;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #93a6bb;
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    .status-dot.connected {
+      background: #2ec4b6;
+      box-shadow: 0 0 8px #2ec4b6;
+    }
+
+    .players-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .player-card {
+      background: var(--bg-panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .player-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), inset 0 0 16px rgba(0, 229, 255, 0.12);
+    }
+
+    .player-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .player-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .token-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 2px solid #fff;
+    }
+
+    .player-name {
+      font-size: 12px;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .player-tile {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-2);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1px 6px;
+      border-radius: 6px;
+    }
+
+    .player-badges {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 18px;
+      flex-wrap: wrap;
+    }
+
+    .mini-badge {
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .mini-badge.shield {
+      background: rgba(46, 196, 182, 0.2);
+      color: #6fffe9;
+    }
+
+    .powerup-bar {
+      background: var(--bg-panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .powerup-slots {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .pu-slot {
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px dashed var(--border);
+      border-radius: 9px;
+      padding: 7px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 36px;
+    }
+
+    .pu-slot.filled {
+      border-style: solid;
+      border-color: var(--accent-2);
+      background: rgba(255, 183, 3, 0.12);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    #precisionPicker {
+      display: none;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 8px;
+      gap: 6px;
+      flex-direction: column;
+    }
+
+    #precisionPicker.active { display: flex; }
+
+    .dice-choices {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+    }
+
+    .dice-choice-btn {
+      background: var(--bg-panel);
+      color: #fff;
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      padding: 6px 0;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .dice-zone {
+      background: var(--bg-panel-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dice-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #ffffff, #dce6f2);
+      color: #0d1620;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      padding: 10px;
+      gap: 4px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .dice-box.rolling { animation: diceTumble 0.42s ease-in-out; }
+
+    @keyframes diceTumble {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-18deg) scale(1.12); }
+      50% { transform: rotate(16deg) scale(0.95); }
+      75% { transform: rotate(-10deg) scale(1.08); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    .pip {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #101820;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    .pip.on { opacity: 1; transform: scale(1); }
+    .pip.red { background: #e63946; }
+
+    .roll-controls {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    #rollBtn {
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--accent), #00b4d8);
+      color: #051018;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 229, 255, 0.3);
+    }
+
+    #rollBtn:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .turn-subtext {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-strip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow-x: auto;
+    }
+
+    .hist-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .match-log {
+      flex: 1;
+      min-height: 50px;
+      max-height: 105px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.26);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 7px 9px;
+      font-size: 11.5px;
+      line-height: 1.4;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .log-entry strong { color: var(--text-main); }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 9, 14, 0.8);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 12px;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+    }
+
+    .modal-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .modal-body {
+      padding: 14px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .field input[type="text"],
+    .field select,
+    .field textarea {
+      background: var(--bg-panel-2);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 7px 9px;
+      font-size: 12px;
+      font-family: inherit;
+    }
+
+    .field input[type="color"] {
+      width: 100%;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-panel-2);
+      cursor: pointer;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .theme-preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .theme-chip {
+      background: var(--bg-panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .theme-chip.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .swatches { display: flex; gap: 3px; }
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #061018;
+      border-color: transparent;
+    }
+
+    .help-box {
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.28);
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: var(--text-main);
+    }
+
+    @media (max-width: 820px) {
+      .workspace { flex-direction: column; }
+      .board-stage { flex: 1 1 auto; padding: 4px; }
+      .hud-panel {
+        width: 100%;
+        flex: 0 0 auto;
+        max-height: 45%;
+        padding: 8px;
+        gap: 6px;
+      }
+      .match-log { display: none; }
+      .dice-box { width: 52px; height: 52px; padding: 8px; }
+      #rollBtn { padding: 10px 12px; font-size: 13.5px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span>🐍🪜 Saanp Seedhi</span>
+        <span class="brand-badge">P2P Online</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn primary" id="openOnlineBtn" title="Zero-API Online Multiplayer">🌐 Online Play</button>
+        <button class="icon-btn" id="quickRandomThemeBtn" title="Generate Unlimited Random Theme">🎨 Random Theme</button>
+        <button class="icon-btn" id="openThemesBtn" title="Theme Studio">🖌️ Themes</button>
+        <button class="icon-btn" id="openSetupBtn" title="Match Setup">⚙️ Setup</button>
+        <button class="icon-btn" id="soundToggleBtn" title="Toggle Sound">🔊</button>
+        <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">⛶</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="board-stage" id="boardStage">
+        <div id="toastBanner"></div>
+        <div id="boardTooltip"></div>
+        <div class="board-wrapper" id="boardWrapper">
+          <canvas id="boardCanvas"></canvas>
+        </div>
+      </section>
+
+      <aside class="hud-panel">
+        <div class="online-pill">
+          <div>
+            <span class="status-dot" id="p2pDot"></span>
+            <span id="p2pStatusText">Offline / Local Mode</span>
+          </div>
+          <button class="icon-btn" id="quickOnlineBtn" style="padding:3px 8px;font-size:11px;">Connect</button>
+        </div>
+
+        <div class="players-grid" id="playersGrid"></div>
+
+        <div class="powerup-bar">
+          <div class="section-label">
+            <span>⚡ Active Power-Ups</span>
+            <span id="themeNameBadge" style="color:var(--accent);font-size:10px;">Royal Heritage</span>
+          </div>
+          <div class="powerup-slots" id="powerupSlots"></div>
+        </div>
+
+        <div id="precisionPicker">
+          <div class="section-label" style="color:var(--accent);">🎯 Choose Next Roll (1–6)</div>
+          <div class="dice-choices">
+            <button class="dice-choice-btn" data-val="1">1</button>
+            <button class="dice-choice-btn" data-val="2">2</button>
+            <button class="dice-choice-btn" data-val="3">3</button>
+            <button class="dice-choice-btn" data-val="4">4</button>
+            <button class="dice-choice-btn" data-val="5">5</button>
+            <button class="dice-choice-btn" data-val="6">6</button>
+          </div>
+        </div>
+
+        <div class="dice-zone">
+          <div class="dice-box" id="diceBox" title="Tap or Press Space to Roll">
+            <div class="pip" data-p="0"></div>
+            <div class="pip" data-p="1"></div>
+            <div class="pip" data-p="2"></div>
+            <div class="pip" data-p="3"></div>
+            <div class="pip" data-p="4"></div>
+            <div class="pip" data-p="5"></div>
+            <div class="pip" data-p="6"></div>
+            <div class="pip" data-p="7"></div>
+            <div class="pip" data-p="8"></div>
+          </div>
+          <div class="roll-controls">
+            <button id="rollBtn">🎲 ROLL DICE</button>
+            <div class="turn-subtext" id="turnSubtext">Tap Dice or Press Space</div>
+          </div>
+        </div>
+
+        <div class="history-strip" id="historyStrip"></div>
+        <div class="match-log" id="matchLog"></div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Zero-API Online P2P Modal -->
+  <div class="modal-backdrop" id="onlineModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span>🌐 Zero-API Online Play (WebRTC P2P)</span>
+        <button class="icon-btn" data-close="onlineModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="help-box">
+          <strong>No Firebase • No Backend API • No Paid Server:</strong><br/>
+          1. <strong>Host (Player 1):</strong> Click <em>Create Invite Code</em>, copy it, and send via WhatsApp/Chat.<br/>
+          2. <strong>Guest (Player 2):</strong> Paste Host code, click <em>Generate Join Code</em>, send it back to Host.<br/>
+          3. <strong>Host:</strong> Paste Guest code & click <em>Complete P2P Link</em> — turns & rolls sync live!
+        </div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="icon-btn primary" id="createOfferBtn">📡 1. Create Host Invite Code</button>
+          <button class="icon-btn" id="generateAnswerBtn">📲 2. Generate Guest Join Code</button>
+          <button class="icon-btn primary" id="acceptAnswerBtn">🔗 3. Complete P2P Link (Host)</button>
+          <button class="icon-btn" id="disconnectP2pBtn">Disconnect</button>
+        </div>
+
+        <label class="field">
+          Invite / Join Code Payload (Copy & Paste between devices)
+          <textarea id="p2pPayloadBox" rows="4" placeholder="Click Create Host Invite Code or paste Host code here..."></textarea>
+        </label>
+
+        <div style="display:flex;gap:8px;">
+          <button class="icon-btn" id="copyP2pCodeBtn">📋 Copy Code</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setup Modal -->
+  <div class="modal-backdrop" id="setupModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span>⚙️ Match Setup & Game Rules</span>
+        <button class="icon-btn" data-close="setupModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <label class="field">
+            Game Mode
+            <select id="cfgMode">
+              <option value="ai">Solo vs. Smart AI Bot</option>
+              <option value="pvp2">Pass & Play / P2P (2 Players)</option>
+              <option value="pvp3">Pass & Play (3 Players)</option>
+              <option value="pvp4">Pass & Play (4 Players)</option>
+            </select>
+          </label>
+          <label class="field">
+            AI Personality
+            <select id="cfgAi">
+              <option value="casual">Casual</option>
+              <option value="tactician" selected>Tactician</option>
+              <option value="chaos">Chaos</option>
+            </select>
+          </label>
+          <label class="field">
+            Board Layout Preset
+            <select id="cfgBoardPreset">
+              <option value="classic">Classic Balanced</option>
+              <option value="express">Express Fast-Climb</option>
+              <option value="snakepit">High-Stakes Snake Pit</option>
+            </select>
+          </label>
+          <label class="field">
+            Finish at Tile 100 Rule
+            <select id="cfgExact">
+              <option value="exact">Exact Roll Required</option>
+              <option value="bounce">Overshoot Bounce Back</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <span>🎲 Bonus Roll on 6 (Triple-6 forfeits turn)</span>
+          <input type="checkbox" id="cfgBonusSix" checked />
+        </div>
+        <div class="toggle-row">
+          <span>⚡ Power-Up Tiles on Board</span>
+          <input type="checkbox" id="cfgPowerUps" checked />
+        </div>
+
+        <div class="section-label">Players & Tokens</div>
+        <div id="playerConfigList" style="display:flex;flex-direction:column;gap:8px;"></div>
+
+        <div class="section-label">Career Stats (LocalStorage)</div>
+        <div id="careerStatsBox" style="font-size:12px;color:var(--text-muted);background:var(--bg-panel-2);padding:8px 10px;border-radius:10px;border:1px solid var(--border);"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="icon-btn" id="resumeMatchBtn" style="display:none;">▶️ Resume Match</button>
+        <button class="icon-btn primary" id="startNewMatchBtn">🚀 Start New Match</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unlimited Themes Modal -->
+  <div class="modal-backdrop" id="themesModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span>🎨 Unlimited Themes Studio</span>
+        <button class="icon-btn" data-close="themesModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="presetsTab">Signature & Saved</button>
+          <button class="tab-btn" data-tab="studioTab">Custom Studio</button>
+          <button class="tab-btn" data-tab="shareTab">JSON Share / Import</button>
+        </div>
+
+        <div id="presetsTab" class="tab-pane" style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="icon-btn primary" id="modalRandomThemeBtn">✨ Generate Unlimited Random Theme</button>
+            <button class="icon-btn" id="saveCurrentThemeBtn">💾 Save Current to Library</button>
+          </div>
+          <div class="section-label">Built-In Signature Themes</div>
+          <div class="theme-preset-grid" id="builtInThemesGrid"></div>
+          <div class="section-label">Saved Unlimited Themes (<span id="savedCount">0</span>)</div>
+          <div class="theme-preset-grid" id="savedThemesGrid"></div>
+        </div>
+
+        <div id="studioTab" class="tab-pane" style="display:none;flex-direction:column;gap:10px;">
+          <div class="form-grid">
+            <label class="field">Theme Name<input type="text" id="stName" value="My Custom Theme" /></label>
+            <label class="field">Snake Pattern
+              <select id="stSnakePattern">
+                <option value="scales">Scales & Stripes</option>
+                <option value="neon">Neon Glow Core</option>
+                <option value="stripes">Bold Bands</option>
+                <option value="solid">Smooth Solid</option>
+              </select>
+            </label>
+            <label class="field">Board Base<input type="color" id="stBoardBg" /></label>
+            <label class="field">UI & Dice Accent<input type="color" id="stAccent" /></label>
+            <label class="field">Tile Light<input type="color" id="stTileA" /></label>
+            <label class="field">Tile Dark<input type="color" id="stTileB" /></label>
+            <label class="field">Ladder Primary<input type="color" id="stLadderA" /></label>
+            <label class="field">Ladder Rungs<input type="color" id="stLadderB" /></label>
+            <label class="field">Snake Primary<input type="color" id="stSnakeA" /></label>
+            <label class="field">Snake Pattern<input type="color" id="stSnakeB" /></label>
+          </div>
+          <div class="form-grid">
+            <div class="toggle-row"><span>Rounded Tiles</span><input type="checkbox" id="stRounded" checked /></div>
+            <div class="toggle-row"><span>Neon Glow FX</span><input type="checkbox" id="stGlow" /></div>
+          </div>
+          <button class="icon-btn primary" id="applyAndSaveStudioBtn">✅ Apply & Save Custom Theme</button>
+        </div>
+
+        <div id="shareTab" class="tab-pane" style="display:none;flex-direction:column;gap:10px;">
+          <label class="field">
+            Theme JSON (Share or Paste)
+            <textarea id="themeJsonBox" rows="5"></textarea>
+          </label>
+          <div style="display:flex;gap:8px;">
+            <button class="icon-btn" id="copyThemeJsonBtn">📋 Copy JSON</button>
+            <button class="icon-btn primary" id="importThemeJsonBtn">📥 Import & Apply JSON</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Victory Modal -->
+  <div class="modal-backdrop" id="victoryModal">
+    <div class="modal-card" style="max-width:400px;text-align:center;">
+      <div class="modal-header">
+        <span>🏆 Victory!</span>
+        <button class="icon-btn" data-close="victoryModal">✕</button>
+      </div>
+      <div class="modal-body" style="align-items:center;">
+        <div style="font-size:48px;">👑</div>
+        <h2 id="winnerTitle" style="margin:0;font-size:22px;">Player 1 Wins!</h2>
+        <p id="winnerSubtitle" style="margin:0;color:var(--text-muted);font-size:13px;"></p>
+        <button class="icon-btn primary" id="playAgainBtn" style="margin-top:8px;padding:10px 20px;">🎲 Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const STORAGE_KEY = "saanp_seedhi_p2p_v1";
+      const CHANNEL_NAME = "saanp_seedhi_local_sync_v1";
+
+      const BUILT_IN_THEMES = [
+        {
+          id: "royal_heritage", name: "Royal Heritage", builtIn: true,
+          appBg: "#140e0a", panelBg: "#1f1610", panelBg2: "#2a1e16", boardBg: "#2c1d12",
+          tileA: "#f3e1c0", tileB: "#d6b37c", textA: "#3b2313", textB: "#2a180c",
+          ladderA: "#d97706", ladderB: "#fef08a", snakeA: "#991b1b", snakeB: "#f59e0b",
+          accent: "#f59e0b", accent2: "#10b981", snakePattern: "scales", rounded: true, glow: false
+        },
+        {
+          id: "dark_neon", name: "Dark Neon Cyber", builtIn: true,
+          appBg: "#070b12", panelBg: "#0e1522", panelBg2: "#151f32", boardBg: "#090d16",
+          tileA: "#11192a", tileB: "#18243c", textA: "#67e8f9", textB: "#a5b4fc",
+          ladderA: "#00f5d4", ladderB: "#38bdf8", snakeA: "#ff006e", snakeB: "#ffbe0b",
+          accent: "#00f5d4", accent2: "#ff006e", snakePattern: "neon", rounded: true, glow: true
+        },
+        {
+          id: "pine_teal", name: "Pine-Teal Canopy", builtIn: true,
+          appBg: "#071413", panelBg: "#0d211f", panelBg2: "#132e2b", boardBg: "#0a1c1a",
+          tileA: "#163834", tileB: "#1f4c46", textA: "#a7f3d0", textB: "#ecfdf5",
+          ladderA: "#34d399", ladderB: "#fde047", snakeA: "#f97316", snakeB: "#fef08a",
+          accent: "#2dd4bf", accent2: "#fbbf24", snakePattern: "stripes", rounded: true, glow: true
+        },
+        {
+          id: "monochrome_ink", name: "Monochrome Ink", builtIn: true,
+          appBg: "#111111", panelBg: "#1a1a1a", panelBg2: "#242424", boardBg: "#181818",
+          tileA: "#f4f4f5", tileB: "#d4d4d8", textA: "#18181b", textB: "#09090b",
+          ladderA: "#3f3f46", ladderB: "#a1a1aa", snakeA: "#09090b", snakeB: "#ef4444",
+          accent: "#f4f4f5", accent2: "#ef4444", snakePattern: "stripes", rounded: false, glow: false
+        }
+      ];
+
+      const BOARD_PRESETS = {
+        classic: {
+          ladders: [[4, 25], [9, 31], [18, 45], [21, 42], [28, 76], [36, 57], [51, 67], [71, 91], [80, 98]],
+          snakes: [[17, 7], [34, 12], [54, 31], [62, 19], [64, 41], [87, 36], [93, 73], [95, 75], [99, 58]]
+        },
+        express: {
+          ladders: [[3, 24], [7, 29], [14, 48], [20, 59], [27, 68], [33, 74], [41, 79], [50, 88], [56, 84], [63, 94], [70, 92], [77, 97]],
+          snakes: [[26, 10], [47, 22], [66, 39], [83, 52], [91, 61], [98, 69]]
+        },
+        snakepit: {
+          ladders: [[5, 26], [13, 46], [23, 55], [38, 65], [49, 72], [60, 85], [69, 90], [78, 96]],
+          snakes: [[16, 4], [29, 8], [37, 15], [44, 19], [53, 27], [61, 32], [68, 40], [75, 43], [82, 51], [89, 57], [94, 63], [97, 48], [99, 21]]
+        }
+      };
+
+      const POWERUP_TYPES = {
+        shield: { id: "shield", icon: "🛡️", name: "Snake Shield", desc: "Auto-blocks next snake bite" },
+        precision: { id: "precision", icon: "🎯", name: "Loaded Dice", desc: "Pick exact 1–6 on next roll" },
+        ladderBoost: { id: "ladderBoost", icon: "🪜", name: "Seedhi Boost", desc: "Jump +7 tiles immediately" },
+        swap: { id: "swap", icon: "🧲", name: "Magnet Swap", desc: "Swap with leader or +5 tiles" },
+        antidote: { id: "antidote", icon: "🧪", name: "Venom Half", desc: "Halves next snake drop" },
+        mystery: { id: "mystery", icon: "❓", name: "Mystery Tile", desc: "Instant random surprise!" }
+      };
+
+      const TOKEN_COLORS = ["#00e5ff", "#ff4d6d", "#ffb703", "#80ed99"];
+      const TOKEN_SHAPES = ["circle", "crown", "star", "diamond"];
+
+      /* =========================================================================
+         WEB AUDIO SOUND FX
+         ========================================================================= */
+      class SoundFX {
+        constructor() { this.ctx = null; this.muted = false; }
+        ensure() {
+          if (!this.ctx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (AC) this.ctx = new AC();
+          }
+          if (this.ctx && this.ctx.state === "suspended") this.ctx.resume().catch(() => {});
+        }
+        tone(freq, type = "sine", dur = 0.12, vol = 0.12, slideTo = null) {
+          if (this.muted) return;
+          this.ensure();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, now);
+          if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, now + dur);
+          gain.gain.setValueAtTime(vol, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+          osc.connect(gain); gain.connect(this.ctx.destination);
+          osc.start(now); osc.stop(now + dur);
+        }
+        dice() { for (let i = 0; i < 4; i++) setTimeout(() => this.tone(180 + Math.random() * 240, "triangle", 0.05, 0.09), i * 65); }
+        hop(s) { this.tone(320 + s * 22, "sine", 0.07, 0.09); }
+        ladder() { [392, 494, 587, 784].forEach((f, i) => setTimeout(() => this.tone(f, "triangle", 0.14, 0.12), i * 75)); }
+        snake() { this.tone(420, "sawtooth", 0.45, 0.11, 110); }
+        powerup() { [523, 659, 880].forEach((f, i) => setTimeout(() => this.tone(f, "sine", 0.12, 0.12), i * 60)); }
+        shieldBlock() { this.tone(240, "square", 0.16, 0.12, 620); }
+        win() { [523, 659, 784, 1046, 784, 1046].forEach((f, i) => setTimeout(() => this.tone(f, "triangle", 0.18, 0.15), i * 110)); }
+      }
+      const sfx = new SoundFX();
+
+      /* =========================================================================
+         ZERO-API ONLINE P2P MANAGER (WebRTC DataChannel + BroadcastChannel)
+         ========================================================================= */
+      class ZeroApiOnlineBridge {
+        constructor() {
+          this.pc = null;
+          this.dc = null;
+          this.role = null; // "host" | "guest" | null
+          this.connected = false;
+          this.bc = ("BroadcastChannel" in window) ? new BroadcastChannel(CHANNEL_NAME) : null;
+          if (this.bc) {
+            this.bc.onmessage = (ev) => {
+              if (ev.data && ev.data.fromTab !== TAB_ID) {
+                this.onRemoteMessage(ev.data.payload);
+              }
+            };
+          }
+        }
+
+        broadcastSameDevice(payload) {
+          if (this.bc) this.bc.postMessage({ fromTab: TAB_ID, payload });
+        }
+
+        send(payload) {
+          this.broadcastSameDevice(payload);
+          if (this.dc && this.dc.readyState === "open") {
+            this.dc.send(JSON.stringify(payload));
+          }
+        }
+
+        createPeer() {
+          if (this.pc) this.pc.close();
+          // Public STUN only for NAT hole-punching (no API key, no backend, no Firebase)
+          this.pc = new RTCPeerConnection({
+            iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }]
+          });
+          this.pc.onconnectionstatechange = () => {
+            if (this.pc.connectionState === "disconnected" || this.pc.connectionState === "failed") {
+              this.connected = false;
+              updateP2pBadge();
+            }
+          };
+        }
+
+        attachChannel(channel) {
+          this.dc = channel;
+          this.dc.onopen = () => {
+            this.connected = true;
+            updateP2pBadge();
+            showToast("🌐 Online P2P Connected! Live turns active.");
+            if (this.role === "host" && appState.match) {
+              this.send({ type: "SYNC_STATE", match: appState.match, settings: appState.settings });
+            }
+          };
+          this.dc.onclose = () => {
+            this.connected = false;
+            updateP2pBadge();
+          };
+          this.dc.onmessage = (ev) => {
+            try {
+              this.onRemoteMessage(JSON.parse(ev.data));
+            } catch {}
+          };
+        }
+
+        async createHostOffer() {
+          this.role = "host";
+          this.createPeer();
+          const ch = this.pc.createDataChannel("saanp_seedhi");
+          this.attachChannel(ch);
+
+          const offer = await this.pc.createOffer();
+          await this.pc.setLocalDescription(offer);
+          await this.waitIceComplete();
+
+          // Start a fresh 2-player match for Host (Player 0) vs Guest (Player 1)
+          appState.settings.mode = "pvp2";
+          appState.settings.playerConfigs[0].name = "Host (P1)";
+          appState.settings.playerConfigs[1].name = "Guest (P2)";
+          createNewMatch();
+
+          return btoa(JSON.stringify({ role: "host", sdp: this.pc.localDescription }));
+        }
+
+        async createGuestAnswer(offerCodeStr) {
+          const parsed = JSON.parse(atob(offerCodeStr.trim()));
+          this.role = "guest";
+          this.createPeer();
+          this.pc.ondatachannel = (ev) => this.attachChannel(ev.channel);
+
+          await this.pc.setRemoteDescription(parsed.sdp);
+          const answer = await this.pc.createAnswer();
+          await this.pc.setLocalDescription(answer);
+          await this.waitIceComplete();
+
+          return btoa(JSON.stringify({ role: "guest", sdp: this.pc.localDescription }));
+        }
+
+        async acceptGuestAnswer(answerCodeStr) {
+          const parsed = JSON.parse(atob(answerCodeStr.trim()));
+          await this.pc.setRemoteDescription(parsed.sdp);
+        }
+
+        waitIceComplete() {
+          return new Promise(resolve => {
+            if (!this.pc || this.pc.iceGatheringState === "complete") return resolve();
+            const check = () => {
+              if (this.pc.iceGatheringState === "complete") {
+                this.pc.removeEventListener("icegatheringstatechange", check);
+                resolve();
+              }
+            };
+            this.pc.addEventListener("icegatheringstatechange", check);
+            setTimeout(resolve, 2500);
+          });
+        }
+
+        disconnect() {
+          if (this.dc) this.dc.close();
+          if (this.pc) this.pc.close();
+          this.dc = null;
+          this.pc = null;
+          this.role = null;
+          this.connected = false;
+          updateP2pBadge();
+          showToast("Disconnected from Online P2P.");
+        }
+
+        onRemoteMessage(msg) {
+          if (!msg || !msg.type) return;
+          if (msg.type === "SYNC_STATE") {
+            appState.settings = msg.settings;
+            appState.match = msg.match;
+            appState.match.busy = false;
+            persistState();
+            syncAllUI();
+            renderBoard();
+          } else if (msg.type === "ROLL_REQUEST") {
+            executeTurn(msg.forcedRoll || null, true);
+          } else if (msg.type === "POWERUP_USE") {
+            executePowerUp(msg.slotIndex, true);
+          }
+        }
+      }
+
+      const TAB_ID = "tab_" + Math.random().toString(36).slice(2, 9);
+      const p2p = new ZeroApiOnlineBridge();
+
+      function getLocalSeatIndex() {
+        if (!p2p.connected || !p2p.role) return null;
+        return p2p.role === "host" ? 0 : 1;
+      }
+
+      function updateP2pBadge() {
+        const dot = document.getElementById("p2pDot");
+        const txt = document.getElementById("p2pStatusText");
+        if (p2p.connected) {
+          dot.classList.add("connected");
+          txt.textContent = `Online P2P (${p2p.role === "host" ? "You = P1" : "You = P2"})`;
+        } else if (p2p.role === "host") {
+          dot.classList.remove("connected");
+          txt.textContent = "Waiting for Guest Link...";
+        } else {
+          dot.classList.remove("connected");
+          txt.textContent = "Offline / Local Mode";
+        }
+        syncControlsState();
+      }
+
+      /* =========================================================================
+         STATE & PERSISTENCE
+         ========================================================================= */
+      const defaultState = {
+        activeTheme: BUILT_IN_THEMES[0],
+        savedThemes: [],
+        settings: {
+          mode: "ai",
+          aiLevel: "tactician",
+          boardPreset: "classic",
+          exactRule: "exact",
+          bonusSix: true,
+          powerUpsEnabled: true,
+          playerConfigs: [
+            { name: "You", color: TOKEN_COLORS[0], shape: "crown", isAI: false },
+            { name: "Aarav AI", color: TOKEN_COLORS[1], shape: "star", isAI: true },
+            { name: "Player 3", color: TOKEN_COLORS[2], shape: "diamond", isAI: false },
+            { name: "Player 4", color: TOKEN_COLORS[3], shape: "circle", isAI: false }
+          ]
+        },
+        stats: { wins: 0, rolls: 0, laddersClimbed: 0, snakesBitten: 0, powerUpsUsed: 0 },
+        match: null
+      };
+
+      let appState = loadAppState();
+
+      function loadAppState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return structuredClone(defaultState);
+          const parsed = JSON.parse(raw);
+          return {
+            ...structuredClone(defaultState),
+            ...parsed,
+            settings: { ...structuredClone(defaultState.settings), ...(parsed.settings || {}) },
+            stats: { ...structuredClone(defaultState.stats), ...(parsed.stats || {}) }
+          };
+        } catch {
+          return structuredClone(defaultState);
+        }
+      }
+
+      function persistState() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); } catch {}
+      }
+
+      /* =========================================================================
+         UNLIMITED THEME GENERATOR
+         ========================================================================= */
+      const ADJ = ["Solar", "Abyssal", "Velvet", "Glacier", "Crimson", "Emerald", "Cyber", "Saffron", "Obsidian", "Lotus", "Indigo", "Mirage"];
+      const NOUN = ["Flare", "Mint", "Dusk", "Lime", "Pulse", "Temple", "Vortex", "Oasis", "Drift", "Crown", "Echo", "Spark"];
+
+      function hslToHex(h, s, l) {
+        s /= 100; l /= 100;
+        const k = n => (n + h / 30) % 12;
+        const a = s * Math.min(l, 1 - l);
+        const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+        const hx = x => Math.round(255 * x).toString(16).padStart(2, "0");
+        return `#${hx(f(0))}${hx(f(8))}${hx(f(4))}`;
+      }
+
+      function generateUnlimitedRandomTheme() {
+        const baseHue = Math.floor(Math.random() * 360);
+        const isDark = Math.random() > 0.25;
+        const ladderHue = (baseHue + 135 + Math.floor(Math.random() * 40)) % 360;
+        const snakeHue = (baseHue + 290 + Math.floor(Math.random() * 50)) % 360;
+        const name = `${ADJ[Math.floor(Math.random() * ADJ.length)]} ${NOUN[Math.floor(Math.random() * NOUN.length)]}`;
+        const patterns = ["scales", "neon", "stripes", "solid"];
+
+        return {
+          id: "gen_" + Date.now() + "_" + Math.floor(Math.random() * 999),
+          name, builtIn: false,
+          appBg: isDark ? hslToHex(baseHue, 35, 6) : hslToHex(baseHue, 25, 92),
+          panelBg: isDark ? hslToHex(baseHue, 32, 10) : hslToHex(baseHue, 22, 96),
+          panelBg2: isDark ? hslToHex(baseHue, 30, 15) : hslToHex(baseHue, 20, 88),
+          boardBg: isDark ? hslToHex(baseHue, 38, 8) : hslToHex(baseHue, 30, 82),
+          tileA: isDark ? hslToHex(baseHue, 32, 14) : hslToHex(baseHue, 35, 93),
+          tileB: isDark ? hslToHex((baseHue + 12) % 360, 36, 20) : hslToHex((baseHue + 12) % 360, 32, 84),
+          textA: isDark ? hslToHex(baseHue, 60, 82) : hslToHex(baseHue, 45, 18),
+          textB: isDark ? hslToHex((baseHue + 20) % 360, 65, 86) : hslToHex(baseHue, 50, 14),
+          ladderA: hslToHex(ladderHue, 85, isDark ? 56 : 40),
+          ladderB: hslToHex((ladderHue + 35) % 360, 90, isDark ? 72 : 55),
+          snakeA: hslToHex(snakeHue, 85, isDark ? 54 : 42),
+          snakeB: hslToHex((snakeHue + 45) % 360, 92, isDark ? 65 : 52),
+          accent: hslToHex(ladderHue, 88, isDark ? 58 : 42),
+          accent2: hslToHex(snakeHue, 88, isDark ? 62 : 48),
+          snakePattern: patterns[Math.floor(Math.random() * patterns.length)],
+          rounded: Math.random() > 0.25,
+          glow: isDark && Math.random() > 0.35
+        };
+      }
+
+      function applyThemeToUI(theme) {
+        appState.activeTheme = theme;
+        const root = document.documentElement.style;
+        root.setProperty("--bg-app", theme.appBg);
+        root.setProperty("--bg-panel", theme.panelBg);
+        root.setProperty("--bg-panel-2", theme.panelBg2);
+        root.setProperty("--accent", theme.accent);
+        root.setProperty("--accent-2", theme.accent2);
+
+        const isLight = parseInt(theme.appBg.slice(1, 3), 16) > 150;
+        root.setProperty("--text-main", isLight ? "#101820" : "#f3f7fb");
+        root.setProperty("--text-muted", isLight ? "#4b5563" : "#93a6bb");
+        root.setProperty("--border", isLight ? "rgba(0,0,0,0.14)" : "rgba(255,255,255,0.12)");
+
+        document.getElementById("themeNameBadge").textContent = theme.name;
+        persistState();
+        renderBoard();
+      }
+
+      /* =========================================================================
+         MATCH ENGINE & BOARD GEOMETRY
+         ========================================================================= */
+      function createNewMatch(broadcast = true) {
+        const cfg = appState.settings;
+        const preset = BOARD_PRESETS[cfg.boardPreset] || BOARD_PRESETS.classic;
+        const count = cfg.mode === "ai" ? 2 : parseInt(cfg.mode.replace("pvp", ""), 10) || 2;
+
+        const players = [];
+        for (let i = 0; i < count; i++) {
+          const pc = cfg.playerConfigs[i] || defaultState.settings.playerConfigs[i];
+          players.push({
+            id: i,
+            name: pc.name.trim() || `Player ${i + 1}`,
+            color: pc.color,
+            shape: pc.shape,
+            isAI: !p2p.connected && cfg.mode === "ai" && i === 1,
+            tile: 1,
+            visualTile: 1,
+            powerUps: [],
+            shield: false,
+            antidote: false,
+            precisionRoll: null,
+            consecutiveSixes: 0
+          });
+        }
+
+        const occupied = new Set([1, 100]);
+        preset.ladders.forEach(([s, e]) => { occupied.add(s); occupied.add(e); });
+        preset.snakes.forEach(([s, e]) => { occupied.add(s); occupied.add(e); });
+
+        const boardPowerUps = {};
+        if (cfg.powerUpsEnabled) {
+          const pool = ["shield", "precision", "ladderBoost", "swap", "antidote", "mystery", "shield", "precision", "ladderBoost", "mystery", "swap", "antidote"];
+          let attempts = 0, idx = 0;
+          while (idx < pool.length && attempts < 400) {
+            attempts++;
+            const t = 4 + Math.floor(Math.random() * 93);
+            if (!occupied.has(t)) { occupied.add(t); boardPowerUps[t] = pool[idx++]; }
+          }
+        }
+
+        appState.match = {
+          players,
+          currentTurn: 0,
+          ladders: preset.ladders.map(([from, to]) => ({ from, to })),
+          snakes: preset.snakes.map(([from, to]) => ({ from, to })),
+          boardPowerUps,
+          diceValue: 6,
+          diceHistory: [],
+          logs: ["Match started! Roll the dice to climb to 100."],
+          busy: false,
+          winnerId: null
+        };
+
+        persistState();
+        syncAllUI();
+        renderBoard();
+        if (broadcast && p2p.connected) {
+          p2p.send({ type: "SYNC_STATE", match: appState.match, settings: appState.settings });
+        }
+      }
+
+      function tileToGrid(tile) {
+        const clamped = Math.max(1, Math.min(100, Math.round(tile)));
+        const zeroIdx = clamped - 1;
+        const rowFromBottom = Math.floor(zeroIdx / 10);
+        const colInRow = zeroIdx % 10;
+        const col = rowFromBottom % 2 === 0 ? colInRow : 9 - colInRow;
+        const row = 9 - rowFromBottom;
+        return { col, row };
+      }
+
+      function tileCenter(tile, T) {
+        const { col, row } = tileToGrid(tile);
+        return { x: (col + 0.5) * T, y: (row + 0.5) * T };
+      }
+
+      function gridToTile(col, row) {
+        if (col < 0 || col > 9 || row < 0 || row > 9) return null;
+        const rowFromBottom = 9 - row;
+        const colInRow = rowFromBottom % 2 === 0 ? col : 9 - col;
+        return rowFromBottom * 10 + colInRow + 1;
+      }
+
+      /* =========================================================================
+         CANVAS RENDERER
+         ========================================================================= */
+      const canvas = document.getElementById("boardCanvas");
+      const ctx = canvas.getContext("2d");
+      let boardPixelSize = 600;
+
+      function resizeCanvas() {
+        const stage = document.getElementById("boardStage");
+        const wrapper = document.getElementById("boardWrapper");
+        const size = Math.max(240, Math.floor(Math.min(stage.clientWidth - 16, stage.clientHeight - 16)));
+        wrapper.style.width = size + "px";
+        wrapper.style.height = size + "px";
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = size * dpr;
+        canvas.height = size * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        boardPixelSize = size;
+        renderBoard();
+      }
+
+      function renderBoard() {
+        const m = appState.match;
+        if (!m) return;
+        const theme = appState.activeTheme;
+        const S = boardPixelSize;
+        const T = S / 10;
+
+        ctx.clearRect(0, 0, S, S);
+        ctx.fillStyle = theme.boardBg;
+        ctx.fillRect(0, 0, S, S);
+
+        const pad = theme.rounded ? Math.max(1.2, T * 0.04) : 0;
+        const rad = theme.rounded ? Math.max(3, T * 0.14) : 0;
+
+        for (let tile = 1; tile <= 100; tile++) {
+          const { col, row } = tileToGrid(tile);
+          const x = col * T + pad, y = row * T + pad, w = T - pad * 2, h = T - pad * 2;
+          const isEven = (row + col) % 2 === 0;
+          ctx.fillStyle = isEven ? theme.tileA : theme.tileB;
+          if (rad > 0) { roundRect(ctx, x, y, w, h, rad); ctx.fill(); }
+          else ctx.fillRect(x, y, w, h);
+
+          ctx.fillStyle = isEven ? theme.textA : theme.textB;
+          ctx.font = `700 ${Math.max(9, Math.floor(T * 0.23))}px -apple-system, sans-serif`;
+          ctx.textAlign = "left"; ctx.textBaseline = "top";
+          ctx.fillText(tile === 100 ? "👑100" : String(tile), x + T * 0.1, y + T * 0.08);
+
+          const puKey = m.boardPowerUps[tile];
+          if (puKey && POWERUP_TYPES[puKey]) {
+            ctx.font = `${Math.max(12, Math.floor(T * 0.42))}px sans-serif`;
+            ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.fillText(POWERUP_TYPES[puKey].icon, col * T + T * 0.52, row * T + T * 0.62);
+          }
+        }
+
+        m.ladders.forEach(l => drawLadder(l.from, l.to, T, theme));
+        m.snakes.forEach(s => drawSnake(s.from, s.to, T, theme));
+
+        const groups = {};
+        m.players.forEach(p => {
+          const k = Math.round(p.visualTile * 10);
+          if (!groups[k]) groups[k] = [];
+          groups[k].push(p);
+        });
+
+        Object.values(groups).forEach(group => {
+          group.forEach((p, idx) => {
+            const pos = getInterpolatedTilePos(p.visualTile, T);
+            const angle = (idx / group.length) * Math.PI * 2;
+            const off = group.length > 1 ? T * 0.16 : 0;
+            drawPlayerToken(p, pos.x + Math.cos(angle) * off, pos.y + Math.sin(angle) * off, T * 0.29, p.id === m.currentTurn);
+          });
+        });
+      }
+
+      function getInterpolatedTilePos(vTile, T) {
+        const floorT = Math.floor(vTile);
+        const frac = vTile - floorT;
+        const p1 = tileCenter(floorT, T);
+        if (frac <= 0.001 || floorT >= 100) return p1;
+        const p2 = tileCenter(floorT + 1, T);
+        return {
+          x: p1.x + (p2.x - p1.x) * frac,
+          y: p1.y + (p2.y - p1.y) * frac - Math.sin(frac * Math.PI) * (T * 0.22)
+        };
+      }
+
+      function drawLadder(fromTile, toTile, T, theme) {
+        const p1 = tileCenter(fromTile, T), p2 = tileCenter(toTile, T);
+        const dx = p2.x - p1.x, dy = p2.y - p1.y, len = Math.hypot(dx, dy);
+        if (len < 1) return;
+        const nx = -dy / len, ny = dx / len, halfW = T * 0.18;
+        ctx.save();
+        if (theme.glow) { ctx.shadowColor = theme.ladderA; ctx.shadowBlur = 10; }
+        const steps = Math.max(3, Math.floor(len / (T * 0.32)));
+        ctx.strokeStyle = theme.ladderB; ctx.lineWidth = Math.max(2.5, T * 0.065); ctx.lineCap = "round";
+        for (let i = 1; i < steps; i++) {
+          const t = i / steps;
+          ctx.beginPath();
+          ctx.moveTo(p1.x + dx * t - nx * halfW, p1.y + dy * t - ny * halfW);
+          ctx.lineTo(p1.x + dx * t + nx * halfW, p1.y + dy * t + ny * halfW);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = theme.ladderA; ctx.lineWidth = Math.max(3, T * 0.085);
+        [-1, 1].forEach(s => {
+          ctx.beginPath();
+          ctx.moveTo(p1.x + nx * halfW * s, p1.y + ny * halfW * s);
+          ctx.lineTo(p2.x + nx * halfW * s, p2.y + ny * halfW * s);
+          ctx.stroke();
+        });
+        ctx.restore();
+      }
+
+      function drawSnake(headTile, tailTile, T, theme) {
+        const head = tileCenter(headTile, T), tail = tileCenter(tailTile, T);
+        const dx = tail.x - head.x, dy = tail.y - head.y, len = Math.hypot(dx, dy);
+        if (len < 1) return;
+        const nx = -dy / len, ny = dx / len;
+        const amp = Math.min(T * 0.75, len * 0.22);
+        const dir = headTile % 2 === 0 ? 1 : -1;
+        const cp1 = { x: head.x + dx * 0.33 + nx * amp * dir, y: head.y + dy * 0.33 + ny * amp * dir };
+        const cp2 = { x: head.x + dx * 0.68 - nx * amp * dir, y: head.y + dy * 0.68 - ny * amp * dir };
+
+        ctx.save();
+        if (theme.glow) { ctx.shadowColor = theme.snakeA; ctx.shadowBlur = 12; }
+        const segs = 28, pts = [];
+        for (let i = 0; i <= segs; i++) {
+          const t = i / segs, mt = 1 - t;
+          pts.push({
+            x: mt * mt * mt * head.x + 3 * mt * mt * t * cp1.x + 3 * mt * t * t * cp2.x + t * t * t * tail.x,
+            y: mt * mt * mt * head.y + 3 * mt * mt * t * cp1.y + 3 * mt * t * t * cp2.y + t * t * t * tail.y,
+            t
+          });
+        }
+        for (let i = 0; i < segs; i++) {
+          const w = Math.max(2.2, T * 0.21 * (1 - pts[i].t * 0.78));
+          ctx.strokeStyle = theme.snakeA; ctx.lineWidth = w; ctx.lineCap = "round";
+          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[i + 1].x, pts[i + 1].y); ctx.stroke();
+          if (theme.snakePattern !== "solid" && i % 2 === 0 && i > 1) {
+            ctx.strokeStyle = theme.snakeB;
+            ctx.lineWidth = theme.snakePattern === "neon" ? w * 0.32 : w * 0.55;
+            ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[i + 1].x, pts[i + 1].y); ctx.stroke();
+          }
+        }
+        const angle = Math.atan2(cp1.y - head.y, cp1.x - head.x);
+        ctx.translate(head.x, head.y); ctx.rotate(angle);
+        ctx.fillStyle = theme.snakeA;
+        ctx.beginPath(); ctx.ellipse(0, 0, T * 0.19, T * 0.14, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+        ctx.arc(-T * 0.05, -T * 0.065, T * 0.04, 0, Math.PI * 2);
+        ctx.arc(-T * 0.05, T * 0.065, T * 0.04, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawPlayerToken(player, x, y, r, isActive) {
+        ctx.save();
+        if (isActive) { ctx.shadowColor = player.color; ctx.shadowBlur = 14; }
+        ctx.fillStyle = player.color; ctx.strokeStyle = "#fff"; ctx.lineWidth = Math.max(2, r * 0.18);
+        ctx.beginPath();
+        if (player.shape === "diamond") {
+          ctx.moveTo(x, y - r * 1.15); ctx.lineTo(x + r * 1.05, y); ctx.lineTo(x, y + r * 1.15); ctx.lineTo(x - r * 1.05, y); ctx.closePath();
+        } else if (player.shape === "star") {
+          for (let i = 0; i < 10; i++) {
+            const rad = i % 2 === 0 ? r * 1.18 : r * 0.55;
+            const a = (i * Math.PI) / 5 - Math.PI / 2;
+            if (i === 0) ctx.moveTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad);
+            else ctx.lineTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad);
+          }
+          ctx.closePath();
+        } else ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+
+        ctx.fillStyle = "#081018";
+        ctx.font = `900 ${Math.max(9, Math.floor(r * 0.95))}px sans-serif`;
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText(player.shape === "crown" ? "♛" : player.name[0].toUpperCase(), x, y + 0.5);
+        ctx.restore();
+      }
+
+      function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+      }
+
+      /* =========================================================================
+         GAMEPLAY & P2P TURN EXECUTION
+         ========================================================================= */
+      function showToast(msg) {
+        const el = document.getElementById("toastBanner");
+        el.textContent = msg; el.classList.add("show");
+        clearTimeout(el._t);
+        el._t = setTimeout(() => el.classList.remove("show"), 2600);
+      }
+
+      function addLog(html) {
+        const m = appState.match;
+        if (!m) return;
+        m.logs.unshift(html);
+        if (m.logs.length > 30) m.logs.length = 30;
+        renderLog();
+      }
+
+      function requestRoll() {
+        const m = appState.match;
+        if (!m || m.busy || m.winnerId !== null) return;
+        const localSeat = getLocalSeatIndex();
+        if (localSeat !== null && m.currentTurn !== localSeat) {
+          showToast("⏳ Wait for your online opponent's turn!");
+          return;
+        }
+        const player = m.players[m.currentTurn];
+        const forcedRoll = player.precisionRoll;
+        if (p2p.connected) {
+          p2p.send({ type: "ROLL_REQUEST", forcedRoll });
+        }
+        executeTurn(forcedRoll, false);
+      }
+
+      async function executeTurn(forcedRoll, isRemote) {
+        const m = appState.match;
+        if (!m || m.busy || m.winnerId !== null) return;
+        const player = m.players[m.currentTurn];
+        m.busy = true;
+        syncControlsState();
+
+        let rolled;
+        if (forcedRoll !== null && forcedRoll !== undefined) {
+          rolled = forcedRoll;
+          player.precisionRoll = null;
+          document.getElementById("precisionPicker").classList.remove("active");
+        } else {
+          rolled = Math.floor(Math.random() * 6) + 1;
+        }
+
+        sfx.dice();
+        const diceBox = document.getElementById("diceBox");
+        diceBox.classList.add("rolling");
+        await sleep(380);
+        diceBox.classList.remove("rolling");
+
+        m.diceValue = rolled;
+        renderDiceFace(rolled);
+        if (!isRemote && !player.isAI) appState.stats.rolls++;
+
+        m.diceHistory.unshift({ player: player.name, color: player.color, val: rolled });
+        if (m.diceHistory.length > 10) m.diceHistory.length = 10;
+        renderHistoryStrip();
+
+        if (appState.settings.bonusSix && rolled === 6) {
+          player.consecutiveSixes++;
+          if (player.consecutiveSixes >= 3) {
+            player.consecutiveSixes = 0;
+            showToast(`⚠️ ${player.name} rolled three 6s! Turn forfeited.`);
+            addLog(`<strong>${player.name}</strong> rolled triple 6s.`);
+            await sleep(450);
+            advanceTurn(false);
+            return;
+          }
+        } else {
+          player.consecutiveSixes = 0;
+        }
+
+        const startTile = player.tile;
+        let targetTile = startTile + rolled;
+        if (targetTile > 100) {
+          if (appState.settings.exactRule === "exact") {
+            showToast(`🎯 Needs exact ${100 - startTile} to win!`);
+            addLog(`<strong>${player.name}</strong> rolled ${rolled} at ${startTile} (Exact needed).`);
+            await sleep(420);
+            advanceTurn(appState.settings.bonusSix && rolled === 6);
+            return;
+          } else {
+            targetTile = 100 - (targetTile - 100);
+          }
+        }
+
+        if (startTile + rolled <= 100) await animateHopPath(player, startTile, targetTile);
+        else {
+          await animateHopPath(player, startTile, 100);
+          await animateHopPath(player, 100, targetTile);
+        }
+
+        addLog(`<strong>${player.name}</strong> rolled <strong>${rolled}</strong> → Tile <strong>${player.tile}</strong>`);
+
+        const landedPu = m.boardPowerUps[player.tile];
+        if (landedPu) {
+          delete m.boardPowerUps[player.tile];
+          await handlePowerUpPickup(player, landedPu);
+        }
+
+        const ladder = m.ladders.find(l => l.from === player.tile);
+        if (ladder) {
+          sfx.ladder();
+          if (!isRemote && !player.isAI) appState.stats.laddersClimbed++;
+          showToast(`🪜 ${player.name} climbed ${ladder.from} → ${ladder.to}!`);
+          await animateSlide(player, ladder.from, ladder.to);
+        }
+
+        const snake = m.snakes.find(s => s.from === player.tile);
+        if (snake) {
+          if (player.shield) {
+            player.shield = false;
+            sfx.shieldBlock();
+            showToast(`🛡️ ${player.name}'s Shield blocked snake at ${snake.from}!`);
+          } else {
+            let dest = snake.to;
+            if (player.antidote) {
+              player.antidote = false;
+              dest = Math.round((snake.from + snake.to) / 2);
+              showToast(`🧪 Antidote halved drop to ${dest}!`);
+            } else {
+              showToast(`🐍 ${player.name} slid ${snake.from} → ${dest}!`);
+            }
+            sfx.snake();
+            if (!isRemote && !player.isAI) appState.stats.snakesBitten++;
+            await animateSlide(player, snake.from, dest);
+          }
+        }
+
+        if (player.tile >= 100) {
+          player.tile = 100; player.visualTile = 100;
+          m.winnerId = player.id; m.busy = false;
+          if (!isRemote && !player.isAI) appState.stats.wins++;
+          persistState(); renderBoard(); syncAllUI(); sfx.win();
+          document.getElementById("winnerTitle").textContent = `${player.name} Wins!`;
+          document.getElementById("winnerSubtitle").textContent = `Reached Tile 100!`;
+          document.getElementById("victoryModal").classList.add("open");
+          return;
+        }
+
+        advanceTurn(appState.settings.bonusSix && rolled === 6);
+      }
+
+      async function handlePowerUpPickup(player, puKey) {
+        const pu = POWERUP_TYPES[puKey];
+        if (!pu) return;
+        sfx.powerup();
+        if (puKey === "shield") { player.shield = true; showToast(`🛡️ ${player.name} gained Snake Shield!`); }
+        else if (puKey === "antidote") { player.antidote = true; showToast(`🧪 ${player.name} got Venom Half!`); }
+        else if (puKey === "mystery") {
+          const dest = Math.min(99, player.tile + 5);
+          showToast(`❓ Mystery Boost +5 to ${dest}!`);
+          await animateSlide(player, player.tile, dest);
+        } else {
+          if (player.powerUps.length < 2) player.powerUps.push(puKey);
+          else player.powerUps[1] = puKey;
+          showToast(`${pu.icon} Collected ${pu.name}!`);
+        }
+        syncAllUI();
+      }
+
+      function onSlotClick(slotIndex) {
+        const m = appState.match;
+        if (!m || m.busy || m.winnerId !== null) return;
+        const localSeat = getLocalSeatIndex();
+        if (localSeat !== null && m.currentTurn !== localSeat) return;
+        if (p2p.connected) p2p.send({ type: "POWERUP_USE", slotIndex });
+        executePowerUp(slotIndex, false);
+      }
+
+      async function executePowerUp(slotIndex, isRemote) {
+        const m = appState.match;
+        const player = m.players[m.currentTurn];
+        const puKey = player.powerUps[slotIndex];
+        if (!puKey) return;
+        player.powerUps.splice(slotIndex, 1);
+        if (!isRemote && !player.isAI) appState.stats.powerUpsUsed++;
+        sfx.powerup();
+
+        if (puKey === "precision") {
+          document.getElementById("precisionPicker").classList.add("active");
+          showToast("🎯 Loaded Dice active! Pick 1–6.");
+        } else if (puKey === "ladderBoost") {
+          m.busy = true; syncControlsState();
+          const dest = Math.min(99, player.tile + 7);
+          showToast(`🪜 Seedhi Boost → Tile ${dest}!`);
+          await animateSlide(player, player.tile, dest);
+          m.busy = false;
+        } else if (puKey === "swap") {
+          m.busy = true; syncControlsState();
+          const leader = m.players.filter(p => p.id !== player.id && p.tile > player.tile).sort((a, b) => b.tile - a.tile)[0];
+          if (leader) {
+            const aOld = player.tile, bOld = leader.tile;
+            showToast(`🧲 Swapped with ${leader.name}!`);
+            await Promise.all([animateSlide(player, aOld, bOld), animateSlide(leader, bOld, aOld)]);
+          } else {
+            await animateSlide(player, player.tile, Math.min(99, player.tile + 5));
+          }
+          m.busy = false;
+        }
+        persistState(); syncAllUI(); renderBoard();
+      }
+
+      function advanceTurn(keepSameTurn) {
+        const m = appState.match;
+        if (!keepSameTurn) m.currentTurn = (m.currentTurn + 1) % m.players.length;
+        m.busy = false;
+        persistState(); syncAllUI(); renderBoard();
+
+        const nextPlayer = m.players[m.currentTurn];
+        if (nextPlayer && nextPlayer.isAI && m.winnerId === null) {
+          setTimeout(() => executeTurn(null, false), 650);
+        }
+      }
+
+      async function animateHopPath(player, fromTile, toTile) {
+        const step = toTile >= fromTile ? 1 : -1;
+        let cur = fromTile;
+        while (cur !== toTile) {
+          const next = cur + step;
+          sfx.hop(Math.abs(next - fromTile));
+          const start = performance.now();
+          await new Promise(resolve => {
+            function frame(now) {
+              const t = Math.min(1, (now - start) / 120);
+              player.visualTile = cur + (next - cur) * t;
+              renderBoard();
+              if (t < 1) requestAnimationFrame(frame); else resolve();
+            }
+            requestAnimationFrame(frame);
+          });
+          cur = next; player.tile = cur; player.visualTile = cur;
+        }
+        syncPlayersGrid();
+      }
+
+      async function animateSlide(player, fromTile, toTile) {
+        const start = performance.now();
+        await new Promise(resolve => {
+          function frame(now) {
+            const t = Math.min(1, (now - start) / 450);
+            player.visualTile = fromTile + (toTile - fromTile) * (1 - Math.pow(1 - t, 3));
+            renderBoard();
+            if (t < 1) requestAnimationFrame(frame); else resolve();
+          }
+          requestAnimationFrame(frame);
+        });
+        player.tile = toTile; player.visualTile = toTile;
+        syncPlayersGrid();
+      }
+
+      function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+      /* =========================================================================
+         UI RENDERERS
+         ========================================================================= */
+      const DICE_PIPS = { 1: [4], 2: [2, 6], 3: [2, 4, 6], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+      function renderDiceFace(val) {
+        const active = DICE_PIPS[val] || [4];
+        document.querySelectorAll("#diceBox .pip").forEach((el, idx) => {
+          el.classList.toggle("on", active.includes(idx));
+          el.classList.toggle("red", val === 1 || val === 6);
+        });
+      }
+
+      function syncPlayersGrid() {
+        const m = appState.match; if (!m) return;
+        document.getElementById("playersGrid").innerHTML = m.players.map((p, idx) => `
+          <div class="player-card ${idx === m.currentTurn && m.winnerId === null ? "active" : ""}">
+            <div class="player-top">
+              <div class="player-name-wrap">
+                <span class="token-dot" style="background:${p.color}"></span>
+                <span class="player-name">${esc(p.name)}</span>
+              </div>
+              <span class="player-tile">#${p.tile}</span>
+            </div>
+            <div class="player-badges">
+              ${p.isAI ? `<span class="mini-badge">BOT</span>` : ""}
+              ${p.shield ? `<span class="mini-badge shield">🛡️ Shield</span>` : ""}
+              ${p.antidote ? `<span class="mini-badge shield">🧪 Half</span>` : ""}
+            </div>
+          </div>
+        `).join("");
+      }
+
+      function syncPowerUpSlots() {
+        const m = appState.match; if (!m) return;
+        const player = m.players[m.currentTurn];
+        const el = document.getElementById("powerupSlots");
+        el.innerHTML = [0, 1].map(idx => {
+          const k = player.powerUps[idx];
+          if (!k) return `<div class="pu-slot">Slot ${idx + 1}</div>`;
+          const pu = POWERUP_TYPES[k];
+          return `<div class="pu-slot filled" data-slot="${idx}" title="${pu.desc}">${pu.icon} ${pu.name}</div>`;
+        }).join("");
+        el.querySelectorAll(".pu-slot.filled").forEach(b => b.addEventListener("click", () => onSlotClick(parseInt(b.dataset.slot, 10))));
+      }
+
+      function syncControlsState() {
+        const m = appState.match; if (!m) return;
+        const player = m.players[m.currentTurn];
+        const rollBtn = document.getElementById("rollBtn");
+        const sub = document.getElementById("turnSubtext");
+        const localSeat = getLocalSeatIndex();
+
+        if (m.winnerId !== null) {
+          rollBtn.disabled = true; rollBtn.textContent = "🏆 FINISHED";
+        } else if (localSeat !== null && m.currentTurn !== localSeat) {
+          rollBtn.disabled = true; rollBtn.textContent = `🌐 ${player.name}'s TURN`;
+          sub.textContent = "Waiting for remote roll...";
+        } else if (player.isAI) {
+          rollBtn.disabled = true; rollBtn.textContent = `🤖 ${player.name}...`;
+          sub.textContent = "AI thinking...";
+        } else if (m.busy) {
+          rollBtn.disabled = true; rollBtn.textContent = "⏳ MOVING...";
+        } else {
+          rollBtn.disabled = false; rollBtn.textContent = `🎲 ROLL (${player.name.toUpperCase()})`;
+          sub.textContent = "Tap Dice or Press Space";
+        }
+      }
+
+      function renderHistoryStrip() {
+        const m = appState.match; if (!m) return;
+        document.getElementById("historyStrip").innerHTML = m.diceHistory.map(h =>
+          `<span class="hist-pill" style="border-color:${h.color}55;color:${h.color}">${esc(h.player.slice(0, 6))}: ${h.val}</span>`
+        ).join("");
+      }
+
+      function renderLog() {
+        const m = appState.match; if (!m) return;
+        document.getElementById("matchLog").innerHTML = m.logs.map(l => `<div class="log-entry">${l}</div>`).join("");
+      }
+
+      function syncAllUI() {
+        syncPlayersGrid(); syncPowerUpSlots(); syncControlsState();
+        renderHistoryStrip(); renderLog();
+        if (appState.match) renderDiceFace(appState.match.diceValue);
+      }
+
+      /* =========================================================================
+         EVENT BINDINGS
+         ========================================================================= */
+      document.getElementById("rollBtn").addEventListener("click", requestRoll);
+      document.getElementById("diceBox").addEventListener("click", requestRoll);
+      window.addEventListener("keydown", e => {
+        if (e.code === "Space" && !document.querySelector(".modal-backdrop.open")) {
+          e.preventDefault(); requestRoll();
+        }
+      });
+
+      document.querySelectorAll("#precisionPicker .dice-choice-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const m = appState.match; if (!m) return;
+          m.players[m.currentTurn].precisionRoll = parseInt(btn.dataset.val, 10);
+          document.getElementById("precisionPicker").classList.remove("active");
+          showToast(`🎯 Next roll set to ${btn.dataset.val}!`);
+        });
+      });
+
+      // Online P2P Modal Controls
+      const openOnline = () => document.getElementById("onlineModal").classList.add("open");
+      document.getElementById("openOnlineBtn").addEventListener("click", openOnline);
+      document.getElementById("quickOnlineBtn").addEventListener("click", openOnline);
+
+      document.getElementById("createOfferBtn").addEventListener("click", async () => {
+        showToast("📡 Generating Host Invite Code...");
+        const code = await p2p.createHostOffer();
+        document.getElementById("p2pPayloadBox").value = code;
+        updateP2pBadge();
+        showToast("✅ Host Invite Code ready! Copy & send to Guest.");
+      });
+
+      document.getElementById("generateAnswerBtn").addEventListener("click", async () => {
+        const raw = document.getElementById("p2pPayloadBox").value;
+        if (!raw.trim()) return showToast("⚠️ Paste Host Invite Code first!");
+        showToast("📲 Generating Guest Join Code...");
+        const ans = await p2p.createGuestAnswer(raw);
+        document.getElementById("p2pPayloadBox").value = ans;
+        updateP2pBadge();
+        showToast("✅ Guest Join Code ready! Send back to Host.");
+      });
+
+      document.getElementById("acceptAnswerBtn").addEventListener("click", async () => {
+        const raw = document.getElementById("p2pPayloadBox").value;
+        if (!raw.trim()) return showToast("⚠️ Paste Guest Join Code first!");
+        await p2p.acceptGuestAnswer(raw);
+        showToast("🔗 P2P Link finalizing...");
+      });
+
+      document.getElementById("copyP2pCodeBtn").addEventListener("click", () => {
+        const box = document.getElementById("p2pPayloadBox");
+        box.select();
+        navigator.clipboard?.writeText(box.value).catch(() => {});
+        showToast("📋 Code copied!");
+      });
+
+      document.getElementById("disconnectP2pBtn").addEventListener("click", () => p2p.disconnect());
+
+      // Theme Controls
+      document.getElementById("quickRandomThemeBtn").addEventListener("click", () => {
+        const t = generateUnlimitedRandomTheme();
+        applyThemeToUI(t);
+        showToast(`✨ Theme: ${t.name}`);
+      });
+
+      document.getElementById("openThemesBtn").addEventListener("click", () => {
+        populateThemesModal();
+        document.getElementById("themesModal").classList.add("open");
+      });
+
+      document.getElementById("modalRandomThemeBtn").addEventListener("click", () => {
+        const t = generateUnlimitedRandomTheme();
+        applyThemeToUI(t); populateThemesModal();
+        showToast(`✨ Theme: ${t.name}`);
+      });
+
+      document.getElementById("saveCurrentThemeBtn").addEventListener("click", () => {
+        const cur = structuredClone(appState.activeTheme);
+        if (cur.builtIn) cur.id = "custom_" + Date.now();
+        cur.builtIn = false;
+        if (!appState.savedThemes.some(x => x.id === cur.id)) {
+          appState.savedThemes.unshift(cur);
+          persistState(); populateThemesModal();
+          showToast(`💾 Saved "${cur.name}"!`);
+        }
+      });
+
+      document.getElementById("applyAndSaveStudioBtn").addEventListener("click", () => {
+        const base = appState.activeTheme;
+        const tileA = document.getElementById("stTileA").value;
+        const tileB = document.getElementById("stTileB").value;
+        const customTheme = {
+          ...base, id: "studio_" + Date.now(), builtIn: false,
+          name: document.getElementById("stName").value.trim() || "Custom Theme",
+          boardBg: document.getElementById("stBoardBg").value,
+          accent: document.getElementById("stAccent").value,
+          tileA, tileB,
+          textA: parseInt(tileA.slice(1, 3), 16) > 140 ? "#141414" : "#f3f7fb",
+          textB: parseInt(tileB.slice(1, 3), 16) > 140 ? "#141414" : "#f3f7fb",
+          ladderA: document.getElementById("stLadderA").value,
+          ladderB: document.getElementById("stLadderB").value,
+          snakeA: document.getElementById("stSnakeA").value,
+          snakeB: document.getElementById("stSnakeB").value,
+          snakePattern: document.getElementById("stSnakePattern").value,
+          rounded: document.getElementById("stRounded").checked,
+          glow: document.getElementById("stGlow").checked
+        };
+        appState.savedThemes.unshift(customTheme);
+        applyThemeToUI(customTheme); populateThemesModal();
+        showToast(`✅ Saved & Applied "${customTheme.name}"!`);
+      });
+
+      document.getElementById("copyThemeJsonBtn").addEventListener("click", () => {
+        const box = document.getElementById("themeJsonBox");
+        box.select(); navigator.clipboard?.writeText(box.value).catch(() => {});
+        showToast("📋 JSON copied!");
+      });
+
+      document.getElementById("importThemeJsonBtn").addEventListener("click", () => {
+        try {
+          const p = JSON.parse(document.getElementById("themeJsonBox").value);
+          if (!p.tileA || !p.snakeA || !p.ladderA) throw new Error();
+          p.id = "imp_" + Date.now(); p.builtIn = false; p.name = p.name || "Imported Theme";
+          appState.savedThemes.unshift(p);
+          applyThemeToUI(p); populateThemesModal();
+          showToast(`📥 Imported "${p.name}"!`);
+        } catch { showToast("⚠️ Invalid Theme JSON."); }
+      });
+
+      function populateThemesModal() {
+        const cur = appState.activeTheme;
+        const chipHtml = (t, del) => `
+          <div class="theme-chip ${cur.id === t.id ? "active" : ""}" data-tid="${t.id}">
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(t.name)}</span>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div class="swatches">
+                <span class="swatch" style="background:${t.tileA}"></span>
+                <span class="swatch" style="background:${t.ladderA}"></span>
+                <span class="swatch" style="background:${t.snakeA}"></span>
+              </div>
+              ${del ? `<span class="del-theme" data-del="${t.id}" style="color:#ff4d6d;padding-left:4px;">✕</span>` : ""}
+            </div>
+          </div>`;
+        document.getElementById("builtInThemesGrid").innerHTML = BUILT_IN_THEMES.map(t => chipHtml(t, false)).join("");
+        document.getElementById("savedThemesGrid").innerHTML = appState.savedThemes.length
+          ? appState.savedThemes.map(t => chipHtml(t, true)).join("")
+          : `<div style="font-size:12px;color:var(--text-muted);grid-column:1/-1;">No custom themes saved yet.</div>`;
+        document.getElementById("savedCount").textContent = appState.savedThemes.length;
+
+        document.querySelectorAll(".theme-chip").forEach(c => {
+          c.addEventListener("click", e => {
+            if (e.target.classList.contains("del-theme")) {
+              appState.savedThemes = appState.savedThemes.filter(x => x.id !== e.target.dataset.del);
+              persistState(); populateThemesModal(); return;
+            }
+            const found = [...BUILT_IN_THEMES, ...appState.savedThemes].find(x => x.id === c.dataset.tid);
+            if (found) { applyThemeToUI(found); populateThemesModal(); }
+          });
+        });
+
+        document.getElementById("stName").value = cur.name;
+        document.getElementById("stSnakePattern").value = cur.snakePattern || "scales";
+        document.getElementById("stBoardBg").value = cur.boardBg;
+        document.getElementById("stAccent").value = cur.accent;
+        document.getElementById("stTileA").value = cur.tileA;
+        document.getElementById("stTileB").value = cur.tileB;
+        document.getElementById("stLadderA").value = cur.ladderA;
+        document.getElementById("stLadderB").value = cur.ladderB;
+        document.getElementById("stSnakeA").value = cur.snakeA;
+        document.getElementById("stSnakeB").value = cur.snakeB;
+        document.getElementById("stRounded").checked = !!cur.rounded;
+        document.getElementById("stGlow").checked = !!cur.glow;
+        document.getElementById("themeJsonBox").value = JSON.stringify(cur, null, 2);
+      }
+
+      // Setup Modal
+      document.getElementById("openSetupBtn").addEventListener("click", () => {
+        const cfg = appState.settings;
+        document.getElementById("cfgMode").value = cfg.mode;
+        document.getElementById("cfgAi").value = cfg.aiLevel;
+        document.getElementById("cfgBoardPreset").value = cfg.boardPreset;
+        document.getElementById("cfgExact").value = cfg.exactRule;
+        document.getElementById("cfgBonusSix").checked = cfg.bonusSix;
+        document.getElementById("cfgPowerUps").checked = cfg.powerUpsEnabled;
+        document.getElementById("playerConfigList").innerHTML = cfg.playerConfigs.map((pc, i) => `
+          <div style="display:grid;grid-template-columns:1fr 75px 95px;gap:6px;">
+            <input type="text" class="pc-name" data-i="${i}" value="${esc(pc.name)}" />
+            <input type="color" class="pc-color" data-i="${i}" value="${pc.color}" />
+            <select class="pc-shape" data-i="${i}">
+              ${TOKEN_SHAPES.map(s => `<option value="${s}" ${pc.shape === s ? "selected" : ""}>${s.toUpperCase()}</option>`).join("")}
+            </select>
+          </div>`).join("");
+        const st = appState.stats;
+        document.getElementById("careerStatsBox").textContent =
+          `Wins: ${st.wins} • Rolls: ${st.rolls} • Ladders: ${st.laddersClimbed} • Snakes: ${st.snakesBitten} • Power-Ups: ${st.powerUpsUsed}`;
+        document.getElementById("resumeMatchBtn").style.display = appState.match ? "inline-flex" : "none";
+        document.getElementById("setupModal").classList.add("open");
+      });
+
+      document.getElementById("startNewMatchBtn").addEventListener("click", () => {
+        const cfg = appState.settings;
+        cfg.mode = document.getElementById("cfgMode").value;
+        cfg.aiLevel = document.getElementById("cfgAi").value;
+        cfg.boardPreset = document.getElementById("cfgBoardPreset").value;
+        cfg.exactRule = document.getElementById("cfgExact").value;
+        cfg.bonusSix = document.getElementById("cfgBonusSix").checked;
+        cfg.powerUpsEnabled = document.getElementById("cfgPowerUps").checked;
+        document.querySelectorAll(".pc-name").forEach(i => (cfg.playerConfigs[i.dataset.i].name = i.value));
+        document.querySelectorAll(".pc-color").forEach(i => (cfg.playerConfigs[i.dataset.i].color = i.value));
+        document.querySelectorAll(".pc-shape").forEach(s => (cfg.playerConfigs[s.dataset.i].shape = s.value));
+        document.getElementById("setupModal").classList.remove("open");
+        createNewMatch(true);
+        showToast("🚀 New Match Started!");
+      });
+
+      document.getElementById("resumeMatchBtn").addEventListener("click", () => {
+        document.getElementById("setupModal").classList.remove("open");
+      });
+
+      document.getElementById("playAgainBtn").addEventListener("click", () => {
+        document.getElementById("victoryModal").classList.remove("open");
+        createNewMatch(true);
+      });
+
+      document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => document.getElementById(b.dataset.close).classList.remove("open")));
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+          document.querySelectorAll(".tab-pane").forEach(p => (p.style.display = "none"));
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.tab).style.display = "flex";
+        });
+      });
+
+      document.getElementById("soundToggleBtn").addEventListener("click", e => {
+        sfx.muted = !sfx.muted;
+        e.currentTarget.textContent = sfx.muted ? "🔇" : "🔊";
+      });
+
+      document.getElementById("fullscreenBtn").addEventListener("click", () => {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {});
+        else document.exitFullscreen?.().catch(() => {});
+      });
+
+      canvas.addEventListener("mousemove", e => inspectPoint(e.clientX, e.clientY));
+      canvas.addEventListener("mouseleave", () => { document.getElementById("boardTooltip").style.opacity = "0"; });
+      canvas.addEventListener("click", e => inspectPoint(e.clientX, e.clientY));
+
+      function inspectPoint(cx, cy) {
+        const m = appState.match; if (!m) return;
+        const rect = canvas.getBoundingClientRect();
+        const T = rect.width / 10;
+        const tile = gridToTile(Math.floor((cx - rect.left) / T), Math.floor((cy - rect.top) / T));
+        const tip = document.getElementById("boardTooltip");
+        if (!tile) { tip.style.opacity = "0"; return; }
+        const lad = m.ladders.find(l => l.from === tile);
+        const snk = m.snakes.find(s => s.from === tile);
+        const pu = m.boardPowerUps[tile];
+        let info = "";
+        if (lad) info = `🪜 Ladder: ${lad.from} → ${lad.to}`;
+        else if (snk) info = `🐍 Snake: ${snk.from} → ${snk.to}`;
+        else if (pu && POWERUP_TYPES[pu]) info = `${POWERUP_TYPES[pu].icon} ${POWERUP_TYPES[pu].name}`;
+        if (info) {
+          const stRect = document.getElementById("boardStage").getBoundingClientRect();
+          tip.textContent = info;
+          tip.style.left = Math.max(80, Math.min(stRect.width - 80, cx - stRect.left)) + "px";
+          tip.style.top = Math.max(36, cy - stRect.top) + "px";
+          tip.style.opacity = "1";
+        } else tip.style.opacity = "0";
+      }
+
+      function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m])); }
+
+      window.addEventListener("resize", resizeCanvas);
+      applyThemeToUI(appState.activeTheme);
+      if (!appState.match) createNewMatch(false);
+      else { appState.match.busy = false; syncAllUI(); }
+      resizeCanvas();
+    })();
+  </script>
+</body>
+</html>
