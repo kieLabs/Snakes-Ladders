@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Snakes & Ladders — Saanp Seedhi Online free game </title>
+  <title>Snakes & Ladders — Saanp Seedhi</title>
   <style>
     :root {
       --bg-app: #0c1218;
@@ -205,7 +205,7 @@
       overflow-y: auto;
     }
 
-    .online-pill {
+    .room-pill {
       background: var(--bg-panel-2);
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -227,7 +227,7 @@
       margin-right: 5px;
     }
 
-    .status-dot.connected {
+    .status-dot.live {
       background: #2ec4b6;
       box-shadow: 0 0 8px #2ec4b6;
     }
@@ -671,13 +671,13 @@
       border-color: transparent;
     }
 
-    .help-box {
+    .invite-card {
       background: rgba(0, 229, 255, 0.08);
       border: 1px solid rgba(0, 229, 255, 0.28);
       border-radius: 10px;
-      padding: 9px 11px;
-      font-size: 11.5px;
-      line-height: 1.45;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.5;
       color: var(--text-main);
     }
 
@@ -702,15 +702,15 @@
     <header class="topbar">
       <div class="brand">
         <span>🐍🪜 Saanp Seedhi</span>
-        <span class="brand-badge">P2P Online</span>
+        <span class="brand-badge">Arcade</span>
       </div>
       <div class="topbar-actions">
-        <button class="icon-btn primary" id="openOnlineBtn" title="Zero-API Online Multiplayer">🌐 Online Play</button>
-        <button class="icon-btn" id="quickRandomThemeBtn" title="Generate Unlimited Random Theme">🎨 Random Theme</button>
-        <button class="icon-btn" id="openThemesBtn" title="Theme Studio">🖌️ Themes</button>
-        <button class="icon-btn" id="openSetupBtn" title="Match Setup">⚙️ Setup</button>
-        <button class="icon-btn" id="soundToggleBtn" title="Toggle Sound">🔊</button>
-        <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">⛶</button>
+        <button class="icon-btn primary" id="openOnlineBtn">🌐 Play With Friend</button>
+        <button class="icon-btn" id="quickRandomThemeBtn">🎨 Surprise Look</button>
+        <button class="icon-btn" id="openThemesBtn">🖌️ Themes</button>
+        <button class="icon-btn" id="openSetupBtn">⚙️ Match Setup</button>
+        <button class="icon-btn" id="soundToggleBtn">🔊</button>
+        <button class="icon-btn" id="fullscreenBtn">⛶</button>
       </div>
     </header>
 
@@ -724,26 +724,26 @@
       </section>
 
       <aside class="hud-panel">
-        <div class="online-pill">
+        <div class="room-pill">
           <div>
-            <span class="status-dot" id="p2pDot"></span>
-            <span id="p2pStatusText">Offline / Local Mode</span>
+            <span class="status-dot" id="roomDot"></span>
+            <span id="roomStatusText">Ready to Play</span>
           </div>
-          <button class="icon-btn" id="quickOnlineBtn" style="padding:3px 8px;font-size:11px;">Connect</button>
+          <button class="icon-btn" id="quickRoomBtn" style="padding:3px 8px;font-size:11px;">Invite</button>
         </div>
 
         <div class="players-grid" id="playersGrid"></div>
 
         <div class="powerup-bar">
           <div class="section-label">
-            <span>⚡ Active Power-Ups</span>
-            <span id="themeNameBadge" style="color:var(--accent);font-size:10px;">Royal Heritage</span>
+            <span>⚡ Power-Ups</span>
+            <span id="themeNameBadge" style="color:var(--accent);font-size:10px;">Simple Realistic</span>
           </div>
           <div class="powerup-slots" id="powerupSlots"></div>
         </div>
 
         <div id="precisionPicker">
-          <div class="section-label" style="color:var(--accent);">🎯 Choose Next Roll (1–6)</div>
+          <div class="section-label" style="color:var(--accent);">🎯 Pick Your Next Roll</div>
           <div class="dice-choices">
             <button class="dice-choice-btn" data-val="1">1</button>
             <button class="dice-choice-btn" data-val="2">2</button>
@@ -755,7 +755,7 @@
         </div>
 
         <div class="dice-zone">
-          <div class="dice-box" id="diceBox" title="Tap or Press Space to Roll">
+          <div class="dice-box" id="diceBox">
             <div class="pip" data-p="0"></div>
             <div class="pip" data-p="1"></div>
             <div class="pip" data-p="2"></div>
@@ -768,7 +768,7 @@
           </div>
           <div class="roll-controls">
             <button id="rollBtn">🎲 ROLL DICE</button>
-            <div class="turn-subtext" id="turnSubtext">Tap Dice or Press Space</div>
+            <div class="turn-subtext" id="turnSubtext">Climb from 1 to 100!</div>
           </div>
         </div>
 
@@ -778,85 +778,85 @@
     </main>
   </div>
 
-  <!-- Zero-API Online P2P Modal -->
+  <!-- Friend Match Modal -->
   <div class="modal-backdrop" id="onlineModal">
     <div class="modal-card">
       <div class="modal-header">
-        <span>🌐 Zero-API Online Play (WebRTC P2P)</span>
+        <span>🌐 Play With a Friend</span>
         <button class="icon-btn" data-close="onlineModal">✕</button>
       </div>
       <div class="modal-body">
-        <div class="help-box">
-          <strong>No Firebase • No Backend API • No Paid Server:</strong><br/>
-          1. <strong>Host (Player 1):</strong> Click <em>Create Invite Code</em>, copy it, and send via WhatsApp/Chat.<br/>
-          2. <strong>Guest (Player 2):</strong> Paste Host code, click <em>Generate Join Code</em>, send it back to Host.<br/>
-          3. <strong>Host:</strong> Paste Guest code & click <em>Complete P2P Link</em> — turns & rolls sync live!
+        <div class="invite-card">
+          <strong>How to start a friendly match:</strong><br/>
+          1. Host taps <strong>Create Invite</strong> and sends the passkey to a friend.<br/>
+          2. Friend pastes the passkey, taps <strong>Create Reply</strong>, and sends the reply back.<br/>
+          3. Host pastes the reply and taps <strong>Start Match</strong> to play turn-by-turn!
         </div>
 
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="icon-btn primary" id="createOfferBtn">📡 1. Create Host Invite Code</button>
-          <button class="icon-btn" id="generateAnswerBtn">📲 2. Generate Guest Join Code</button>
-          <button class="icon-btn primary" id="acceptAnswerBtn">🔗 3. Complete P2P Link (Host)</button>
-          <button class="icon-btn" id="disconnectP2pBtn">Disconnect</button>
+          <button class="icon-btn primary" id="createOfferBtn">🎟️ 1. Create Invite</button>
+          <button class="icon-btn" id="generateAnswerBtn">💌 2. Create Reply</button>
+          <button class="icon-btn primary" id="acceptAnswerBtn">🤝 3. Start Match</button>
+          <button class="icon-btn" id="disconnectP2pBtn">Leave Table</button>
         </div>
 
         <label class="field">
-          Invite / Join Code Payload (Copy & Paste between devices)
-          <textarea id="p2pPayloadBox" rows="4" placeholder="Click Create Host Invite Code or paste Host code here..."></textarea>
+          Match Passkey
+          <textarea id="p2pPayloadBox" rows="4" placeholder="Tap Create Invite or paste your friend's passkey here..."></textarea>
         </label>
 
         <div style="display:flex;gap:8px;">
-          <button class="icon-btn" id="copyP2pCodeBtn">📋 Copy Code</button>
+          <button class="icon-btn" id="copyP2pCodeBtn">📋 Copy Passkey</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Setup Modal -->
+  <!-- Match Setup Modal -->
   <div class="modal-backdrop" id="setupModal">
     <div class="modal-card">
       <div class="modal-header">
-        <span>⚙️ Match Setup & Game Rules</span>
+        <span>⚙️ Match Setup & Rules</span>
         <button class="icon-btn" data-close="setupModal">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-grid">
           <label class="field">
-            Game Mode
+            Players Mode
             <select id="cfgMode">
-              <option value="ai">Solo vs. Smart AI Bot</option>
-              <option value="pvp2">Pass & Play / P2P (2 Players)</option>
-              <option value="pvp3">Pass & Play (3 Players)</option>
-              <option value="pvp4">Pass & Play (4 Players)</option>
+              <option value="ai">Solo vs. Bot</option>
+              <option value="pvp2">2 Players</option>
+              <option value="pvp3">3 Players</option>
+              <option value="pvp4">4 Players</option>
             </select>
           </label>
           <label class="field">
-            AI Personality
+            Bot Style
             <select id="cfgAi">
-              <option value="casual">Casual</option>
-              <option value="tactician" selected>Tactician</option>
-              <option value="chaos">Chaos</option>
+              <option value="casual">Easygoing</option>
+              <option value="tactician" selected>Smart</option>
+              <option value="chaos">Wild</option>
             </select>
           </label>
           <label class="field">
-            Board Layout Preset
+            Board Style
             <select id="cfgBoardPreset">
-              <option value="classic">Classic Balanced</option>
-              <option value="express">Express Fast-Climb</option>
-              <option value="snakepit">High-Stakes Snake Pit</option>
+              <option value="classic">Classic Board</option>
+              <option value="express">Fast Climb</option>
+              <option value="snakepit">Snake Challenge</option>
             </select>
           </label>
           <label class="field">
-            Finish at Tile 100 Rule
+            Winning Roll on 100
             <select id="cfgExact">
-              <option value="exact">Exact Roll Required</option>
-              <option value="bounce">Overshoot Bounce Back</option>
+              <option value="exact">Exact Number Needed</option>
+              <option value="bounce">Bounce Back on Extra</option>
             </select>
           </label>
         </div>
 
         <div class="toggle-row">
-          <span>🎲 Bonus Roll on 6 (Triple-6 forfeits turn)</span>
+          <span>🎲 Extra Roll on 6 (Three 6s in a row skips turn)</span>
           <input type="checkbox" id="cfgBonusSix" checked />
         </div>
         <div class="toggle-row">
@@ -867,76 +867,75 @@
         <div class="section-label">Players & Tokens</div>
         <div id="playerConfigList" style="display:flex;flex-direction:column;gap:8px;"></div>
 
-        <div class="section-label">Career Stats (LocalStorage)</div>
+        <div class="section-label">Your Trophy Record</div>
         <div id="careerStatsBox" style="font-size:12px;color:var(--text-muted);background:var(--bg-panel-2);padding:8px 10px;border-radius:10px;border:1px solid var(--border);"></div>
       </div>
       <div class="modal-footer">
-        <button class="icon-btn" id="resumeMatchBtn" style="display:none;">▶️ Resume Match</button>
-        <button class="icon-btn primary" id="startNewMatchBtn">🚀 Start New Match</button>
+        <button class="icon-btn" id="resumeMatchBtn" style="display:none;">▶️ Continue Game</button>
+        <button class="icon-btn primary" id="startNewMatchBtn">🚀 New Game</button>
       </div>
     </div>
   </div>
 
-  <!-- Unlimited Themes Modal -->
+  <!-- Themes Modal -->
   <div class="modal-backdrop" id="themesModal">
     <div class="modal-card">
       <div class="modal-header">
-        <span>🎨 Unlimited Themes Studio</span>
+        <span>🎨 Board Themes</span>
         <button class="icon-btn" data-close="themesModal">✕</button>
       </div>
       <div class="modal-body">
         <div class="tabs">
-          <button class="tab-btn active" data-tab="presetsTab">Signature & Saved</button>
-          <button class="tab-btn" data-tab="studioTab">Custom Studio</button>
-          <button class="tab-btn" data-tab="shareTab">JSON Share / Import</button>
+          <button class="tab-btn active" data-tab="presetsTab">Themes & Collection</button>
+          <button class="tab-btn" data-tab="studioTab">Color Mixer</button>
+          <button class="tab-btn" data-tab="shareTab">Gift a Theme</button>
         </div>
 
         <div id="presetsTab" class="tab-pane" style="display:flex;flex-direction:column;gap:10px;">
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="icon-btn primary" id="modalRandomThemeBtn">✨ Generate Unlimited Random Theme</button>
-            <button class="icon-btn" id="saveCurrentThemeBtn">💾 Save Current to Library</button>
+            <button class="icon-btn primary" id="modalRandomThemeBtn">✨ Surprise Theme</button>
+            <button class="icon-btn" id="saveCurrentThemeBtn">💾 Save to My Collection</button>
           </div>
-          <div class="section-label">Built-In Signature Themes</div>
+          <div class="section-label">Featured Themes (Simple Realistic • Neon • Realistic 3D)</div>
           <div class="theme-preset-grid" id="builtInThemesGrid"></div>
-          <div class="section-label">Saved Unlimited Themes (<span id="savedCount">0</span>)</div>
+          <div class="section-label">My Saved Themes (<span id="savedCount">0</span>)</div>
           <div class="theme-preset-grid" id="savedThemesGrid"></div>
         </div>
 
         <div id="studioTab" class="tab-pane" style="display:none;flex-direction:column;gap:10px;">
           <div class="form-grid">
-            <label class="field">Theme Name<input type="text" id="stName" value="My Custom Theme" /></label>
-            <label class="field">Snake Pattern
-              <select id="stSnakePattern">
-                <option value="scales">Scales & Stripes</option>
-                <option value="neon">Neon Glow Core</option>
-                <option value="stripes">Bold Bands</option>
-                <option value="solid">Smooth Solid</option>
+            <label class="field">Theme Title<input type="text" id="stName" value="My Theme" /></label>
+            <label class="field">Look & Finish
+              <select id="stLookMode">
+                <option value="simple_realistic">Simple Realistic</option>
+                <option value="realistic_3d">Realistic 3D</option>
+                <option value="neon">Neon Glow</option>
               </select>
             </label>
-            <label class="field">Board Base<input type="color" id="stBoardBg" /></label>
-            <label class="field">UI & Dice Accent<input type="color" id="stAccent" /></label>
-            <label class="field">Tile Light<input type="color" id="stTileA" /></label>
-            <label class="field">Tile Dark<input type="color" id="stTileB" /></label>
-            <label class="field">Ladder Primary<input type="color" id="stLadderA" /></label>
+            <label class="field">Board Frame<input type="color" id="stBoardBg" /></label>
+            <label class="field">Highlight Color<input type="color" id="stAccent" /></label>
+            <label class="field">Light Squares<input type="color" id="stTileA" /></label>
+            <label class="field">Dark Squares<input type="color" id="stTileB" /></label>
+            <label class="field">Ladder Wood / Rail<input type="color" id="stLadderA" /></label>
             <label class="field">Ladder Rungs<input type="color" id="stLadderB" /></label>
-            <label class="field">Snake Primary<input type="color" id="stSnakeA" /></label>
-            <label class="field">Snake Pattern<input type="color" id="stSnakeB" /></label>
+            <label class="field">Snake Body<input type="color" id="stSnakeA" /></label>
+            <label class="field">Snake Markings<input type="color" id="stSnakeB" /></label>
           </div>
           <div class="form-grid">
-            <div class="toggle-row"><span>Rounded Tiles</span><input type="checkbox" id="stRounded" checked /></div>
-            <div class="toggle-row"><span>Neon Glow FX</span><input type="checkbox" id="stGlow" /></div>
+            <div class="toggle-row"><span>Soft Corners</span><input type="checkbox" id="stRounded" checked /></div>
+            <div class="toggle-row"><span>Depth & Lighting</span><input type="checkbox" id="stDepth" checked /></div>
           </div>
-          <button class="icon-btn primary" id="applyAndSaveStudioBtn">✅ Apply & Save Custom Theme</button>
+          <button class="icon-btn primary" id="applyAndSaveStudioBtn">✅ Apply & Save Theme</button>
         </div>
 
         <div id="shareTab" class="tab-pane" style="display:none;flex-direction:column;gap:10px;">
           <label class="field">
-            Theme JSON (Share or Paste)
-            <textarea id="themeJsonBox" rows="5"></textarea>
+            Theme Passcode (Share with a friend or paste one here)
+            <textarea id="themeGiftBox" rows="4" placeholder="Paste a friend's theme passcode to apply it..."></textarea>
           </label>
           <div style="display:flex;gap:8px;">
-            <button class="icon-btn" id="copyThemeJsonBtn">📋 Copy JSON</button>
-            <button class="icon-btn primary" id="importThemeJsonBtn">📥 Import & Apply JSON</button>
+            <button class="icon-btn" id="copyThemeGiftBtn">📋 Copy Passcode</button>
+            <button class="icon-btn primary" id="importThemeGiftBtn">📥 Apply Passcode</button>
           </div>
         </div>
       </div>
@@ -947,7 +946,7 @@
   <div class="modal-backdrop" id="victoryModal">
     <div class="modal-card" style="max-width:400px;text-align:center;">
       <div class="modal-header">
-        <span>🏆 Victory!</span>
+        <span>🏆 Champion!</span>
         <button class="icon-btn" data-close="victoryModal">✕</button>
       </div>
       <div class="modal-body" style="align-items:center;">
@@ -963,37 +962,69 @@
     (() => {
       "use strict";
 
-      const STORAGE_KEY = "saanp_seedhi_p2p_v1";
-      const CHANNEL_NAME = "saanp_seedhi_local_sync_v1";
+      const STORAGE_KEY = "saanp_seedhi_clean_v1";
+      const CHANNEL_NAME = "saanp_seedhi_table_sync_v1";
 
       const BUILT_IN_THEMES = [
         {
-          id: "royal_heritage", name: "Royal Heritage", builtIn: true,
-          appBg: "#140e0a", panelBg: "#1f1610", panelBg2: "#2a1e16", boardBg: "#2c1d12",
-          tileA: "#f3e1c0", tileB: "#d6b37c", textA: "#3b2313", textB: "#2a180c",
-          ladderA: "#d97706", ladderB: "#fef08a", snakeA: "#991b1b", snakeB: "#f59e0b",
-          accent: "#f59e0b", accent2: "#10b981", snakePattern: "scales", rounded: true, glow: false
+          id: "simple_realistic_ivory",
+          name: "Simple Realistic • Ivory & Oak",
+          builtIn: true,
+          lookMode: "simple_realistic",
+          appBg: "#171412", panelBg: "#211c19", panelBg2: "#2c2520", boardBg: "#3a2e25",
+          tileA: "#f6efe2", tileB: "#e3d3b8", textA: "#2b2118", textB: "#241b13",
+          ladderA: "#b45309", ladderB: "#fde68a", snakeA: "#b91c1c", snakeB: "#fca5a5",
+          accent: "#d97706", accent2: "#dc2626", snakePattern: "stripes", rounded: true, glow: false, depth: false
         },
         {
-          id: "dark_neon", name: "Dark Neon Cyber", builtIn: true,
+          id: "simple_realistic_sage",
+          name: "Simple Realistic • Garden Slate",
+          builtIn: true,
+          lookMode: "simple_realistic",
+          appBg: "#111715", panelBg: "#18221f", panelBg2: "#202e2a", boardBg: "#273833",
+          tileA: "#eef4f0", tileB: "#d2e0da", textA: "#162420", textB: "#101b18",
+          ladderA: "#0f766e", ladderB: "#99f6e4", snakeA: "#c2410c", snakeB: "#fed7aa",
+          accent: "#14b8a6", accent2: "#ea580c", snakePattern: "stripes", rounded: true, glow: false, depth: false
+        },
+        {
+          id: "neon_cyber_grid",
+          name: "Neon • Cyber Pulse",
+          builtIn: true,
+          lookMode: "neon",
           appBg: "#070b12", panelBg: "#0e1522", panelBg2: "#151f32", boardBg: "#090d16",
           tileA: "#11192a", tileB: "#18243c", textA: "#67e8f9", textB: "#a5b4fc",
           ladderA: "#00f5d4", ladderB: "#38bdf8", snakeA: "#ff006e", snakeB: "#ffbe0b",
-          accent: "#00f5d4", accent2: "#ff006e", snakePattern: "neon", rounded: true, glow: true
+          accent: "#00f5d4", accent2: "#ff006e", snakePattern: "neon", rounded: true, glow: true, depth: true
         },
         {
-          id: "pine_teal", name: "Pine-Teal Canopy", builtIn: true,
-          appBg: "#071413", panelBg: "#0d211f", panelBg2: "#132e2b", boardBg: "#0a1c1a",
-          tileA: "#163834", tileB: "#1f4c46", textA: "#a7f3d0", textB: "#ecfdf5",
-          ladderA: "#34d399", ladderB: "#fde047", snakeA: "#f97316", snakeB: "#fef08a",
-          accent: "#2dd4bf", accent2: "#fbbf24", snakePattern: "stripes", rounded: true, glow: true
+          id: "neon_synth_sunset",
+          name: "Neon • Electric Violet",
+          builtIn: true,
+          lookMode: "neon",
+          appBg: "#0d0716", panelBg: "#170e26", panelBg2: "#221438", boardBg: "#11091f",
+          tileA: "#1c1030", tileB: "#281644", textA: "#f0abfc", textB: "#93c5fd",
+          ladderA: "#38bdf8", ladderB: "#a5f3fc", snakeA: "#f43f5e", snakeB: "#fde047",
+          accent: "#e879f9", accent2: "#38bdf8", snakePattern: "neon", rounded: true, glow: true, depth: true
         },
         {
-          id: "monochrome_ink", name: "Monochrome Ink", builtIn: true,
-          appBg: "#111111", panelBg: "#1a1a1a", panelBg2: "#242424", boardBg: "#181818",
-          tileA: "#f4f4f5", tileB: "#d4d4d8", textA: "#18181b", textB: "#09090b",
-          ladderA: "#3f3f46", ladderB: "#a1a1aa", snakeA: "#09090b", snakeB: "#ef4444",
-          accent: "#f4f4f5", accent2: "#ef4444", snakePattern: "stripes", rounded: false, glow: false
+          id: "realistic_3d_royal",
+          name: "Realistic 3D • Carved Brass",
+          builtIn: true,
+          lookMode: "realistic_3d",
+          appBg: "#140d08", panelBg: "#21160e", panelBg2: "#2e1f14", boardBg: "#3b2618",
+          tileA: "#f5e3c3", tileB: "#d4ae72", textA: "#331d0d", textB: "#241307",
+          ladderA: "#ca8a04", ladderB: "#fef08a", snakeA: "#991b1b", snakeB: "#fbbf24",
+          accent: "#eab308", accent2: "#ef4444", snakePattern: "scales", rounded: true, glow: false, depth: true
+        },
+        {
+          id: "realistic_3d_emerald",
+          name: "Realistic 3D • Jade Temple",
+          builtIn: true,
+          lookMode: "realistic_3d",
+          appBg: "#071411", panelBg: "#0d211c", panelBg2: "#143029", boardBg: "#0c241e",
+          tileA: "#e6f5ef", tileB: "#b7ddd0", textA: "#0d261f", textB: "#081a15",
+          ladderA: "#059669", ladderB: "#a7f3d0", snakeA: "#be123c", snakeB: "#fda4af",
+          accent: "#10b981", accent2: "#f43f5e", snakePattern: "scales", rounded: true, glow: false, depth: true
         }
       ];
 
@@ -1013,19 +1044,19 @@
       };
 
       const POWERUP_TYPES = {
-        shield: { id: "shield", icon: "🛡️", name: "Snake Shield", desc: "Auto-blocks next snake bite" },
-        precision: { id: "precision", icon: "🎯", name: "Loaded Dice", desc: "Pick exact 1–6 on next roll" },
-        ladderBoost: { id: "ladderBoost", icon: "🪜", name: "Seedhi Boost", desc: "Jump +7 tiles immediately" },
-        swap: { id: "swap", icon: "🧲", name: "Magnet Swap", desc: "Swap with leader or +5 tiles" },
-        antidote: { id: "antidote", icon: "🧪", name: "Venom Half", desc: "Halves next snake drop" },
-        mystery: { id: "mystery", icon: "❓", name: "Mystery Tile", desc: "Instant random surprise!" }
+        shield: { id: "shield", icon: "🛡️", name: "Snake Shield", desc: "Protects from one snake bite" },
+        precision: { id: "precision", icon: "🎯", name: "Aimed Roll", desc: "Pick your next dice number" },
+        ladderBoost: { id: "ladderBoost", icon: "🪜", name: "Quick Climb", desc: "Leap +7 squares ahead" },
+        swap: { id: "swap", icon: "🧲", name: "Spot Swap", desc: "Trade spots with the leader" },
+        antidote: { id: "antidote", icon: "🧪", name: "Soft Slide", desc: "Cut a snake drop in half" },
+        mystery: { id: "mystery", icon: "❓", name: "Lucky Tile", desc: "Instant board surprise" }
       };
 
       const TOKEN_COLORS = ["#00e5ff", "#ff4d6d", "#ffb703", "#80ed99"];
       const TOKEN_SHAPES = ["circle", "crown", "star", "diamond"];
 
       /* =========================================================================
-         WEB AUDIO SOUND FX
+         SOUND EFFECTS
          ========================================================================= */
       class SoundFX {
         constructor() { this.ctx = null; this.muted = false; }
@@ -1062,142 +1093,126 @@
       const sfx = new SoundFX();
 
       /* =========================================================================
-         ZERO-API ONLINE P2P MANAGER (WebRTC DataChannel + BroadcastChannel)
+         FRIEND LINK MANAGER
          ========================================================================= */
-      class ZeroApiOnlineBridge {
+      class FriendLinkManager {
         constructor() {
           this.pc = null;
           this.dc = null;
-          this.role = null; // "host" | "guest" | null
+          this.role = null;
           this.connected = false;
           this.bc = ("BroadcastChannel" in window) ? new BroadcastChannel(CHANNEL_NAME) : null;
           if (this.bc) {
             this.bc.onmessage = (ev) => {
               if (ev.data && ev.data.fromTab !== TAB_ID) {
-                this.onRemoteMessage(ev.data.payload);
+                this.onMessage(ev.data.payload);
               }
             };
           }
         }
 
-        broadcastSameDevice(payload) {
-          if (this.bc) this.bc.postMessage({ fromTab: TAB_ID, payload });
-        }
-
         send(payload) {
-          this.broadcastSameDevice(payload);
+          if (this.bc) this.bc.postMessage({ fromTab: TAB_ID, payload });
           if (this.dc && this.dc.readyState === "open") {
             this.dc.send(JSON.stringify(payload));
           }
         }
 
-        createPeer() {
+        initPeer() {
           if (this.pc) this.pc.close();
-          // Public STUN only for NAT hole-punching (no API key, no backend, no Firebase)
           this.pc = new RTCPeerConnection({
             iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }]
           });
           this.pc.onconnectionstatechange = () => {
             if (this.pc.connectionState === "disconnected" || this.pc.connectionState === "failed") {
               this.connected = false;
-              updateP2pBadge();
+              updateRoomBadge();
             }
           };
         }
 
-        attachChannel(channel) {
-          this.dc = channel;
+        bindChannel(ch) {
+          this.dc = ch;
           this.dc.onopen = () => {
             this.connected = true;
-            updateP2pBadge();
-            showToast("🌐 Online P2P Connected! Live turns active.");
+            updateRoomBadge();
+            showToast("🎉 Friend connected! Enjoy your match.");
             if (this.role === "host" && appState.match) {
               this.send({ type: "SYNC_STATE", match: appState.match, settings: appState.settings });
             }
           };
           this.dc.onclose = () => {
             this.connected = false;
-            updateP2pBadge();
+            updateRoomBadge();
           };
           this.dc.onmessage = (ev) => {
-            try {
-              this.onRemoteMessage(JSON.parse(ev.data));
-            } catch {}
+            try { this.onMessage(JSON.parse(ev.data)); } catch {}
           };
         }
 
-        async createHostOffer() {
+        async createInvite() {
           this.role = "host";
-          this.createPeer();
-          const ch = this.pc.createDataChannel("saanp_seedhi");
-          this.attachChannel(ch);
-
+          this.initPeer();
+          const ch = this.pc.createDataChannel("table");
+          this.bindChannel(ch);
           const offer = await this.pc.createOffer();
           await this.pc.setLocalDescription(offer);
-          await this.waitIceComplete();
+          await this.waitCandidates();
 
-          // Start a fresh 2-player match for Host (Player 0) vs Guest (Player 1)
           appState.settings.mode = "pvp2";
-          appState.settings.playerConfigs[0].name = "Host (P1)";
-          appState.settings.playerConfigs[1].name = "Guest (P2)";
-          createNewMatch();
+          appState.settings.playerConfigs[0].name = "Host";
+          appState.settings.playerConfigs[1].name = "Friend";
+          createNewMatch(false);
 
-          return btoa(JSON.stringify({ role: "host", sdp: this.pc.localDescription }));
+          return btoa(JSON.stringify({ r: "h", s: this.pc.localDescription }));
         }
 
-        async createGuestAnswer(offerCodeStr) {
-          const parsed = JSON.parse(atob(offerCodeStr.trim()));
+        async createReply(inviteStr) {
+          const data = JSON.parse(atob(inviteStr.trim()));
           this.role = "guest";
-          this.createPeer();
-          this.pc.ondatachannel = (ev) => this.attachChannel(ev.channel);
-
-          await this.pc.setRemoteDescription(parsed.sdp);
+          this.initPeer();
+          this.pc.ondatachannel = (ev) => this.bindChannel(ev.channel);
+          await this.pc.setRemoteDescription(data.s);
           const answer = await this.pc.createAnswer();
           await this.pc.setLocalDescription(answer);
-          await this.waitIceComplete();
-
-          return btoa(JSON.stringify({ role: "guest", sdp: this.pc.localDescription }));
+          await this.waitCandidates();
+          return btoa(JSON.stringify({ r: "g", s: this.pc.localDescription }));
         }
 
-        async acceptGuestAnswer(answerCodeStr) {
-          const parsed = JSON.parse(atob(answerCodeStr.trim()));
-          await this.pc.setRemoteDescription(parsed.sdp);
+        async completeMatch(replyStr) {
+          const data = JSON.parse(atob(replyStr.trim()));
+          await this.pc.setRemoteDescription(data.s);
         }
 
-        waitIceComplete() {
+        waitCandidates() {
           return new Promise(resolve => {
             if (!this.pc || this.pc.iceGatheringState === "complete") return resolve();
-            const check = () => {
+            const fn = () => {
               if (this.pc.iceGatheringState === "complete") {
-                this.pc.removeEventListener("icegatheringstatechange", check);
+                this.pc.removeEventListener("icegatheringstatechange", fn);
                 resolve();
               }
             };
-            this.pc.addEventListener("icegatheringstatechange", check);
+            this.pc.addEventListener("icegatheringstatechange", fn);
             setTimeout(resolve, 2500);
           });
         }
 
-        disconnect() {
+        leave() {
           if (this.dc) this.dc.close();
           if (this.pc) this.pc.close();
-          this.dc = null;
-          this.pc = null;
-          this.role = null;
-          this.connected = false;
-          updateP2pBadge();
-          showToast("Disconnected from Online P2P.");
+          this.dc = null; this.pc = null; this.role = null; this.connected = false;
+          updateRoomBadge();
+          showToast("Left friend table.");
         }
 
-        onRemoteMessage(msg) {
+        onMessage(msg) {
           if (!msg || !msg.type) return;
           if (msg.type === "SYNC_STATE") {
             appState.settings = msg.settings;
             appState.match = msg.match;
             appState.match.busy = false;
-            persistState();
-            syncAllUI();
-            renderBoard();
+            persistState(); syncAllUI(); renderBoard();
           } else if (msg.type === "ROLL_REQUEST") {
             executeTurn(msg.forcedRoll || null, true);
           } else if (msg.type === "POWERUP_USE") {
@@ -1206,26 +1221,26 @@
         }
       }
 
-      const TAB_ID = "tab_" + Math.random().toString(36).slice(2, 9);
-      const p2p = new ZeroApiOnlineBridge();
+      const TAB_ID = "t_" + Math.random().toString(36).slice(2, 9);
+      const friendLink = new FriendLinkManager();
 
-      function getLocalSeatIndex() {
-        if (!p2p.connected || !p2p.role) return null;
-        return p2p.role === "host" ? 0 : 1;
+      function getMyPlayerIndex() {
+        if (!friendLink.connected || !friendLink.role) return null;
+        return friendLink.role === "host" ? 0 : 1;
       }
 
-      function updateP2pBadge() {
-        const dot = document.getElementById("p2pDot");
-        const txt = document.getElementById("p2pStatusText");
-        if (p2p.connected) {
-          dot.classList.add("connected");
-          txt.textContent = `Online P2P (${p2p.role === "host" ? "You = P1" : "You = P2"})`;
-        } else if (p2p.role === "host") {
-          dot.classList.remove("connected");
-          txt.textContent = "Waiting for Guest Link...";
+      function updateRoomBadge() {
+        const dot = document.getElementById("roomDot");
+        const txt = document.getElementById("roomStatusText");
+        if (friendLink.connected) {
+          dot.classList.add("live");
+          txt.textContent = friendLink.role === "host" ? "Playing with Friend (You: P1)" : "Playing with Friend (You: P2)";
+        } else if (friendLink.role === "host") {
+          dot.classList.remove("live");
+          txt.textContent = "Waiting for Friend's Reply...";
         } else {
-          dot.classList.remove("connected");
-          txt.textContent = "Offline / Local Mode";
+          dot.classList.remove("live");
+          txt.textContent = "Ready to Play";
         }
         syncControlsState();
       }
@@ -1245,7 +1260,7 @@
           powerUpsEnabled: true,
           playerConfigs: [
             { name: "You", color: TOKEN_COLORS[0], shape: "crown", isAI: false },
-            { name: "Aarav AI", color: TOKEN_COLORS[1], shape: "star", isAI: true },
+            { name: "Buddy Bot", color: TOKEN_COLORS[1], shape: "star", isAI: true },
             { name: "Player 3", color: TOKEN_COLORS[2], shape: "diamond", isAI: false },
             { name: "Player 4", color: TOKEN_COLORS[3], shape: "circle", isAI: false }
           ]
@@ -1277,10 +1292,10 @@
       }
 
       /* =========================================================================
-         UNLIMITED THEME GENERATOR
+         SURPRISE THEME GENERATOR (SIMPLE REALISTIC • NEON • REALISTIC 3D)
          ========================================================================= */
-      const ADJ = ["Solar", "Abyssal", "Velvet", "Glacier", "Crimson", "Emerald", "Cyber", "Saffron", "Obsidian", "Lotus", "Indigo", "Mirage"];
-      const NOUN = ["Flare", "Mint", "Dusk", "Lime", "Pulse", "Temple", "Vortex", "Oasis", "Drift", "Crown", "Echo", "Spark"];
+      const ADJ = ["Sunny", "Royal", "Velvet", "Emerald", "Golden", "Crystal", "Twilight", "Coral", "Sapphire", "Amber", "Jade", "Starlight"];
+      const NOUN = ["Meadow", "Palace", "Lagoon", "Summit", "Harbor", "Garden", "Pavilion", "Horizon", "Valley", "Citadel", "Breeze", "Sanctuary"];
 
       function hslToHex(h, s, l) {
         s /= 100; l /= 100;
@@ -1291,34 +1306,40 @@
         return `#${hx(f(0))}${hx(f(8))}${hx(f(4))}`;
       }
 
-      function generateUnlimitedRandomTheme() {
+      function generateSurpriseTheme() {
+        const styles = ["simple_realistic", "realistic_3d", "neon"];
+        const lookMode = styles[Math.floor(Math.random() * styles.length)];
         const baseHue = Math.floor(Math.random() * 360);
-        const isDark = Math.random() > 0.25;
-        const ladderHue = (baseHue + 135 + Math.floor(Math.random() * 40)) % 360;
-        const snakeHue = (baseHue + 290 + Math.floor(Math.random() * 50)) % 360;
-        const name = `${ADJ[Math.floor(Math.random() * ADJ.length)]} ${NOUN[Math.floor(Math.random() * NOUN.length)]}`;
-        const patterns = ["scales", "neon", "stripes", "solid"];
+        const isDark = lookMode === "neon" ? true : Math.random() > 0.35;
+        const ladderHue = (baseHue + 130 + Math.floor(Math.random() * 45)) % 360;
+        const snakeHue = (baseHue + 285 + Math.floor(Math.random() * 55)) % 360;
+        const prefix = lookMode === "simple_realistic" ? "Simple Realistic" : (lookMode === "realistic_3d" ? "Realistic 3D" : "Neon");
+        const name = `${prefix} • ${ADJ[Math.floor(Math.random() * ADJ.length)]} ${NOUN[Math.floor(Math.random() * NOUN.length)]}`;
+        const pattern = lookMode === "neon" ? "neon" : (lookMode === "realistic_3d" ? "scales" : "stripes");
 
         return {
-          id: "gen_" + Date.now() + "_" + Math.floor(Math.random() * 999),
-          name, builtIn: false,
-          appBg: isDark ? hslToHex(baseHue, 35, 6) : hslToHex(baseHue, 25, 92),
-          panelBg: isDark ? hslToHex(baseHue, 32, 10) : hslToHex(baseHue, 22, 96),
-          panelBg2: isDark ? hslToHex(baseHue, 30, 15) : hslToHex(baseHue, 20, 88),
-          boardBg: isDark ? hslToHex(baseHue, 38, 8) : hslToHex(baseHue, 30, 82),
-          tileA: isDark ? hslToHex(baseHue, 32, 14) : hslToHex(baseHue, 35, 93),
-          tileB: isDark ? hslToHex((baseHue + 12) % 360, 36, 20) : hslToHex((baseHue + 12) % 360, 32, 84),
-          textA: isDark ? hslToHex(baseHue, 60, 82) : hslToHex(baseHue, 45, 18),
-          textB: isDark ? hslToHex((baseHue + 20) % 360, 65, 86) : hslToHex(baseHue, 50, 14),
-          ladderA: hslToHex(ladderHue, 85, isDark ? 56 : 40),
-          ladderB: hslToHex((ladderHue + 35) % 360, 90, isDark ? 72 : 55),
-          snakeA: hslToHex(snakeHue, 85, isDark ? 54 : 42),
-          snakeB: hslToHex((snakeHue + 45) % 360, 92, isDark ? 65 : 52),
-          accent: hslToHex(ladderHue, 88, isDark ? 58 : 42),
-          accent2: hslToHex(snakeHue, 88, isDark ? 62 : 48),
-          snakePattern: patterns[Math.floor(Math.random() * patterns.length)],
-          rounded: Math.random() > 0.25,
-          glow: isDark && Math.random() > 0.35
+          id: "th_" + Date.now() + "_" + Math.floor(Math.random() * 999),
+          name,
+          builtIn: false,
+          lookMode,
+          appBg: isDark ? hslToHex(baseHue, 32, 7) : hslToHex(baseHue, 22, 92),
+          panelBg: isDark ? hslToHex(baseHue, 28, 12) : hslToHex(baseHue, 20, 96),
+          panelBg2: isDark ? hslToHex(baseHue, 26, 17) : hslToHex(baseHue, 18, 88),
+          boardBg: isDark ? hslToHex(baseHue, 34, 10) : hslToHex(baseHue, 28, 82),
+          tileA: isDark ? hslToHex(baseHue, 28, 16) : hslToHex(baseHue, 30, 94),
+          tileB: isDark ? hslToHex((baseHue + 14) % 360, 32, 23) : hslToHex((baseHue + 14) % 360, 28, 84),
+          textA: isDark ? hslToHex(baseHue, 55, 84) : hslToHex(baseHue, 42, 16),
+          textB: isDark ? hslToHex((baseHue + 18) % 360, 60, 88) : hslToHex(baseHue, 46, 14),
+          ladderA: hslToHex(ladderHue, 82, isDark ? 54 : 40),
+          ladderB: hslToHex((ladderHue + 32) % 360, 88, isDark ? 72 : 58),
+          snakeA: hslToHex(snakeHue, 82, isDark ? 52 : 42),
+          snakeB: hslToHex((snakeHue + 40) % 360, 90, isDark ? 68 : 56),
+          accent: hslToHex(ladderHue, 85, isDark ? 56 : 42),
+          accent2: hslToHex(snakeHue, 85, isDark ? 60 : 48),
+          snakePattern: pattern,
+          rounded: true,
+          glow: lookMode === "neon",
+          depth: lookMode !== "simple_realistic"
         };
       }
 
@@ -1357,7 +1378,7 @@
             name: pc.name.trim() || `Player ${i + 1}`,
             color: pc.color,
             shape: pc.shape,
-            isAI: !p2p.connected && cfg.mode === "ai" && i === 1,
+            isAI: !friendLink.connected && cfg.mode === "ai" && i === 1,
             tile: 1,
             visualTile: 1,
             powerUps: [],
@@ -1391,16 +1412,14 @@
           boardPowerUps,
           diceValue: 6,
           diceHistory: [],
-          logs: ["Match started! Roll the dice to climb to 100."],
+          logs: ["Game on! First to square 100 wins."],
           busy: false,
           winnerId: null
         };
 
-        persistState();
-        syncAllUI();
-        renderBoard();
-        if (broadcast && p2p.connected) {
-          p2p.send({ type: "SYNC_STATE", match: appState.match, settings: appState.settings });
+        persistState(); syncAllUI(); renderBoard();
+        if (broadcast && friendLink.connected) {
+          friendLink.send({ type: "SYNC_STATE", match: appState.match, settings: appState.settings });
         }
       }
 
@@ -1427,7 +1446,7 @@
       }
 
       /* =========================================================================
-         CANVAS RENDERER
+         CANVAS RENDERER (SIMPLE REALISTIC • REALISTIC 3D • NEON)
          ========================================================================= */
       const canvas = document.getElementById("boardCanvas");
       const ctx = canvas.getContext("2d");
@@ -1453,6 +1472,8 @@
         const theme = appState.activeTheme;
         const S = boardPixelSize;
         const T = S / 10;
+        const is3D = theme.lookMode === "realistic_3d" || !!theme.depth;
+        const isNeon = theme.lookMode === "neon" || !!theme.glow;
 
         ctx.clearRect(0, 0, S, S);
         ctx.fillStyle = theme.boardBg;
@@ -1466,8 +1487,23 @@
           const x = col * T + pad, y = row * T + pad, w = T - pad * 2, h = T - pad * 2;
           const isEven = (row + col) % 2 === 0;
           ctx.fillStyle = isEven ? theme.tileA : theme.tileB;
+
           if (rad > 0) { roundRect(ctx, x, y, w, h, rad); ctx.fill(); }
           else ctx.fillRect(x, y, w, h);
+
+          if (is3D) {
+            ctx.save();
+            ctx.strokeStyle = "rgba(255,255,255,0.25)";
+            ctx.lineWidth = 1;
+            if (rad > 0) { roundRect(ctx, x + 0.5, y + 0.5, w - 1, h - 1, rad); ctx.stroke(); }
+            ctx.strokeStyle = "rgba(0,0,0,0.22)";
+            ctx.beginPath();
+            ctx.moveTo(x + 1, y + h - 1);
+            ctx.lineTo(x + w - 1, y + h - 1);
+            ctx.lineTo(x + w - 1, y + 1);
+            ctx.stroke();
+            ctx.restore();
+          }
 
           ctx.fillStyle = isEven ? theme.textA : theme.textB;
           ctx.font = `700 ${Math.max(9, Math.floor(T * 0.23))}px -apple-system, sans-serif`;
@@ -1482,8 +1518,8 @@
           }
         }
 
-        m.ladders.forEach(l => drawLadder(l.from, l.to, T, theme));
-        m.snakes.forEach(s => drawSnake(s.from, s.to, T, theme));
+        m.ladders.forEach(l => drawLadder(l.from, l.to, T, theme, isNeon, is3D));
+        m.snakes.forEach(s => drawSnake(s.from, s.to, T, theme, isNeon, is3D));
 
         const groups = {};
         m.players.forEach(p => {
@@ -1497,7 +1533,7 @@
             const pos = getInterpolatedTilePos(p.visualTile, T);
             const angle = (idx / group.length) * Math.PI * 2;
             const off = group.length > 1 ? T * 0.16 : 0;
-            drawPlayerToken(p, pos.x + Math.cos(angle) * off, pos.y + Math.sin(angle) * off, T * 0.29, p.id === m.currentTurn);
+            drawPlayerToken(p, pos.x + Math.cos(angle) * off, pos.y + Math.sin(angle) * off, T * 0.29, p.id === m.currentTurn, is3D);
           });
         });
       }
@@ -1514,13 +1550,16 @@
         };
       }
 
-      function drawLadder(fromTile, toTile, T, theme) {
+      function drawLadder(fromTile, toTile, T, theme, isNeon, is3D) {
         const p1 = tileCenter(fromTile, T), p2 = tileCenter(toTile, T);
         const dx = p2.x - p1.x, dy = p2.y - p1.y, len = Math.hypot(dx, dy);
         if (len < 1) return;
         const nx = -dy / len, ny = dx / len, halfW = T * 0.18;
+
         ctx.save();
-        if (theme.glow) { ctx.shadowColor = theme.ladderA; ctx.shadowBlur = 10; }
+        if (isNeon) { ctx.shadowColor = theme.ladderA; ctx.shadowBlur = 10; }
+        else if (is3D) { ctx.shadowColor = "rgba(0,0,0,0.35)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3; }
+
         const steps = Math.max(3, Math.floor(len / (T * 0.32)));
         ctx.strokeStyle = theme.ladderB; ctx.lineWidth = Math.max(2.5, T * 0.065); ctx.lineCap = "round";
         for (let i = 1; i < steps; i++) {
@@ -1540,7 +1579,7 @@
         ctx.restore();
       }
 
-      function drawSnake(headTile, tailTile, T, theme) {
+      function drawSnake(headTile, tailTile, T, theme, isNeon, is3D) {
         const head = tileCenter(headTile, T), tail = tileCenter(tailTile, T);
         const dx = tail.x - head.x, dy = tail.y - head.y, len = Math.hypot(dx, dy);
         if (len < 1) return;
@@ -1551,7 +1590,9 @@
         const cp2 = { x: head.x + dx * 0.68 - nx * amp * dir, y: head.y + dy * 0.68 - ny * amp * dir };
 
         ctx.save();
-        if (theme.glow) { ctx.shadowColor = theme.snakeA; ctx.shadowBlur = 12; }
+        if (isNeon) { ctx.shadowColor = theme.snakeA; ctx.shadowBlur = 12; }
+        else if (is3D) { ctx.shadowColor = "rgba(0,0,0,0.38)"; ctx.shadowBlur = 7; ctx.shadowOffsetY = 4; }
+
         const segs = 28, pts = [];
         for (let i = 0; i <= segs; i++) {
           const t = i / segs, mt = 1 - t;
@@ -1583,9 +1624,11 @@
         ctx.restore();
       }
 
-      function drawPlayerToken(player, x, y, r, isActive) {
+      function drawPlayerToken(player, x, y, r, isActive, is3D) {
         ctx.save();
         if (isActive) { ctx.shadowColor = player.color; ctx.shadowBlur = 14; }
+        else if (is3D) { ctx.shadowColor = "rgba(0,0,0,0.45)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3; }
+
         ctx.fillStyle = player.color; ctx.strokeStyle = "#fff"; ctx.lineWidth = Math.max(2, r * 0.18);
         ctx.beginPath();
         if (player.shape === "diamond") {
@@ -1616,7 +1659,7 @@
       }
 
       /* =========================================================================
-         GAMEPLAY & P2P TURN EXECUTION
+         GAMEPLAY EXECUTION
          ========================================================================= */
       function showToast(msg) {
         const el = document.getElementById("toastBanner");
@@ -1636,15 +1679,15 @@
       function requestRoll() {
         const m = appState.match;
         if (!m || m.busy || m.winnerId !== null) return;
-        const localSeat = getLocalSeatIndex();
-        if (localSeat !== null && m.currentTurn !== localSeat) {
-          showToast("⏳ Wait for your online opponent's turn!");
+        const mySeat = getMyPlayerIndex();
+        if (mySeat !== null && m.currentTurn !== mySeat) {
+          showToast("⏳ Your friend's turn right now!");
           return;
         }
         const player = m.players[m.currentTurn];
         const forcedRoll = player.precisionRoll;
-        if (p2p.connected) {
-          p2p.send({ type: "ROLL_REQUEST", forcedRoll });
+        if (friendLink.connected) {
+          friendLink.send({ type: "ROLL_REQUEST", forcedRoll });
         }
         executeTurn(forcedRoll, false);
       }
@@ -1683,8 +1726,8 @@
           player.consecutiveSixes++;
           if (player.consecutiveSixes >= 3) {
             player.consecutiveSixes = 0;
-            showToast(`⚠️ ${player.name} rolled three 6s! Turn forfeited.`);
-            addLog(`<strong>${player.name}</strong> rolled triple 6s.`);
+            showToast(`⚠️ Three 6s in a row! ${player.name}'s turn ends.`);
+            addLog(`<strong>${player.name}</strong> rolled three 6s.`);
             await sleep(450);
             advanceTurn(false);
             return;
@@ -1697,8 +1740,8 @@
         let targetTile = startTile + rolled;
         if (targetTile > 100) {
           if (appState.settings.exactRule === "exact") {
-            showToast(`🎯 Needs exact ${100 - startTile} to win!`);
-            addLog(`<strong>${player.name}</strong> rolled ${rolled} at ${startTile} (Exact needed).`);
+            showToast(`🎯 Needs ${100 - startTile} to finish!`);
+            addLog(`<strong>${player.name}</strong> rolled ${rolled} at ${startTile}.`);
             await sleep(420);
             advanceTurn(appState.settings.bonusSix && rolled === 6);
             return;
@@ -1713,7 +1756,7 @@
           await animateHopPath(player, 100, targetTile);
         }
 
-        addLog(`<strong>${player.name}</strong> rolled <strong>${rolled}</strong> → Tile <strong>${player.tile}</strong>`);
+        addLog(`<strong>${player.name}</strong> rolled <strong>${rolled}</strong> → Square <strong>${player.tile}</strong>`);
 
         const landedPu = m.boardPowerUps[player.tile];
         if (landedPu) {
@@ -1734,13 +1777,13 @@
           if (player.shield) {
             player.shield = false;
             sfx.shieldBlock();
-            showToast(`🛡️ ${player.name}'s Shield blocked snake at ${snake.from}!`);
+            showToast(`🛡️ ${player.name}'s Shield saved them!`);
           } else {
             let dest = snake.to;
             if (player.antidote) {
               player.antidote = false;
               dest = Math.round((snake.from + snake.to) / 2);
-              showToast(`🧪 Antidote halved drop to ${dest}!`);
+              showToast(`🧪 Soft Slide eased drop to ${dest}!`);
             } else {
               showToast(`🐍 ${player.name} slid ${snake.from} → ${dest}!`);
             }
@@ -1756,7 +1799,7 @@
           if (!isRemote && !player.isAI) appState.stats.wins++;
           persistState(); renderBoard(); syncAllUI(); sfx.win();
           document.getElementById("winnerTitle").textContent = `${player.name} Wins!`;
-          document.getElementById("winnerSubtitle").textContent = `Reached Tile 100!`;
+          document.getElementById("winnerSubtitle").textContent = `Reached Square 100!`;
           document.getElementById("victoryModal").classList.add("open");
           return;
         }
@@ -1768,16 +1811,16 @@
         const pu = POWERUP_TYPES[puKey];
         if (!pu) return;
         sfx.powerup();
-        if (puKey === "shield") { player.shield = true; showToast(`🛡️ ${player.name} gained Snake Shield!`); }
-        else if (puKey === "antidote") { player.antidote = true; showToast(`🧪 ${player.name} got Venom Half!`); }
+        if (puKey === "shield") { player.shield = true; showToast(`🛡️ ${player.name} got a Snake Shield!`); }
+        else if (puKey === "antidote") { player.antidote = true; showToast(`🧪 ${player.name} got Soft Slide!`); }
         else if (puKey === "mystery") {
           const dest = Math.min(99, player.tile + 5);
-          showToast(`❓ Mystery Boost +5 to ${dest}!`);
+          showToast(`❓ Lucky Tile +5 to ${dest}!`);
           await animateSlide(player, player.tile, dest);
         } else {
           if (player.powerUps.length < 2) player.powerUps.push(puKey);
           else player.powerUps[1] = puKey;
-          showToast(`${pu.icon} Collected ${pu.name}!`);
+          showToast(`${pu.icon} Picked up ${pu.name}!`);
         }
         syncAllUI();
       }
@@ -1785,9 +1828,9 @@
       function onSlotClick(slotIndex) {
         const m = appState.match;
         if (!m || m.busy || m.winnerId !== null) return;
-        const localSeat = getLocalSeatIndex();
-        if (localSeat !== null && m.currentTurn !== localSeat) return;
-        if (p2p.connected) p2p.send({ type: "POWERUP_USE", slotIndex });
+        const mySeat = getMyPlayerIndex();
+        if (mySeat !== null && m.currentTurn !== mySeat) return;
+        if (friendLink.connected) friendLink.send({ type: "POWERUP_USE", slotIndex });
         executePowerUp(slotIndex, false);
       }
 
@@ -1802,11 +1845,11 @@
 
         if (puKey === "precision") {
           document.getElementById("precisionPicker").classList.add("active");
-          showToast("🎯 Loaded Dice active! Pick 1–6.");
+          showToast("🎯 Pick your next number (1–6)!");
         } else if (puKey === "ladderBoost") {
           m.busy = true; syncControlsState();
           const dest = Math.min(99, player.tile + 7);
-          showToast(`🪜 Seedhi Boost → Tile ${dest}!`);
+          showToast(`🪜 Quick Climb → Square ${dest}!`);
           await animateSlide(player, player.tile, dest);
           m.busy = false;
         } else if (puKey === "swap") {
@@ -1814,7 +1857,7 @@
           const leader = m.players.filter(p => p.id !== player.id && p.tile > player.tile).sort((a, b) => b.tile - a.tile)[0];
           if (leader) {
             const aOld = player.tile, bOld = leader.tile;
-            showToast(`🧲 Swapped with ${leader.name}!`);
+            showToast(`🧲 Swapped spots with ${leader.name}!`);
             await Promise.all([animateSlide(player, aOld, bOld), animateSlide(leader, bOld, aOld)]);
           } else {
             await animateSlide(player, player.tile, Math.min(99, player.tile + 5));
@@ -1900,7 +1943,7 @@
             <div class="player-badges">
               ${p.isAI ? `<span class="mini-badge">BOT</span>` : ""}
               ${p.shield ? `<span class="mini-badge shield">🛡️ Shield</span>` : ""}
-              ${p.antidote ? `<span class="mini-badge shield">🧪 Half</span>` : ""}
+              ${p.antidote ? `<span class="mini-badge shield">🧪 Soft</span>` : ""}
             </div>
           </div>
         `).join("");
@@ -1924,16 +1967,16 @@
         const player = m.players[m.currentTurn];
         const rollBtn = document.getElementById("rollBtn");
         const sub = document.getElementById("turnSubtext");
-        const localSeat = getLocalSeatIndex();
+        const mySeat = getMyPlayerIndex();
 
         if (m.winnerId !== null) {
-          rollBtn.disabled = true; rollBtn.textContent = "🏆 FINISHED";
-        } else if (localSeat !== null && m.currentTurn !== localSeat) {
-          rollBtn.disabled = true; rollBtn.textContent = `🌐 ${player.name}'s TURN`;
-          sub.textContent = "Waiting for remote roll...";
+          rollBtn.disabled = true; rollBtn.textContent = "🏆 GAME OVER";
+        } else if (mySeat !== null && m.currentTurn !== mySeat) {
+          rollBtn.disabled = true; rollBtn.textContent = `⏳ ${player.name}'s TURN`;
+          sub.textContent = "Waiting for friend's roll...";
         } else if (player.isAI) {
           rollBtn.disabled = true; rollBtn.textContent = `🤖 ${player.name}...`;
-          sub.textContent = "AI thinking...";
+          sub.textContent = "Taking turn...";
         } else if (m.busy) {
           rollBtn.disabled = true; rollBtn.textContent = "⏳ MOVING...";
         } else {
@@ -1945,7 +1988,7 @@
       function renderHistoryStrip() {
         const m = appState.match; if (!m) return;
         document.getElementById("historyStrip").innerHTML = m.diceHistory.map(h =>
-          `<span class="hist-pill" style="border-color:${h.color}55;color:${h.color}">${esc(h.player.slice(0, 6))}: ${h.val}</span>`
+          `<span class="hist-pill" style="border-color:${h.color}55;color:${h.color}">${esc(h.player.slice(0, 7))}: ${h.val}</span>`
         ).join("");
       }
 
@@ -1980,50 +2023,47 @@
         });
       });
 
-      // Online P2P Modal Controls
-      const openOnline = () => document.getElementById("onlineModal").classList.add("open");
-      document.getElementById("openOnlineBtn").addEventListener("click", openOnline);
-      document.getElementById("quickOnlineBtn").addEventListener("click", openOnline);
+      const openFriendModal = () => document.getElementById("onlineModal").classList.add("open");
+      document.getElementById("openOnlineBtn").addEventListener("click", openFriendModal);
+      document.getElementById("quickRoomBtn").addEventListener("click", openFriendModal);
 
       document.getElementById("createOfferBtn").addEventListener("click", async () => {
-        showToast("📡 Generating Host Invite Code...");
-        const code = await p2p.createHostOffer();
+        showToast("🎟️ Creating invite passkey...");
+        const code = await friendLink.createInvite();
         document.getElementById("p2pPayloadBox").value = code;
-        updateP2pBadge();
-        showToast("✅ Host Invite Code ready! Copy & send to Guest.");
+        updateRoomBadge();
+        showToast("✅ Invite ready! Send it to your friend.");
       });
 
       document.getElementById("generateAnswerBtn").addEventListener("click", async () => {
         const raw = document.getElementById("p2pPayloadBox").value;
-        if (!raw.trim()) return showToast("⚠️ Paste Host Invite Code first!");
-        showToast("📲 Generating Guest Join Code...");
-        const ans = await p2p.createGuestAnswer(raw);
-        document.getElementById("p2pPayloadBox").value = ans;
-        updateP2pBadge();
-        showToast("✅ Guest Join Code ready! Send back to Host.");
+        if (!raw.trim()) return showToast("⚠️ Paste the invite passkey first!");
+        showToast("💌 Creating reply...");
+        const reply = await friendLink.createReply(raw);
+        document.getElementById("p2pPayloadBox").value = reply;
+        updateRoomBadge();
+        showToast("✅ Reply ready! Send it back to Host.");
       });
 
       document.getElementById("acceptAnswerBtn").addEventListener("click", async () => {
         const raw = document.getElementById("p2pPayloadBox").value;
-        if (!raw.trim()) return showToast("⚠️ Paste Guest Join Code first!");
-        await p2p.acceptGuestAnswer(raw);
-        showToast("🔗 P2P Link finalizing...");
+        if (!raw.trim()) return showToast("⚠️ Paste your friend's reply first!");
+        await friendLink.completeMatch(raw);
+        showToast("🤝 Connecting to your friend...");
       });
 
       document.getElementById("copyP2pCodeBtn").addEventListener("click", () => {
         const box = document.getElementById("p2pPayloadBox");
-        box.select();
-        navigator.clipboard?.writeText(box.value).catch(() => {});
-        showToast("📋 Code copied!");
+        box.select(); navigator.clipboard?.writeText(box.value).catch(() => {});
+        showToast("📋 Passkey copied!");
       });
 
-      document.getElementById("disconnectP2pBtn").addEventListener("click", () => p2p.disconnect());
+      document.getElementById("disconnectP2pBtn").addEventListener("click", () => friendLink.leave());
 
-      // Theme Controls
       document.getElementById("quickRandomThemeBtn").addEventListener("click", () => {
-        const t = generateUnlimitedRandomTheme();
+        const t = generateSurpriseTheme();
         applyThemeToUI(t);
-        showToast(`✨ Theme: ${t.name}`);
+        showToast(`✨ ${t.name}`);
       });
 
       document.getElementById("openThemesBtn").addEventListener("click", () => {
@@ -2032,14 +2072,14 @@
       });
 
       document.getElementById("modalRandomThemeBtn").addEventListener("click", () => {
-        const t = generateUnlimitedRandomTheme();
+        const t = generateSurpriseTheme();
         applyThemeToUI(t); populateThemesModal();
-        showToast(`✨ Theme: ${t.name}`);
+        showToast(`✨ ${t.name}`);
       });
 
       document.getElementById("saveCurrentThemeBtn").addEventListener("click", () => {
         const cur = structuredClone(appState.activeTheme);
-        if (cur.builtIn) cur.id = "custom_" + Date.now();
+        if (cur.builtIn) cur.id = "saved_" + Date.now();
         cur.builtIn = false;
         if (!appState.savedThemes.some(x => x.id === cur.id)) {
           appState.savedThemes.unshift(cur);
@@ -2050,10 +2090,14 @@
 
       document.getElementById("applyAndSaveStudioBtn").addEventListener("click", () => {
         const base = appState.activeTheme;
+        const lookMode = document.getElementById("stLookMode").value;
         const tileA = document.getElementById("stTileA").value;
         const tileB = document.getElementById("stTileB").value;
         const customTheme = {
-          ...base, id: "studio_" + Date.now(), builtIn: false,
+          ...base,
+          id: "mix_" + Date.now(),
+          builtIn: false,
+          lookMode,
           name: document.getElementById("stName").value.trim() || "Custom Theme",
           boardBg: document.getElementById("stBoardBg").value,
           accent: document.getElementById("stAccent").value,
@@ -2064,30 +2108,39 @@
           ladderB: document.getElementById("stLadderB").value,
           snakeA: document.getElementById("stSnakeA").value,
           snakeB: document.getElementById("stSnakeB").value,
-          snakePattern: document.getElementById("stSnakePattern").value,
+          snakePattern: lookMode === "neon" ? "neon" : (lookMode === "realistic_3d" ? "scales" : "stripes"),
           rounded: document.getElementById("stRounded").checked,
-          glow: document.getElementById("stGlow").checked
+          glow: lookMode === "neon",
+          depth: document.getElementById("stDepth").checked || lookMode !== "simple_realistic"
         };
         appState.savedThemes.unshift(customTheme);
         applyThemeToUI(customTheme); populateThemesModal();
-        showToast(`✅ Saved & Applied "${customTheme.name}"!`);
+        showToast(`✅ Applied "${customTheme.name}"!`);
       });
 
-      document.getElementById("copyThemeJsonBtn").addEventListener("click", () => {
-        const box = document.getElementById("themeJsonBox");
-        box.select(); navigator.clipboard?.writeText(box.value).catch(() => {});
-        showToast("📋 JSON copied!");
+      document.getElementById("copyThemeGiftBtn").addEventListener("click", () => {
+        const pack = btoa(unescape(encodeURIComponent(JSON.stringify(appState.activeTheme))));
+        const box = document.getElementById("themeGiftBox");
+        box.value = pack;
+        box.select();
+        navigator.clipboard?.writeText(pack).catch(() => {});
+        showToast("📋 Theme passcode copied!");
       });
 
-      document.getElementById("importThemeJsonBtn").addEventListener("click", () => {
+      document.getElementById("importThemeGiftBtn").addEventListener("click", () => {
         try {
-          const p = JSON.parse(document.getElementById("themeJsonBox").value);
-          if (!p.tileA || !p.snakeA || !p.ladderA) throw new Error();
-          p.id = "imp_" + Date.now(); p.builtIn = false; p.name = p.name || "Imported Theme";
-          appState.savedThemes.unshift(p);
-          applyThemeToUI(p); populateThemesModal();
-          showToast(`📥 Imported "${p.name}"!`);
-        } catch { showToast("⚠️ Invalid Theme JSON."); }
+          const raw = document.getElementById("themeGiftBox").value.trim();
+          const parsed = JSON.parse(decodeURIComponent(escape(atob(raw))));
+          if (!parsed.tileA || !parsed.snakeA || !parsed.ladderA) throw new Error();
+          parsed.id = "gift_" + Date.now();
+          parsed.builtIn = false;
+          parsed.name = parsed.name || "Gift Theme";
+          appState.savedThemes.unshift(parsed);
+          applyThemeToUI(parsed); populateThemesModal();
+          showToast(`🎁 Applied "${parsed.name}"!`);
+        } catch {
+          showToast("⚠️ Please enter a valid theme passcode.");
+        }
       });
 
       function populateThemesModal() {
@@ -2107,7 +2160,7 @@
         document.getElementById("builtInThemesGrid").innerHTML = BUILT_IN_THEMES.map(t => chipHtml(t, false)).join("");
         document.getElementById("savedThemesGrid").innerHTML = appState.savedThemes.length
           ? appState.savedThemes.map(t => chipHtml(t, true)).join("")
-          : `<div style="font-size:12px;color:var(--text-muted);grid-column:1/-1;">No custom themes saved yet.</div>`;
+          : `<div style="font-size:12px;color:var(--text-muted);grid-column:1/-1;">Tap "Save to My Collection" to keep your favorites.</div>`;
         document.getElementById("savedCount").textContent = appState.savedThemes.length;
 
         document.querySelectorAll(".theme-chip").forEach(c => {
@@ -2122,7 +2175,7 @@
         });
 
         document.getElementById("stName").value = cur.name;
-        document.getElementById("stSnakePattern").value = cur.snakePattern || "scales";
+        document.getElementById("stLookMode").value = cur.lookMode || "simple_realistic";
         document.getElementById("stBoardBg").value = cur.boardBg;
         document.getElementById("stAccent").value = cur.accent;
         document.getElementById("stTileA").value = cur.tileA;
@@ -2132,11 +2185,10 @@
         document.getElementById("stSnakeA").value = cur.snakeA;
         document.getElementById("stSnakeB").value = cur.snakeB;
         document.getElementById("stRounded").checked = !!cur.rounded;
-        document.getElementById("stGlow").checked = !!cur.glow;
-        document.getElementById("themeJsonBox").value = JSON.stringify(cur, null, 2);
+        document.getElementById("stDepth").checked = cur.depth !== false;
+        document.getElementById("themeGiftBox").value = "";
       }
 
-      // Setup Modal
       document.getElementById("openSetupBtn").addEventListener("click", () => {
         const cfg = appState.settings;
         document.getElementById("cfgMode").value = cfg.mode;
@@ -2173,7 +2225,7 @@
         document.querySelectorAll(".pc-shape").forEach(s => (cfg.playerConfigs[s.dataset.i].shape = s.value));
         document.getElementById("setupModal").classList.remove("open");
         createNewMatch(true);
-        showToast("🚀 New Match Started!");
+        showToast("🚀 New Game Started!");
       });
 
       document.getElementById("resumeMatchBtn").addEventListener("click", () => {
